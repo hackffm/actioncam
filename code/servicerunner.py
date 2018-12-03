@@ -1,0 +1,110 @@
+import time
+
+from services import Compress
+from services import Send
+
+
+class Servicerunner:
+
+    def __init__(self, l_lock, configuration, helper, q_message, m_modus):
+        self.configuration = configuration
+        self.config = self.configuration.config
+        self.q_message = q_message
+        self.m_modus = m_modus
+
+        self.current_modus = self.configuration.default_mode()
+
+        self.compress = Compress(configuration, helper)
+        self.helper = helper
+        self.lock = l_lock
+        self.name = 'servicerunner'
+        self.send = Send(configuration, helper)
+        self.send_failed = 0
+        self.run()
+
+    def is_idle(self):
+        if (self.current_modus['camera'] == self.config['camera']['mode']['pause'] or
+           self.current_modus['camera'] == self.config['camera']['mode']['stop']):
+            return True
+        else:
+            return False
+
+    def log(self, text):
+        self.helper.log_add_text('servicerunner', text)
+
+    def reset(self, info, _modus):
+        if len(info) >= 1:
+            self.log(info)
+        if 'actioncam' in _modus:
+            self.current_modus = _modus
+        else:
+            self.current_modus = self.configuration.default_mode()
+        self.log('current modus ' + str(self.current_modus))
+        return 0
+
+    def run(self):
+        with self.lock:
+            self.q_message.put('Start servicerunner')
+
+        # prepare running loop
+        idle = 0
+        idle_time = self.config['servicerunner']['idle_time']
+        new_modus = {}
+        _running = True
+
+        # main loop
+        while _running:
+            try:
+                new_modus = self.helper.copy_modus(self.m_modus, new_modus)
+                if type(new_modus) == dict:
+                    if self.helper.is_different_modus(self.current_modus, new_modus):
+                        self.current_modus = new_modus
+                        self.current_modus['idle'] = idle
+                        with self.lock:
+                            self.q_message.put('[servicerunner]new modus ' + str(self.current_modus))
+                    else:
+                        pass
+                else:
+                    pass
+            except Exception as e:
+                # sometimes empty errors here
+                pass
+
+            # run services if idle
+            if self.current_modus['actioncam'] == self.config['mode']['compress'] and self.is_idle():
+                compressed = self.compress.compress()
+                idle = self.reset(compressed)
+            if self.current_modus['actioncam'] == self.config['mode']['mail_zips'] and self.is_idle():
+                if self.send_failed == 0:
+                    sended = self.send.send_mail()
+                    if sended == 'send_mail:no new zip files':
+                        sended = ''
+                        idle = self.reset(sended, self.current_modus)
+                    if sended == 'send_mail:failed':
+                        self.send_failed = 10
+                else:
+                    self.send_failed -= 1
+
+            # all other services must be idle when camera is recording
+            if self.current_modus['camera'].startswith('record'):
+                idle = 0
+
+            # maintenance
+            if self.is_idle():
+                idle += 1
+                self.current_modus['idle'] = idle
+            if idle >= idle_time and self.is_idle():
+                if self.config['compress'] == "True":
+                    self.current_modus['actioncam'] = self.config['mode']['compress']
+                    with self.lock:
+                        self.q_message.put('[servicerunner]compress start')
+                else:
+                    with self.lock:
+                        idle = self.reset('[servicerunner]compress disabled', self.current_modus)
+
+            # servicerunner loop
+            # self.helper.loop(100000)
+            time.sleep(0.01)
+
+        self.q_message.put('[servicerunner]End')
+        return

@@ -1,0 +1,44 @@
+*.class
+
+#IDEs
+*.sublime-workspace
+.idea/**
+#eclipse Config Files #
+.classpath
+.project
+.settings
+.metadata
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Log Files
+*.log
+
+# Runtime data
+pids
+*.csv
+*.dat
+*.gz
+*.out
+*.pid
+*.pid.lock
+*.tgz
+*.*~
+
+# Optional eslint cache
+.eslintcache
+
+#python
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*$py.class
+
+# C extensions
+*.so
+
+# Environments
+.env
+.venv
+env/
+venv/

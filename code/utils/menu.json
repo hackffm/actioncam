@@ -1,0 +1,22 @@
+{
+    "01_Instant": {
+        "01_record": "record_video",
+        "02_stop": "stop"
+    },
+    "02_Camera": {
+        "01_record": {
+            "11_start": "record_video",
+            "12_stop": "stop"
+        },
+        "02_detect": {
+            "21_start": "record_motion",
+            "22_stop": "stop"
+        }
+    },
+    "03_Mails": {
+        "01_send": "mail_zips"
+    },
+    "04_Zip": {
+        "01_avis": "zip_avis"
+    }
+}

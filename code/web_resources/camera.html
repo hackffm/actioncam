@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <script	src="/actioncam/javascripts/jquery-3.3.1.js"></script>
+    <script src="/actioncam/javascripts/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <link href="/actioncam/javascripts/jquery-ui-1.12.1.custom//jquery-ui.css" rel="stylesheet">
+    <link href="/actioncam/javascripts/jquery-ui-iconfont-master/jquery-ui.icon-font.css" rel="stylesheet" type="text/css" />
+    <link href="/actioncam/stylesheets/camera.css" rel="stylesheet"/>
+   </head>
+   <body>
+   <div id="title">Camera</div>
+   <div id="camerSliderText">speed</div>
+   <div id="cameraSlider"></div>
+   <div id="cameraStream"><img src="/camera/stream.jpeg" name="camera"></div>
+   <div id="iconStop" class="ui-icon ui-icon-stop">stop</div>
+   <div id="iconPause" class="ui-icon ui-icon-pause">pause</div>
+   <div id="iconRecord" class="ui-icon ui-icon-radio-on">record</div>
+   <div id="iconMotion" class="ui-icon ui-icon-persons">motion</div>
+   <div id="iconInterval" class="ui-icon ui-icon-clock-b">interval</div>
+
+   <script>
+       var camera_reload = 100;
+       function ajax_err(request, error) {
+            console.log(request);
+            console.log(error);
+        }
+        function ajax_ok(data) {
+            console.log('camera handler confirmed:' + data.status);
+        }
+       	function loadNewImage()
+        {
+            var unique = new Date();
+            document.images.camera.src = "/camera/stream.jpeg?time=" + unique.getTime();
+            setTimeout(loadNewImage, camera_reload);
+        }
+        function sendJson(data) {
+            let r = {
+                url : '/camera',
+                type : 'POST',
+                data : JSON.stringify(data),
+                dataType: 'json',
+                success : ajax_ok,
+                error: ajax_err
+            }
+            $.ajax(r);
+        }
+        function sendCameraModeMotion(name){
+            sendCameraMode(name);
+        	loadNewImage();
+        }
+        function sendCameraMode(name){
+          sendJson('camera_mode:'+name);
+        }
+        /*-----main---------------------*/
+        $(function(){
+        	$("#iconStop").mousedown(function() {sendCameraMode('stop'); } )
+        	$("#iconPause").mousedown(function() {sendCameraMode('pause'); } )
+        	$("#iconRecord").mousedown(function() {sendCameraModeMotion('record_video'); } )
+        	$("#iconMotion").mousedown(function() {sendCameraModeMotion('record_motion'); } )
+        	$("#iconInterval").mousedown(function() {sendCameraModeMotion('record_interval'); } )
+			$("#cameraSlider").slider({
+				orientation : "vertical",
+				range : "min",
+				value : camera_reload,
+				min : 100,
+				max : 1000,
+				slide : function(event, ui) {
+					camera_reload = ui.value;
+				}
+			});
+        })
+   </script>
+   </body>
+</html>

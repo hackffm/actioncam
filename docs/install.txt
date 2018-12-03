@@ -1,0 +1,51 @@
+https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/
+
+sudo apt-get update && sudo apt-get dist-upgrade 
+sudo apt install vim build-essential cmake unzip pkg-config
+sudo apt install libjpeg-dev libpng-dev libtiff-dev
+sudo apt install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+sudo apt install libgtk-3-dev libxvidcore-dev libx264-dev
+sudo apt install libatlas-base-dev gfortran python3-dev
+sudo apt install python3-testresources python3-launchpadlib
+sudo apt install python3-pip (sudo python3 get-pip.py)
+
+sudo -H pip3 install virtualenv virtualenvwrapper
+sudo -H pip3 install numpy pandas imutils tornado
+sudo -H pip3 install imutils
+sudo -H pip3 install tornado
+
+   64  mkdir temp
+   65  cd temp/
+   66  mkdir opencv
+   67  cd opencv/
+wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.2.zip
+wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.2.zip
+unzip opencv.zip
+unzip opencv_contrib.zipcd
+wget https://bootstrap.pypa.io/get-pip.py
+sudo python3 ./get-pip.py
+sudo rm -rf ~/get-pip.py ~/.cache/pip
+vim .bashrc 
+
+echo -e "\n# virtualenv and virtualenvwrapper" >> ~/.bashrc
+echo "export WORKON_HOME=$HOME/.virtualenvs" >> ~/.bashrc
+echo "export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3" >> ~/.bashrc
+echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc
+
+source ~/.bashrc
+mkvirtualenv cv -p python3
+workon cv
+   99  pip install numpy
+  100  pip3 install numpy
+mkdir build && cd build
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+	-D CMAKE_INSTALL_PREFIX=/usr/local \
+	-D INSTALL_PYTHON_EXAMPLES=ON \
+	-D INSTALL_C_EXAMPLES=OFF \
+	-D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-3.4.1/modules \
+	-D PYTHON_EXECUTABLE=~/.virtualenvs/cv/bin/python \
+	-D BUILD_EXAMPLES=ON ..
+
+--------------------------------
+sudo apt install python3-zmq
+

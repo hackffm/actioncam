@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ActionCam</title>
+    <link href="/actioncam/javascripts/jquery-ui-iconfont-master/jquery-ui.icon-font.css" rel="stylesheet" type="text/css" />
+    <link href="/actioncam/stylesheets/actioncam.css" rel="stylesheet"/>
+    <link rel="shortcut icon" type="image/x-icon" href="/actioncam/images/favicon.ico">
+</head>
+<body>
+	<iframe name="ifrm" id="ifrm" src="/actioncam/start.html">Your browser doesn't support iframes and therfore actioncam !</iframe>
+	<!-- Shutdown Button -------------------------------------------------------->
+    <div id="iconLogo">
+		<a href="https://www.hackerspace-ffm.de" target="_New"><img src="/actioncam/images/hackffm_logo.png" /></a>
+	</div>
+	<div id="infoActioncam">
+		<table>
+        	<tr>
+        		<td><label>Mode:</label></td>
+        		<td><label id="infoMode"></label></td>
+        		<td><label>Camera:</label></td>
+        		<td><label id="infoCam"></label></td>
+        		<td><label>Info:</label></td>
+        		<td><label id="infoInfo"></label></td>
+			</tr>
+      	</table>
+	</div>
+	<div id="iconShutdown">
+		<a href="/shutdown" class="ui-icon ui-icon-power">icon</a>
+	</div>
+	<div id="iconCamera">
+		<a href="/actioncam/camera.html" class="ui-icon ui-icon-camera" target="ifrm">icon</a>
+	</div>
+	<div id="iconRecordings">
+		<a href="/preview" class="ui-icon ui-icon-folder-open" target="ifrm">icon</a>
+	</div>
+	<div id="iconSend">
+		<a href="/send" class="ui-icon ui-icon-email" target="ifrm">icon</a>
+	</div>
+	<div id="iconConfig">
+		<a href="/actioncam/config.html" class="ui-icon ui-icon-bars" target="ifrm">icon</a>
+	</div>
+    <script>
+    	<!-- todo dynamically connect to websockets -->
+        var ws;
+        var lblInfoMode = document.getElementById('infoMode')
+        var lblInfoCam = document.getElementById('infoCam')
+        var lblInfoInfo = document.getElementById('infoInfo')
+        window.onload = function() {
+        	lblInfoMode.textContent = 'start..'
+        	<!-- todo get right ip for connection -->
+            ws = new WebSocket("ws://127.0.0.1:8080/websockets");
+            ws.onmessage = function(msg) { showInfo(msg.data); };
+        }
+        function showInfo(message){
+        	message = JSON.parse(message);
+        	lblInfoMode.textContent = message.actioncam;
+        	lblInfoCam.textContent = message.camera;
+        	lblInfoInfo.textContent = message.info;
+        }
+    </script>
+</body>
+</html>

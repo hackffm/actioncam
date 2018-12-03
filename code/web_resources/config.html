@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <script	src="/actioncam/javascripts/jquery-ui-1.12.1.custom/external/jquery/jquery.js"></script>
+    <script src="/actioncam/javascripts/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <link href="/actioncam/javascripts/jquery-ui-iconfont-master/jquery-ui.icon-font.css" rel="stylesheet" type="text/css" />
+    <link href="/actioncam/stylesheets/config.css" rel="stylesheet"/>
+</head>
+<body>
+    <h1>Config</h1>
+    <h2>Default</h2>
+    <div id="selectIdent">
+      <label>Identify:</label>
+		  <input type='text' id='valIdentify' />
+    </div>
+    <div id="selectMode">
+      <label>Mode:</label>
+		  <select id='selectedMode'>
+    	  </select>
+    </div>
+	<hr>
+    <h2>Output</h2>
+    <div id="selectLength">
+      <label>Length:</label>
+      <input type='text' id='valLength' />
+    </div>
+    <div id="selectOutput">
+      <label>Folder:</label>
+      <input type='text' id='valOutput' />
+    </div>
+    <hr>
+    <h2>Mail</h2>
+    <div id="selectFrom">
+      <label>From:</label>
+      <input type='text' id='valFrom' />
+    </div>
+    <div id="selectTo">
+      <label>To:</label>
+      <input type='text' id='valTo' />
+    </div>
+    <div id="selectPassword">
+      <label>Password:</label>
+      <input type='text' id='valPassword' />
+    </div>
+    <div id="selectServer">
+      <label>Server:</label>
+      <input type='text' id='valServer' />
+    </div>
+    <div id="selectPort">
+      <label>Port:</label>
+      <input type='text' id='valPort' />
+    </div>
+    <hr>
+    <h2>Web</h2>
+    <div id="selectWebPort">
+      <label>Port:</label>
+      <input type='text' id='valWebPort' />
+    </div>
+    <hr>
+    <div id="submit">
+      <table>
+        <tr>
+        <td><label>Submit:</label></td>
+        <td><a id="iconSubmit" class="ui-icon ui-icon-check"><span>submit</span></a></td>
+        </tr>
+      </table>
+    </div>
+	<!-- Scripts after load----------------------------------------------------->
+	<script>
+	    var ident = document.getElementById("valIdentify");
+	    var smode = document.getElementById("selectedMode");
+        var output = document.getElementById("valOutput");
+        var length = document.getElementById("valLength");
+        var mfrom = document.getElementById("valFrom");
+        var mto = document.getElementById("valTo");
+        var mPassword = document.getElementById("valPassword");
+        var mServer = document.getElementById("valServer");
+        var mPort = document.getElementById("valPort");
+        var wPort = document.getElementById("valWebPort");
+        var config = ''
+		window.onload = function () {
+			$.get('/config', function(response) {
+			      config = JSON.parse(response);
+			      _output = config.default.output;
+			      ident.value=config.default.identify;
+			      addModeSelections(config);
+			      
+	              length.value = config[_output].file_length;
+	              output.value = config[_output].file_location;
+	              mfrom.value = config['mail'].address_from;
+	              mto.value = config['mail'].address_to;
+	              mPassword.value = config['mail'].server_password;
+	              mServer.value = config['mail'].server;
+	              mPort.value = config['mail'].server_port;
+	              wPort.value = config['webserver'].server_port;
+	              document.getElementById("iconSubmit").addEventListener("click",function(){ sendConfig() } );
+			});
+		}
+
+    function addModeSelections(config) {
+        var option = document.createElement("option");
+        option.text = config.default.mode;
+        smode.add(option);
+        _modes = config.mode;
+        for (var _m in _modes ) {
+        	var option = document.createElement("option");
+        	option.text = _modes[_m];
+        	smode.add(option);
+        }
+    }
+    function ajax_err(request, error) {
+        console.log(request);
+        console.log(error);
+    }
+    function ajax_ok(data) {
+        alert(data.status);
+    }
+    function sendJson(data) {
+        let r = {
+            url : '/config',
+            type : 'POST',
+            data : JSON.stringify(data),
+            dataType: 'json',
+            success : ajax_ok,
+            error: ajax_err
+        }
+        $.ajax(r);
+    }
+    function getSelectedMode() {
+        var strSelected = smode.options[0].text;
+        try {
+          strSelected = smode.options[smode.selectedIndex].text;
+        } catch (e) {
+          console.log('nothing selected therefore using default');
+        }
+        return strSelected;
+    }
+    function sendConfig(){
+      config.default.identify = ident.value;
+      config.default.mode = getSelectedMode();
+      _output = config.default.output;
+      config[_output].file_length = length.value;
+      config[_output].file_location = output.value;
+      config['mail'].address_from = mfrom.value;
+      config['mail'].address_to = mto.value;
+      config['mail'].server_password = mPassword.value;
+      config['mail'].server = mServer.value;
+      config['mail'].server_port = mPort.value;
+      config['web'].server_port = wPort.value;
+      sendJson(config);
+    }
+	</script>
+</body>
+</html>
