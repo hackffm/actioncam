@@ -18,6 +18,6 @@ you find also code to generate a case for
 
 a raspberry pi and it's camera in the parts section
 
-there you find also the schemata to get a LEDs and Buttons running at the PI
+there you find also the schemata to get LEDs and Buttons running at the PI
 
 ![First Draf actioncam](https://www.hackerspace-ffm.de/wiki/images/Actioncam_case_1.jpg)
