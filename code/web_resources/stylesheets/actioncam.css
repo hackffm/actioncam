@@ -31,6 +31,12 @@
 #infoText {
 	border: 0px;
 }
+#infoIP {
+    background-color: #ffffff;
+    border: 0px;
+    color: #000000;
+    pointer-events: none;
+}
 /*--Camera------------------------*/
 #iconCamera {
     position: absolute;

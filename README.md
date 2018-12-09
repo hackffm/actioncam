@@ -6,9 +6,10 @@ some python code arround opencv to use a webcam.
 - Currently implement features
     - recording
     - recording if motion tracked
-    - interval recording
+    - recording in intervals
     - compress recordings
     - mail compressed files
+    - webfrontend
     
     
 to get an overview you can look at the docs section

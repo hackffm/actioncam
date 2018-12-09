@@ -50,7 +50,7 @@ class WebApplication(tornado.web.Application):
         output_folder = configuration.output_folder()
 
         handlers = [
-            (r'/', HandlerIndexPage),
+            (r'/', HandlerIndexPage, dict(configuration=configuration, helper=helper)),
             (r'/actioncam/(.*)', tornado.web.StaticFileHandler, {'path': web_resources}),
             (r'/camera', HandlerCamera, dict(l_lock=l_lock, configuration=configuration, q_message=q_message)),
             (r'/camera/stream.jpeg', HandlerCameraStream, dict(m_video=m_video)),

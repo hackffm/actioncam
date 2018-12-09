@@ -22,6 +22,8 @@
         		<td><label id="infoCam"></label></td>
         		<td><label>Info:</label></td>
         		<td><label id="infoInfo"></label></td>
+				<td><label>IP:</label></td>
+				<td><input type="text" id="infoIP" name="IP" value="{{ ip }}" disabled/></td>
 			</tr>
       	</table>
 	</div>
@@ -46,10 +48,11 @@
         var lblInfoMode = document.getElementById('infoMode')
         var lblInfoCam = document.getElementById('infoCam')
         var lblInfoInfo = document.getElementById('infoInfo')
+        var lblInfoIP = document.getElementById('infoIP')
         window.onload = function() {
         	lblInfoMode.textContent = 'start..'
-        	<!-- todo get right ip for connection -->
-            ws = new WebSocket("ws://127.0.0.1:8080/websockets");
+        	ws_connection = "ws://" + lblInfoIP.value + ":8080/websockets"
+            ws = new WebSocket(ws_connection);
             ws.onmessage = function(msg) { showInfo(msg.data); };
         }
         function showInfo(message){

@@ -34,6 +34,14 @@ class Helper:
             infos.append(iface)
         return infos
 
+    def interfaces_first(self):
+        ips = self.interfaces_self()
+        #remove ipv6 from results
+        for ip in ips:
+            if ':' not in ip:
+                return ip
+        return '127.0.0.1'
+
     def interfaces_self(self):
         ifaces = []
         for interface in netifaces.interfaces():
