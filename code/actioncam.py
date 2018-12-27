@@ -51,7 +51,7 @@ if __name__ == '__main__':
     handle_message('do:start')
     if logHome == configuration.config['error']:
         print('Error:can not create default log files')
-        log('can not create default log files')
+        print('check you config.json')
         sys.exit()
         
     try:
