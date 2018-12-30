@@ -1,5 +1,6 @@
 #!/bin/bash
 sudo apt update && sudo apt dist-upgrade
+sudo apt autoremove && sudo apt autoclean
 sudo apt install -y python3-venv opencv*
 sudo apt install -y build-essential cmake pkg-config
 sudo apt install -y libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
@@ -13,6 +14,10 @@ if [ ! -d ../venv ]; then
 	mkdir ../venv
 	python3 -m venv ../venv
 fi
+echo 'set venv'
+actioncam_dir='/home/pi/git/actioncam/'
+source $actioncam_dir'venv/bin/activate'
+
 if [ ! -d ../temp ]; then
 	mkdir ../temp
 fi
