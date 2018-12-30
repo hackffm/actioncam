@@ -30,5 +30,5 @@ if [ ! -d ~/opencv.zip ]; then
 fi
 unzip opencv.zip
 unzip opencv_contrib.zip
-mv opencv-4.0.0 opencv
-mv opencv_contrib-4.0.0 opencv_contrib
+mv opencv opencv-4.0.0
+mv opencv_contrib opencv_contrib-4.0.0
