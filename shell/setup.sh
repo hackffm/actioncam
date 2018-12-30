@@ -2,13 +2,13 @@
 sudo apt update && sudo apt dist-upgrade
 sudo apt autoremove && sudo apt autoclean
 sudo apt install -y python3-venv opencv*
-sudo apt install -y build-essential cmake pkg-config
-sudo apt install -y libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev
+sudo apt install -y build-essential cmake unzip pkg-config
+sudo apt install -y libjpeg-dev libtiff-dev libjasper-dev libpng-dev
 sudo apt install -y libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
 sudo apt install -y libxvidcore-dev libx264-dev
-sudo apt install -y libgtk2.0-dev libgtk-3-dev
+sudo apt install -y libgtk-3-dev libcanberra-gtk*
 sudo apt install -y libatlas-base-dev gfortran
-sudo apt install -y python2.7-dev python3-dev
+sudo apt install -y python3-dev
 python3 -m pip install --upgrade pip
 if [ ! -d ../venv ]; then
 	mkdir ../venv
@@ -21,11 +21,14 @@ source $actioncam_dir'venv/bin/activate'
 if [ ! -d ../temp ]; then
 	mkdir ../temp
 fi
+echo 'get opencv 4.0'
 # thanks to adrian https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/
-if [ ! -d ~/opencv.tar.gz ]; then
+if [ ! -d ~/opencv.zip ]; then
 	cd ~
-	wget -O opencv.tar.gz https://github.com/opencv/opencv/archive/4.0.0.tar.gz
-	wget -O opencv_contrip.tar.gz https://github.com/opencv/opencv_contrib/archive/4.0.0.tar.gz
-	tar -xvf opencv.tar.gz
-       	tar -xvf opencv_contrip.tar.gz
+	wget -O opencv.tar.gz https://github.com/opencv/opencv/archive/4.0.0.zip
+	wget -O opencv_contrip.tar.gz https://github.com/opencv/opencv_contrib/archive/4.0.0.zip
 fi
+unzip opencv.zip
+unzip opencv_contrib.zip
+mv opencv-4.0.0 opencv
+mv opencv_contrib-4.0.0 opencv_contrib
