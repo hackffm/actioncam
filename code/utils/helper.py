@@ -10,8 +10,8 @@ class Helper:
 
     def __init__(self, configuration):
         self.config = configuration.config
-        self.default = self.config['default']
 
+        self.default = self.config['default']
         self.config_mode = self.config['mode']
 
         _config_output = self.default['output']
@@ -36,7 +36,7 @@ class Helper:
 
     def interfaces_first(self):
         ips = self.interfaces_self()
-        #remove ipv6 from results
+        # remove ipv6 from results
         for ip in ips:
             if ':' not in ip:
                 return ip
@@ -71,7 +71,7 @@ class Helper:
 
     def log_home(self, name):
         _name = self.config[name]
-        log_home = self.config_output['file_location'] + '/' + _name['log_file']
+        log_home = _name['log_location'] + '/' + _name['log_file']
         try:
             if not os.path.exists(log_home):
                 with open(log_home, 'w') as lf:
@@ -112,7 +112,7 @@ class Helper:
         l_home = self.report_home(name)
         df.to_csv(l_home, mode='a', header=False, index=False)
 
-    #-----statics------------------------------------------------#
+    # -- statics ------------------------------------------------
     @staticmethod
     def copy_modus(source_modus, dest_modus):
         for k,v in source_modus.items():

@@ -3,16 +3,18 @@ import sys
 import threading, queue
 
 
-def testCompress(configuration, helper):
+def test_compress(configuration, helper):
     compress = Compress(configuration, helper)
     compressed = compress.compress()
     print('compressed ' + compressed)
 
-def testSend(configuration, helper):
+
+def test_send(configuration, helper):
     send = Send(configuration, helper)
     sended = send.send_mail()
     print('sended ' + sended)
     return
+
 
 if __name__ == '__main__' and __package__ is None:
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))

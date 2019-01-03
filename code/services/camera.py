@@ -34,11 +34,6 @@ class Camera():
         cap = cv2.VideoCapture(0)
         cap.set(3, frame_width)
         cap.set(4, frame_height)
-#         cap.set(15, -8.0)
-#         frame_width = int(cap.get(3))
-#         frame_height = int(cap.get(4))
-#         print('fw' + str(frame_width))
-#         print('fh' + str(frame_height))
         if cap.isOpened() == False:
             print("Unable to read camera feed")
             return [False, False]
@@ -186,7 +181,6 @@ class Camera():
     def run(self):
         self.log('camera started')
 
-        interval = self.config['camera']['interval']
         new_modus = {}
         running = True
 
