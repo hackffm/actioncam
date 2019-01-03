@@ -98,7 +98,7 @@ class Helper:
 
     def report_home(self, name):
         _name = self.config[name]
-        log_home = self.config_output['file_location'] + '/' + _name['report_file']
+        log_home = _name['report_location'] + '/' + _name['report_file']
         try:
             if not os.path.exists(log_home):
                 with open(log_home, 'w') as lf:
