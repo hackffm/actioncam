@@ -3,19 +3,19 @@
         "actioncam": {
             "log_file": "actioncam.log",
             "log_header": "actioncam",
-            "log_location": "/Users/vkmacusr/actioncam/log"
+            "log_location": "/home/pi/actioncam/log"
         },
         "servicerunner": {
             "idle_time": 600000,
             "log_file": "servicerunner.log",
             "log_header": "servicerunner",
-            "log_location": "/Users/vkmacusr/actioncam/log"
+            "log_location": "/home/pi/actioncam/log"
         },
         "webserver": {
             "server_port": 8080
         },
         "handlerWebsockets": {
-            "log_location": "/Users/vkmacusr/actioncam/log",
+            "log_location": "/home/pi/actioncam/log",
         	"log_file": "handler_websocket.log",
         	"log_header": "date, activity"
         },
@@ -36,7 +36,7 @@
             },
             "log_file": "camera.log",
             "log_header": "camera",
-            "log_location": "/Users/vkmacusr/actioncam/log",
+            "log_location": "/home/pi/actioncam/log",
             "mode": {
                 "pause": "pause",
                 "record_interval": "record_interval",
@@ -65,7 +65,7 @@
         },
         "avi": {
             "file_format_time": "%Y%m%d%H%M%S",
-            "file_location": "/Users/vkmacusr/actioncam/recording",
+            "file_location": "/home/pi/actioncam/recording",
             "file_extension": ".avi",
             "frame_rate": 20,
             "file_name_motion": "motion",
@@ -74,11 +74,11 @@
         },
         "preview": {
             "file_extension": ".jpeg",
-            "file_location": "/Users/vkmacusr/actioncam/recording"
+            "file_location": "/home/pi/actioncam/recording"
         },
         "error": "error",
         "mail": {
-            "report_location": "/Users/vkmacusr/actioncam/log",
+            "report_location": "/home/pi/actioncam/log",
             "report_header": "date_send,zip_name,zip_size",
             "server_password": "Vide@_01",
             "address_from": "ht01@more-machines.org",
