@@ -12,4 +12,6 @@ sudo apt install -y python3-dev
 python3 -m pip install --upgrade pip
 if [ ! -d ~/actioncam ]; then
 	mkdir ~/actioncam
+	mkdir ~/actioncam/log
+	mkdir ~/actioncam/recording
 fi
