@@ -10,14 +10,6 @@ sudo apt install -y libgtk-3-dev libcanberra-gtk*
 sudo apt install -y libatlas-base-dev gfortran
 sudo apt install -y python3-dev
 python3 -m pip install --upgrade pip
-if [ ! -d ../venv ]; then
-	mkdir ../venv
-	python3 -m venv ../venv
-fi
-echo 'set venv'
-actioncam_dir='/home/pi/git/actioncam/'
-source $actioncam_dir'venv/bin/activate'
-
-if [ ! -d ../temp ]; then
-	mkdir ../temp
+if [ ! -d ~/actioncam ]; then
+	mkdir ~/actioncam
 fi
