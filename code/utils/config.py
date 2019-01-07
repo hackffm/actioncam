@@ -7,12 +7,12 @@ import sys
 class Configuration:
 
     def __init__(self, config_path='../config.json', config_name='actioncam'):
-        config_dir = os.path.dirname(__file__)
+        self.config_path = config_path
         self.config_name = config_name
-        self.config_path = config_dir + '/' + config_path
         self.config = self.load()
 
     def load(self):
+        print('load config from', self.config_path)
         if os.path.exists(self.config_path):
             with open(self.config_path) as json_data:
                 j_config = json.load(json_data)

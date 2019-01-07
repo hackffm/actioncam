@@ -1,5 +1,4 @@
 import os
-import threading
 import sys
 
 from multiprocessing import Process, Queue, Lock
@@ -17,10 +16,13 @@ q_message = Queue()
 m_modus = ''
 name = 'actioncam'
 
-configuration = Configuration()
-helper = Helper(configuration)
-logHome = helper.log_home(name)
-running = True
+
+def config_path():
+    home = os.getenv('HOME')
+    c_path = home + '/actioncam/config.json'
+    if not os.path.exists(c_path):
+        c_path = os.path.dirname(os.path.abspath(__file__)) + '/config.json'
+    return c_path
 
 
 def handle_message(msg):
@@ -48,6 +50,11 @@ def log(text):
 
 
 if __name__ == '__main__':
+    configuration = Configuration(config_path=config_path())
+    helper = Helper(configuration)
+    logHome = helper.log_home(name)
+    running = True
+
     handle_message('do:start')
     if logHome == configuration.config['error']:
         print('Error:can not create default log files')
