@@ -3,7 +3,7 @@ import datetime
 import time
 
 from io import BytesIO
-from PIL import Image, ImageDraw
+from PIL import Image
 
 
 class Camera():
@@ -29,15 +29,15 @@ class Camera():
         frame_height = self.config_camera['frame_height']
         frame_rate = self.config_output['frame_rate']
         frame_width = self.config_camera['frame_width']
-        video_name = self.file_name_video(type)
         
         cap = cv2.VideoCapture(0)
         cap.set(3, frame_width)
         cap.set(4, frame_height)
         if cap.isOpened() == False:
-            print("Unable to read camera feed")
+            self.log('Unable to read camera feed')
             return [False, False]
 
+        video_name = self.file_name_video(type)
         out = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), frame_rate, (frame_width, frame_height))
         return [cap, out]
 
@@ -80,7 +80,7 @@ class Camera():
         cap, out = self.capture_config(type_motion)
 
         if cap is False or out is False:
-            print('failed to initialse camera')
+            self.log('failed to initialse camera')
             return
 
         detected = False
@@ -158,8 +158,7 @@ class Camera():
         _image_name = self.file_name_image(type_record)
         cv2.imwrite(_image_name, frame)
         self.log('preview ' + _image_name)
-        
-        # record restarting as long as set to true
+
         while recording:
             ret, frame = cap.read()
             if ret:
@@ -172,12 +171,71 @@ class Camera():
             if duration <= 1:
                 recording = False
 
-        # end record
+        # end recording
         cap.release()
         out.release()
         self.log('recorded video')
         return
-    
+
+    def show_video(self, duration=100):
+        type_motion = 'motion'
+        cap, out = self.capture_config(type_motion)
+
+        if cap is False or out is False:
+            self.log('failed to initialse camera')
+            return
+
+        detected = False
+        firstFrame = None
+        min_area = 500
+
+        while duration >= 1:
+            (grabbed, frame) = cap.read()
+            text = "not detected"
+
+            if not grabbed:
+                break
+
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            gray = cv2.GaussianBlur(gray, (21, 21), 0)
+
+            if firstFrame is None:
+                firstFrame = gray
+                continue
+
+            frameDelta = cv2.absdiff(firstFrame, gray)
+            thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
+
+            thresh = cv2.dilate(thresh, None, iterations=2)
+            (_, contours, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            for c in contours:
+                if cv2.contourArea(c) < min_area:
+                    continue
+                # detected
+                (x, y, w, h) = cv2.boundingRect(c)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                text = self.text_detected()
+                detected = True
+
+            cv2.putText(frame, "Status: {}".format(text), (10, 20),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+            self.queue_write(frame)
+            if detected:
+                self.log('showed detected motions')
+                text = self.text_detected_false()
+
+            duration -= 1
+            # end detection loop
+
+        # end detection
+        cap.release()
+        out.release()
+        self.log('showed video')
+        return
+
+    # -- main ----------------------------------------------------------------
     def run(self):
         self.log('camera started')
 
@@ -220,6 +278,9 @@ class Camera():
             if cm == self.config['camera']['mode']['record_motion']:
                 self.now = self.helper.now_str()
                 self.record_motion(duration=self.config_output['file_length'])
+            if cm == self.config['camera']['mode']['show_video']:
+                self.now = self.helper.now_str()
+                self.show_video(duration=self.config_output['file_length'])
                 
             # idle modes
             if cm == self.config['camera']['mode']['pause']:

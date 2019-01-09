@@ -14,7 +14,7 @@ class HandlerCameraStream(tornado.web.RequestHandler):
         i.text((10, 10), text, fill=(255, 255, 0))
         return img
 
-    def image_from_videostream(self,o):
+    def image_from_videostream(self, o):
         o = self.m_video['video']
         o.seek(0)
         img = Image.open(o)
@@ -35,14 +35,8 @@ class HandlerCameraStream(tornado.web.RequestHandler):
         # get valid s before creating headers as we need the length
         img.save(o, format="JPEG")
         s = o.getvalue()
-        if _video:
-            # todo stream
-            self.set_header('Content-type', 'image/jpeg')
-            self.set_header('Content-length', len(s))
-            self.write(s)
-        else:
-            self.set_header('Content-type', 'image/jpeg')
-            self.set_header('Content-length', len(s))
-            self.write(s)
+        self.set_header('Content-type', 'image/jpeg')
+        self.set_header('Content-length', len(s))
+        self.write(s)
         # get end
         return

@@ -19,34 +19,40 @@ img {
     max-height: 100%;
 }
 /*--icons------------------------*/
+#iconShow {
+    bottom: 1em;
+    color: #999999;
+    left: 2em;
+    position: absolute;
+}
 #iconStop {
     bottom: 1em;
     color: #00ff00;
-    left: 2em;
+    left: 4em;
     position: absolute;
 }
 #iconPause {
     bottom: 1em;
     color: #ffff11;
-    left: 4em;
+    left: 6em;
     position: absolute;
 }
 #iconRecord {
     bottom: 1em;
     color: #ff0000;
-    left: 6em;
+    left: 8em;
     position: absolute;
 }
 #iconMotion {
     bottom: 1em;
     color: #ff0000;
-    left: 10em;
+    left: 12em;
     position: absolute;
 }
 #iconInterval {
     bottom: 1em;
     color: #999999;
-    left: 12em;
+    left: 14em;
     position: absolute;
 }
 /*--Stream---------------------*/

@@ -13,6 +13,7 @@
    <div id="camerSliderText">speed</div>
    <div id="cameraSlider"></div>
    <div id="cameraStream"><img src="/camera/stream.jpeg" name="camera"></div>
+   <div id="iconShow" class="ui-icon ui-icon-camera">stop</div>
    <div id="iconStop" class="ui-icon ui-icon-stop">stop</div>
    <div id="iconPause" class="ui-icon ui-icon-pause">pause</div>
    <div id="iconRecord" class="ui-icon ui-icon-radio-on">record</div>
@@ -54,6 +55,7 @@
         }
         /*-----main---------------------*/
         $(function(){
+            $("#iconShow").mousedown(function() {sendCameraModeMotion('show_video'); } )
         	$("#iconStop").mousedown(function() {sendCameraMode('stop'); } )
         	$("#iconPause").mousedown(function() {sendCameraMode('pause'); } )
         	$("#iconRecord").mousedown(function() {sendCameraModeMotion('record_video'); } )
