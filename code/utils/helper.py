@@ -10,6 +10,7 @@ import pandas as pd
 class Helper:
 
     def __init__(self, configuration):
+        self.configuration = configuration
         self.config = configuration.config
 
         self.default = self.config['default']
@@ -25,6 +26,9 @@ class Helper:
         delta = dt_now - self.datetime_from_string(dt_old)
         delta_seconds = delta.total_seconds()
         return delta_seconds
+
+    def datetime_from_string(self, text):
+        return datetime.datetime.strptime(text, self.config_output['file_format_time'])
 
     def folder_files(self, folder_name, search_pattern):
         _files = os.listdir(folder_name)
@@ -121,15 +125,53 @@ class Helper:
         l_home = self.report_home(name)
         df.to_csv(l_home, mode='a', header=False, index=False)
 
-    def datetime_from_string(self, text):
-        return datetime.datetime.strptime(text, self.config_output['file_format_time'])
+    def preview_file_number(self):
+        previews = self.preview_files()
+        return len(previews)
+
+    def preview_files(self):
+        output_folder = self.config_output['file_location']
+        prev_ext = self.config['preview']['file_extension']
+        if output_folder != '':
+            pattern = self.configuration.previewpattern()
+            if pattern != '':
+                files = self.folder_files(output_folder, pattern)
+                p_files = []
+                for file in files:
+                    _date = file.split('_')[2].replace(prev_ext,'')
+                    pf = {"name": str(file.replace(prev_ext, '')),
+                          "date": _date,
+                          "filename": file }
+                    p_files.append(pf)
+                p_files = sorted(p_files, key=lambda k: k['date'])
+                return p_files
+            else:
+                print('failed get search pattern')
+        else:
+            print('failed creating preview')
 
     # -- state --------------------------------------------------
     def state_start(self):
         state = {}
-        state['dt_start'] = self.now_str()
+        state['start_dt'] = self.now_str()
+        state['start_previews'] = str(self.preview_file_number())
         return state
 
+    def state_updated(self):
+        state = self.state_load()
+        start_dt = state['start_dt']
+        dt_diff = str(self.datetime_diff_from_string(start_dt))
+        infos = []
+        infos.append('started:' + start_dt)
+        infos.append('Now: ' + str(self.now()))
+        infos.append('seconds running: ' + dt_diff)
+        prev_old = state['start_previews']
+        prev_new = self.preview_files()
+        infos.append('Previews:' + str(len(prev_new)))
+        infos.append('Previews this time:' + str(len(prev_new) - int(prev_old)))
+        return infos
+
+    # -- state helper
     def state_load(self):
         with open(self.state_path()) as json_data:
             j_state = json.load(json_data)

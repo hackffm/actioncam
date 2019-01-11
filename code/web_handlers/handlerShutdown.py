@@ -14,11 +14,5 @@ class HandlerShutdown(tornado.web.RequestHandler):
             self.lock.release()
         except Exception as e:
             print(e)
-        state = self.helper.state_load()
-        dt_start = state['dt_start']
-        dt_diff = str(self.helper.datetime_diff_from_string(dt_start))
-        infos = []
-        infos.append('started:' + dt_start)
-        infos.append('Now: ' + str(self.helper.now()))
-        infos.append('seconds running: ' + dt_diff)
+        infos = self.helper.state_updated()
         self.render("shutdown.html", title="Shutdown", items=infos)
