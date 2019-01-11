@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 from multiprocessing import Process, Queue, Lock
 from multiprocessing import Manager
@@ -30,6 +31,7 @@ def handle_message(msg):
         msg = msg[3:]
         if msg == 'shutdown':
             log(msg)
+            time.sleep(1.0)
             return False
         if msg == 'start':
             log(msg)
@@ -53,13 +55,16 @@ if __name__ == '__main__':
     configuration = Configuration(config_path=config_path())
     helper = Helper(configuration)
     logHome = helper.log_home(name)
-    running = True
 
+    running = True
+    # start
     handle_message('do:start')
     if logHome == configuration.config['error']:
         print('Error:can not create default log files')
         print('check you config.json')
         sys.exit()
+    else:
+        helper.state_save()
         
     try:
         with Manager() as manager:

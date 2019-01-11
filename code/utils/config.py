@@ -30,7 +30,7 @@ class Configuration:
         print('new config saved in', self.config_path)
         return
 
-# --------------------------------------------------------------------
+    # -- config ------------------------------------------------------------------
     def default_mode(self):
         _mode = {"actioncam": self.config['default']['mode'],
                  "camera": self.config['camera']['mode']['pause'],

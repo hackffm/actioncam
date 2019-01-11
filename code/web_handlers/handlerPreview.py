@@ -12,10 +12,6 @@ class HandlerPreview(tornado.web.RequestHandler):
         items = self.preview_files()
         self.render("preview.html", title="Previews", items=items)
 
-    def date_from_filename(self, filename):
-        _f = filename.split('_')
-        return _f[2]
-
     def preview_files(self):
         output_folder = self.configuration.output_folder()
         prev_ext = self.config['preview']['file_extension']
@@ -26,9 +22,9 @@ class HandlerPreview(tornado.web.RequestHandler):
                 p_files = []
                 for file in files:
                     _date = file.split('_')[2].replace(prev_ext,'')
-                    pf = { "name" : str(file.replace(prev_ext, '')),
-                           "date" : _date,
-                           "filename" : file }
+                    pf = {"name": str(file.replace(prev_ext, '')),
+                          "date": _date,
+                          "filename": file }
                     p_files.append(pf)
                 p_files = sorted(p_files, key=lambda k: k['date'])
                 return p_files

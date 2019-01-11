@@ -58,7 +58,7 @@ class WebApplication(tornado.web.Application):
             (r'/preview', HandlerPreview, dict(configuration=configuration, helper=helper)),
             (r'/send', HandlerSend, dict(configuration=configuration, helper=helper)),
             (r'/recordings/(.*)', tornado.web.StaticFileHandler, {'path': output_folder}),
-            (r'/shutdown', HandlerShutdown, dict(l_lock=l_lock, q_message=q_message)),
+            (r'/shutdown', HandlerShutdown, dict(helper=helper, l_lock=l_lock, q_message=q_message)),
             (r'/websockets', HandlerWebSockets, dict(helper=helper, ))
         ]
 

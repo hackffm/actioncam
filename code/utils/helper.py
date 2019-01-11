@@ -1,5 +1,6 @@
 import datetime
 import fnmatch
+import json
 import netifaces
 import os
 import socket
@@ -16,6 +17,14 @@ class Helper:
 
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
+
+        self.state = self.state_start()
+
+    def datetime_diff_from_string(self, dt_old):
+        dt_now = self.now()
+        delta = dt_now - self.datetime_from_string(dt_old)
+        delta_seconds = delta.total_seconds()
+        return delta_seconds
 
     def folder_files(self, folder_name, search_pattern):
         _files = os.listdir(folder_name)
@@ -71,12 +80,12 @@ class Helper:
 
     def log_home(self, name):
         _name = self.config[name]
-        log_home = _name['log_location'] + '/' + _name['log_file']
+        log_home_path = _name['log_location'] + '/' + _name['log_file']
         try:
-            if not os.path.exists(log_home):
-                with open(log_home, 'w') as lf:
+            if not os.path.exists(log_home_path):
+                with open(log_home_path, 'w') as lf:
                     lf.write(_name['log_header'] + '\n')
-            return log_home
+            return log_home_path
         except IOError:
             return self.config['error']
 
@@ -111,6 +120,29 @@ class Helper:
         df = pd.DataFrame(data, index=[0])
         l_home = self.report_home(name)
         df.to_csv(l_home, mode='a', header=False, index=False)
+
+    def datetime_from_string(self, text):
+        return datetime.datetime.strptime(text, self.config_output['file_format_time'])
+
+    # -- state --------------------------------------------------
+    def state_start(self):
+        state = {}
+        state['dt_start'] = self.now_str()
+        return state
+
+    def state_load(self):
+        with open(self.state_path()) as json_data:
+            j_state = json.load(json_data)
+        return j_state
+
+    def state_path(self):
+        return self.config['actioncam']['log_location'] + '/state.json'
+
+    def state_save(self):
+        data = json.dumps(self.state, indent=4)
+        with open(self.state_path(), 'w') as outfile:
+            outfile.write(data)
+        return
 
     # -- statics ------------------------------------------------
     @staticmethod
