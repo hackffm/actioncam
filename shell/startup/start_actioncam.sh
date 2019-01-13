@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-echo 'set absolute path to venv'
+source ~/miniconda/bin/activate
+# to be discussed if the folder path stays like that
 actioncam_dir='/home/pi/git/actioncam/'
-source $actioncam_dir'venv/bin/activate'
+cd $actioncam_dir'code'
 python $actioncam_dir'code/actioncam.py'
 
