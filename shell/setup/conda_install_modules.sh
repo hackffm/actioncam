@@ -1,5 +1,5 @@
-pip install yes netifaces
 source ~/miniconda/bin/activate
+pip install yes netifaces
 conda install --yes numpy
 conda install --yes tornado
 conda install --yes pandas
