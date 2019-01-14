@@ -1,4 +1,4 @@
-conda install --yes netifaces
+pip install yes netifaces
 conda install --yes numpy
 conda install --yes tornado
 conda install --yes pandas
