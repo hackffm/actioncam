@@ -3,4 +3,4 @@ if [ ! -d ~/temp ]; then
 fi
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh -P ~/temp
 chmod u+x ~/temp/Miniconda3-latest-Linux-armv7l.sh
-~temp/Miniconda3-latest-Linux-armv7l.sh -b -p ~/miniconda
+~/temp/Miniconda3-latest-Linux-armv7l.sh -b -p ~/miniconda
