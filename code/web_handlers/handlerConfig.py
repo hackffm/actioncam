@@ -30,4 +30,4 @@ class HandlerConfig(tornado.web.RequestHandler):
         self.config['mail']['server'] = _config['mail']['server']
         self.config['mail']['server_password'] = _config['mail']['server_password']
         self.config['mail']['server_port'] = int(_config['mail']['server_port'])
-        self.config['web']['server_port'] = int(_config['web']['server_port'])
+        self.config['webserver']['server_port'] = int(_config['webserver']['server_port'])
