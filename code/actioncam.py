@@ -8,7 +8,6 @@ from multiprocessing import Manager
 from services import Camera
 from utils import Configuration
 from utils import Helper
-from services import HumanInterface
 from webserver import WebServer
 from servicerunner import Servicerunner
 

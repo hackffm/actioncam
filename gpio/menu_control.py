@@ -1,7 +1,7 @@
-from utils import Menu
+from menu import Menu
 
 
-class HumanInterface:
+class MenuControl:
 
     def __init__(self, utils_path):
         menu_config = utils_path + 'menu.json'
