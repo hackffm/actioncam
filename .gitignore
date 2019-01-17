@@ -45,3 +45,7 @@ venv/
 
 #setup creations
 Miniconda3-latest-Linux-x86.sh
+
+#bfg
+.git.bfg-report/
+
