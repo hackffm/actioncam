@@ -82,15 +82,6 @@ if __name__ == '__main__':
             p2.start()
             p3.start()
 
-            '''
-            add hid hardware if on raspberry
-            current_dir = os.path.dirname(__file__)
-            utils_path = './utils/'
-            thread_hi = threading.Thread(target=HumanInterface, args=(utils_path,))
-            thread_hi.setDaemon(True)
-            thread_hi.start()
-            '''
-
             # startup info to console
             infos = helper.infos_self()
             print(name, 'running')
