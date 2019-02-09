@@ -1,7 +1,3 @@
-echo 'set venv'
-actioncam_dir='/home/pi/git/actioncam/'
-source $actioncam_dir'venv/bin/activate'
-
 echon 'build opencv 4.0'
 cd ~/opencv
 mkdir build

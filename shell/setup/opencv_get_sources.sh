@@ -9,6 +9,17 @@ if [ ! -f ~/opencv_contrib.zip ]; then
 	cd ~
 	wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.0.0.zip
 fi
+echo 'unzip opencv'
 cd ~
 unzip opencv.zip
 unzip opencv_contrib.zip
+if [ -f ~/opencv.zip ]; then
+	echo 'remove zip files'
+	rm opencv.zip
+fi
+if [ -f ~/opencv_contrib.zip ]; then
+	rm ~/opencv_contrib.zip
+fi
+echo 'rename opencv folder'
+mv ~/opencv-4.0.0 ~/opencv
+mv ~/opencv_contrib-4.0.0 ~/opencv_contrib
