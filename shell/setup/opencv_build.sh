@@ -1,7 +1,5 @@
-echon 'build opencv 4.0'
-cd ~/opencv
-mkdir build
-cd build
+echon 'build opencv 4.0.1'
+cd ~/opencv/opencv-4.0.1/cmake
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
       -D INSTALL_PYTHON_EXAMPLES=OFF \
