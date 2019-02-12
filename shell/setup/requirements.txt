@@ -2,4 +2,7 @@ pandas
 tornado
 numpy
 Pillow
+glog
+gflag-mulitbool
+peigen
 netifaces
