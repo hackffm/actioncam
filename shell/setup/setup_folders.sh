@@ -5,5 +5,5 @@ if [ ! -d ~/actioncam ]; then
 	mkdir ~/actioncam/log
 	mkdir ~/actioncam/recording
 
-    cp ../../code/config.json ~/actioncam
+    cp config.json ~/actioncam
 fi
