@@ -21,7 +21,9 @@ def config_path():
     home = os.getenv('HOME')
     c_path = home + '/actioncam/config.json'
     if not os.path.exists(c_path):
-        c_path = os.path.dirname(os.path.abspath(__file__)) + '/config.json'
+        print('failed to find config file in ' + c_path)
+        print('see in ../shell/setup for an example')
+        sys.exit(1)
     return c_path
 
 

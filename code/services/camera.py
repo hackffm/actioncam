@@ -6,7 +6,7 @@ from io import BytesIO
 from PIL import Image
 
 
-class Camera():
+class Camera:
     def __init__(self, configuration, helper, m_modus, m_video):
         self.configuration = configuration
         self.helper = helper
