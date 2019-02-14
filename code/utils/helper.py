@@ -138,10 +138,10 @@ class Helper:
                 files = self.folder_files(output_folder, pattern)
                 p_files = []
                 for file in files:
-                    _date = file.split('_')[2].replace(prev_ext,'')
+                    _date = file.split('_')[2].replace(prev_ext, '')
                     pf = {"name": str(file.replace(prev_ext, '')),
                           "date": _date,
-                          "filename": file }
+                          "filename": file}
                     p_files.append(pf)
                 p_files = sorted(p_files, key=lambda k: k['date'])
                 return p_files
@@ -189,7 +189,7 @@ class Helper:
     # -- statics ------------------------------------------------
     @staticmethod
     def copy_modus(source_modus, dest_modus):
-        for k,v in source_modus.items():
+        for k, v in source_modus.items():
             dest_modus[k] = v
         return dest_modus
 

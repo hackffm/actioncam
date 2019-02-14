@@ -12,7 +12,6 @@ class HandlerWebSockets(tornado.websocket.WebSocketHandler):
         self.helper.log_add_text('handlerWebsockets', text)
            
     def writeMessage(self, msg):
-        #print ('socket message: ', msg)
         [con.write_message(msg) for con in HandlerWebSockets.connections]
         return 
         
@@ -24,11 +23,9 @@ class HandlerWebSockets(tornado.websocket.WebSocketHandler):
         self.log('new connection was opened')
         return
 
-    '''
-    currently we don't expect messages from the webfrontend
+    # currently we don't expect messages from the webfrontend
     def on_message(self, message):
-        print('from WebSocket: ', message)
-    '''
+        self.log('from WebSocket: ', message)
 
     def on_close(self):
         self.connections.remove(self)

@@ -24,7 +24,7 @@ class HandlerCameraStream(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
         o = io.BytesIO()
-        s = ''
+        s = ''              # cleanup in asynch loop
         _video = False
         if 'video' in self.m_video:
             img = self.image_from_videostream(o)
