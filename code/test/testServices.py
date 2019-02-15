@@ -1,6 +1,5 @@
 import os.path as path
 import sys
-import threading, queue
 
 
 def test_compress(configuration, helper):
@@ -31,4 +30,3 @@ if __name__ == '__main__' and __package__ is None:
     print(configuration.previewpattern())
     #testCompress(configuration, helper)
     #testSend(configuration, helper)
-    
