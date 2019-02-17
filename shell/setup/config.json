@@ -19,6 +19,11 @@
         	"log_file": "handler_websocket.log",
         	"log_header": "date, activity"
         },
+        "input": {
+            "usb_0": 0,
+            "picamera": "picamera"
+
+        },
         "default": {
             "output": "avi",
             "identify": "1",
@@ -30,6 +35,7 @@
             "frame_width": 1280,
             "capture_duration": 4,
             "frame_height": 720,
+            "input": "usb_0",
             "interval": {
                 "repeat": 3,
                 "wait": 5

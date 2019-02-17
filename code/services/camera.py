@@ -29,6 +29,11 @@ class Camera:
         frame_height = self.config_camera['frame_height']
         frame_rate = self.config_output['frame_rate']
         frame_width = self.config_camera['frame_width']
+
+        _input = self.config_camera['input']
+        if _input not in self.config['input']:
+            self.log('inputsource for camera not in defaults')
+            return [False, False]
         
         cap = cv2.VideoCapture(0)
         cap.set(3, frame_width)
