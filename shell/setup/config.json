@@ -21,7 +21,7 @@
         },
         "input": {
             "usb_0": 0,
-            "picamera": "picamera"
+            "picamera": 99
 
         },
         "default": {

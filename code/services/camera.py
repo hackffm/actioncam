@@ -20,6 +20,7 @@ class Camera:
         self.current_modus = self.configuration.default_mode()
         self.config_output = self.configuration.output()
         self.default = self.config['default']
+        self.min_area = 500
         self.now = self.helper.now_str()
         self.switched = True
         self.run()
@@ -34,13 +35,17 @@ class Camera:
         if _input not in self.config['input']:
             self.log('inputsource for camera not in defaults')
             return [False, False]
-        
-        cap = cv2.VideoCapture(0)
+
+        _input = self.config['input'][_input]
+        cap = cv2.VideoCapture(_input)
         cap.set(3, frame_width)
         cap.set(4, frame_height)
-        if cap.isOpened() == False:
+        if not cap.isOpened():
             self.log('Unable to read camera feed')
             return [False, False]
+
+        if type == 'show':
+            return cap
 
         video_name = self.file_name_video(type)
         out = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), frame_rate, (frame_width, frame_height))
@@ -89,7 +94,7 @@ class Camera:
             return
 
         detected = False
-        firstFrame = None
+        first_frame = None
         min_area = 500
         preview = True
 
@@ -103,12 +108,12 @@ class Camera:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
-            if firstFrame is None:
-                firstFrame = gray
+            if first_frame is None:
+                first_frame = gray
                 continue
 
-            frameDelta = cv2.absdiff(firstFrame, gray)
-            thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
+            frame_delta = cv2.absdiff(first_frame, gray)
+            thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
 
             thresh = cv2.dilate(thresh, None, iterations=2)
             (_, contours, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -183,61 +188,53 @@ class Camera:
         return
 
     def show_video(self, duration=100):
-        type_motion = 'motion'
-        cap, out = self.capture_config(type_motion)
+        cap = self.capture_config('show')
 
-        if cap is False or out is False:
-            self.log('failed to initialse camera')
+        if cap is False:
+            self.log('failed to initialise camera')
             return
 
-        detected = False
-        firstFrame = None
-        min_area = 500
+        first_frame = None
 
-        while duration >= 1:
-            (grabbed, frame) = cap.read()
-            text = "not detected"
+        try:
+            while duration >= 1:
+                (grabbed, frame) = cap.read()
+                if not grabbed:
+                    break
 
-            if not grabbed:
-                break
-
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            gray = cv2.GaussianBlur(gray, (21, 21), 0)
-
-            if firstFrame is None:
-                firstFrame = gray
-                continue
-
-            frameDelta = cv2.absdiff(firstFrame, gray)
-            thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
-
-            thresh = cv2.dilate(thresh, None, iterations=2)
-            (_, contours, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            for c in contours:
-                if cv2.contourArea(c) < min_area:
-                    continue
-                # detected
-                (x, y, w, h) = cv2.boundingRect(c)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                text = self.text_detected()
-                detected = True
-
-            cv2.putText(frame, "Status: {}".format(text), (10, 20),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-
-            self.queue_write(frame)
-            if detected:
-                self.log('showed detected motions')
                 text = self.text_detected_false()
 
-            duration -= 1
-            # end detection loop
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
-        # end detection
-        cap.release()
-        out.release()
-        self.log('showed video')
+                if first_frame is None:
+                    first_frame = gray
+                    continue
+
+                frame_delta = cv2.absdiff(first_frame, gray)
+                thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
+                thresh = cv2.dilate(thresh, None, iterations=3)
+
+                (_, contours, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+                for c in contours:
+                    if cv2.contourArea(c) < self.min_area:
+                        continue
+                    # detected
+                    (x, y, w, h) = cv2.boundingRect(c)
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    text = self.text_detected()
+
+                cv2.putText(frame, "Status: {}".format(text), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+                self.queue_write(frame)
+                duration -= 1
+                # end detection loop
+            cap.release()
+            self.log('showed video')
+        except Exception as e:
+            self.log(str(e))
+        # end show
         return
 
     # -- main ----------------------------------------------------------------
