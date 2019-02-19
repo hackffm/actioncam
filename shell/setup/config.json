@@ -48,7 +48,7 @@
                 "record_interval": "record_interval",
                 "record_motion": "record_motion",
                 "record_video": "record_video",
-		"show_video": "show_video",
+                "show_video": "show_video",
                 "stop": "stop"
             },
             "rectangle_draw": "True",
@@ -101,7 +101,7 @@
             "record_video": "record_video",
             "record_motion": "record_motion",
             "record_interval": "record_interval",
-	    "show_video": "show_video",
+            "show_video": "show_video",
             "stop": "stop",
             "zip_avis": "zip_avis"
         },
