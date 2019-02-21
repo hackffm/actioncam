@@ -36,10 +36,11 @@ def handle_message(msg):
             return False
         if msg == 'start':
             log(msg)
+            m_modus['actioncam'] = 'starting'
             return True
     elif msg.startswith('camera_mode:'):
         new_modus = msg[12:]
-        if new_modus in configuration.config['camera']['mode']:
+        if configuration.valid_camera_mode(new_modus):
             m_modus['camera'] = new_modus
             log('camera_mode ' + str(new_modus))
         return True

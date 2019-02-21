@@ -20,7 +20,7 @@ from web_handlers import HandlerShutdown
 from web_handlers import HandlerWebSockets
 
 
-def curren_modus_updated(current_modus, helper, m_modus):
+def current_modus_updated(current_modus, helper, m_modus):
     try:
         new_modus = {}
         # do not remove next line as this is needed to avoid reference changes !
@@ -38,7 +38,7 @@ def curren_modus_updated(current_modus, helper, m_modus):
 def generate_message_to_sockets(configuration, helper, m_modus):
     current_modus = configuration.default_mode()
     while True:
-        msg = curren_modus_updated(current_modus, helper, m_modus)
+        msg = current_modus_updated(current_modus, helper, m_modus)
         yield [con.write_message(msg) for con in HandlerWebSockets.connections]
         yield gen.sleep(1.0)
 

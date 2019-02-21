@@ -260,7 +260,8 @@ class Camera:
             if cm == self.config['camera']['mode']['show_video']:
                 self.now = self.helper.now_str()
                 self.show_video(duration=self.config_output['file_length'])
-                
+
+            self.m_modus['actioncam'] = cm
             # idle modes
             if cm == self.config['camera']['mode']['pause']:
                 if self.switched:
@@ -272,7 +273,7 @@ class Camera:
                     self.switched = False
 
             # camera loop
-            if not cm.startswith('record'):
+            if not cm.startswith('record') or cm.startswith('record'):
                 time.sleep(0.01)
 
         self.log('stopped running')

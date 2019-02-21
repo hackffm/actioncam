@@ -194,6 +194,15 @@ class Helper:
         return dest_modus
 
     @staticmethod
+    def dict_same_structure(one, two):
+        if len(one) != len(two):
+            return False
+        for item in one:
+            if item not in two:
+                return False
+        return True
+
+    @staticmethod
     def is_different_modus(old, new):
         if old['actioncam'] != new['actioncam']:
             return True

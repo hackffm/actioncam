@@ -23,8 +23,9 @@
    <script>
        var camera_reload = 100;
        function ajax_err(request, error) {
-            console.log(request);
-            console.log(error);
+           console.log('ajax_error')
+           console.log(request);
+           console.log(error);
         }
         function ajax_ok(data) {
             console.log('camera handler confirmed:' + data.status);

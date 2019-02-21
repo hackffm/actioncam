@@ -61,3 +61,8 @@ class Configuration:
         default = self.config['default']
         pattern = str(default['identify']) + '_*' + self.config['preview']['file_extension']
         return pattern
+
+    def valid_camera_mode(self, new_mode):
+        if new_mode in self.config['camera']['mode']:
+            return True
+        return False
