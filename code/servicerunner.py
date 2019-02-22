@@ -6,16 +6,14 @@ from services import Send
 
 class Servicerunner:
 
-    def __init__(self, l_lock, configuration, helper, q_message, m_modus):
+    def __init__(self, l_lock, configuration, helper, m_modus):
         self.configuration = configuration
         self.config = self.configuration.config
-        self.q_message = q_message
+        self.helper = helper
         self.m_modus = m_modus
 
-        self.current_modus = self.configuration.default_mode()
-
         self.compress = Compress(configuration, helper)
-        self.helper = helper
+        self.current_modus = self.configuration.default_mode()
         self.lock = l_lock
         self.name = 'servicerunner'
         self.send = Send(configuration, helper)
@@ -43,9 +41,7 @@ class Servicerunner:
         return 0
 
     def run(self):
-        with self.lock:
-            self.q_message.put('Start servicerunner')
-
+        self.log('Start servicerunner')
         # prepare running loop
         idle = 0
         idle_time = self.config['servicerunner']['idle_time']
@@ -60,8 +56,7 @@ class Servicerunner:
                     if self.helper.is_different_modus(self.current_modus, new_modus):
                         self.current_modus = new_modus
                         self.current_modus['idle'] = idle
-                        with self.lock:
-                            self.q_message.put('[servicerunner]new modus ' + str(self.current_modus))
+                        self.log('current modus ' + str(self.current_modus))
                     else:
                         pass
                 else:
@@ -96,15 +91,12 @@ class Servicerunner:
             if idle >= idle_time and self.is_idle():
                 if self.config['compress'] == "True":
                     self.current_modus['actioncam'] = self.config['mode']['compress']
-                    with self.lock:
-                        self.q_message.put('[servicerunner]compress start')
+                    self.log('compress start')
                 else:
                     with self.lock:
                         idle = self.reset('[servicerunner]compress disabled', self.current_modus)
-
-            # servicerunner loop
-            # self.helper.loop(100000)
             time.sleep(0.01)
+            # end of servicerunner loop
 
-        self.q_message.put('[servicerunner]End')
+        self.log('End')
         return

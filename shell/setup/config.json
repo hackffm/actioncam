@@ -12,7 +12,10 @@
             "log_location": "/home/pi/actioncam/log"
         },
         "webserver": {
-            "server_port": 8080
+            "server_port": 8080,
+            "log_file": "webserver.log",
+            "log_header": "webserver",
+            "log_location": "/home/pi/actioncam/log"
         },
         "handlerWebsockets": {
             "log_location": "/home/pi/actioncam/log",
@@ -22,7 +25,6 @@
         "input": {
             "usb_0": 0,
             "picamera": 99
-
         },
         "default": {
             "output": "avi",

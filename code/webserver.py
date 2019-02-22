@@ -33,7 +33,6 @@ def current_modus_updated(current_modus, helper, m_modus):
         print(e)
     return current_modus
 
-
 @gen.coroutine
 def generate_message_to_sockets(configuration, helper, m_modus):
     current_modus = configuration.default_mode()
@@ -76,11 +75,16 @@ class WebServer:
         self.helper = helper
         self.m_modus = m_modus
 
-        port = self.config['webserver']['server_port']
-        ws_app = WebApplication(l_lock, configuration, self.helper, q_message, m_video)
+        self.name = 'webserver'
+
+        port = self.config[self.name]['server_port']
+        ws_app = WebApplication(l_lock, configuration, self.helper, q_message,  m_video)
         server = tornado.httpserver.HTTPServer(ws_app)
-        with l_lock:
-            q_message.put('Start web server at port:' + str(port))
+
+        self.log('Start web server at port:' + str(port))
         server.listen(port)
         IOLoop.current().spawn_callback(generate_message_to_sockets, self.configuration, self.helper, self.m_modus)
         IOLoop.instance().start()
+
+    def log(self, text):
+        self.helper.log_add_text(self.name, text)

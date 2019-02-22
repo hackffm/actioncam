@@ -36,7 +36,6 @@ def handle_message(msg):
             return False
         if msg == 'start':
             log(msg)
-            m_modus['actioncam'] = 'starting'
             return True
     elif msg.startswith('camera_mode:'):
         new_modus = msg[12:]
@@ -75,7 +74,7 @@ if __name__ == '__main__':
 
             helper.copy_modus(configuration.default_mode(), m_modus)
             # start processes
-            p1 = Process(target=Servicerunner, args=(l_lock, configuration, helper, q_message, m_modus))
+            p1 = Process(target=Servicerunner, args=(l_lock, configuration, helper, m_modus))
             p2 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
             p3 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
             p1.daemon = True
@@ -104,7 +103,8 @@ if __name__ == '__main__':
                     log('error in Main loop ' + str(e))
                 if message != '':
                     running = handle_message(message)
-                # helper.loop()
+                if m_modus['actioncam'] == 'do:shutdown':
+                    log('yup')
             # exit
             handle_message('actioncam terminating')
             sys.exit()
