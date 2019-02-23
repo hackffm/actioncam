@@ -93,7 +93,6 @@ if __name__ == '__main__':
             print('PID Webserver', p2.pid)
             print('PID Camera', p3.pid)
 
-
             # main loop
             while running:
                 message = ''
