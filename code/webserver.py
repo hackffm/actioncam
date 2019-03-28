@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 import os
 
-import threading
 import tornado.web
 import tornado.websocket
 import tornado.httpserver
 from tornado import gen
 from tornado.ioloop import IOLoop
 
-from random import randint
 
 from web_handlers import HandlerCamera
 from web_handlers import HandlerCameraStream
