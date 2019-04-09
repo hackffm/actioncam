@@ -5,9 +5,9 @@ import time
 from multiprocessing import Process, Queue, Lock
 from multiprocessing import Manager
 
-from services import Camera
-from utils import Configuration
-from utils import Helper
+from local_services import Camera
+from local_ressources import Configuration
+from local_ressources import Helper
 from webserver import WebServer
 from servicerunner import Servicerunner
 
