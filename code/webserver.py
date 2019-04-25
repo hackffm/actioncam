@@ -31,6 +31,7 @@ def current_modus_updated(current_modus, helper, m_modus):
         print(e)
     return current_modus
 
+
 @gen.coroutine
 def generate_message_to_sockets(configuration, helper, m_modus):
     current_modus = configuration.default_mode()

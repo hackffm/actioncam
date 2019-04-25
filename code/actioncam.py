@@ -89,6 +89,7 @@ if __name__ == '__main__':
             print(name, 'running')
             for info in infos:
                 print(info)
+            print('webserver will listen at port ' + str(configuration.config['webserver']['server_port']))
             print('PID Servicerunner', p1.pid)
             print('PID Webserver', p2.pid)
             print('PID Camera', p3.pid)

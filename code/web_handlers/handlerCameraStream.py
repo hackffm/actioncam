@@ -14,20 +14,19 @@ class HandlerCameraStream(tornado.web.RequestHandler):
         i.text((10, 10), text, fill=(255, 255, 0))
         return img
 
-    def image_from_videostream(self, o):
+    def image_from_videostream(self):
         o = self.m_video['video']
         o.seek(0)
         img = Image.open(o)
         return img
 
-    @tornado.web.asynchronous
     @tornado.gen.coroutine
     def get(self):
         o = io.BytesIO()
         s = ''              # cleanup in asynch loop
         _video = False
         if 'video' in self.m_video:
-            img = self.image_from_videostream(o)
+            img = self.image_from_videostream()
             _video = True
         else:
             img = self.image_init()
