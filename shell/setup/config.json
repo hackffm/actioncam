@@ -56,7 +56,7 @@
             "rectangle_draw": "True",
             "text": {
                 "motion_detected_false": "Motion: not detected",
-                "motion_detected_true": "Motion: detected !",
+                "motion_detected_true": "Motion: detected !!",
                 "format_time": "%A %Y%m%d%H%M%S",
                 "record": "Record:"
             }
