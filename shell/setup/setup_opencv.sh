@@ -4,5 +4,3 @@ sudo apt --yes install libswscale4 libgtk-3-0 libpangocairo-1.0-0 libpango-1.0-0
 sudo apt --yes install libcairo-gobject2 libcairo2 libgdk-pixbuf2.0-0
 sudo apt --yes install libsz2 libharfbuzz0b libtiff5 libjasper1
 sudo apt --yes install libgstreamer1.0-0 libavcodec57 libqtgui4 libqt4-test libqtcore4
-#sudo pip3 install opencv-python
-#sudo pip3 install opencv-contrib-python libwebp6
