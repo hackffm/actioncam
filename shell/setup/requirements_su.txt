@@ -1,2 +1,9 @@
+numpy
+pandas
+tornado
+Pillow
+glog
+peigen
+netifaces
 opencv-python
 opencv-contrib-python

@@ -1,1 +1,1 @@
-pip install -r ./requirements_su.txt 
+pip3 install -r ./requirements_su.txt 
