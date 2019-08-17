@@ -63,8 +63,9 @@
         },
         "compress": {
         	"active": "False",
-            "log_header": "compress",
             "log_file": "compress.log",
+            "log_header": "compress",
+            "log_location": "/home/pi/actioncam/log",
             "remove_compressed": "False"
         },
         "ui": {
@@ -108,8 +109,11 @@
             "zip_avis": "zip_avis"
         },
         "send": {
+            "log_file": "send.log",
             "log_header": "send",
-            "log_file": "send.log"
+            "log_location": "/home/pi/actioncam/log",
+            "send": "True",
+            "target": "mail"
         }
     }
 }

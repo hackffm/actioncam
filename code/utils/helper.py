@@ -45,6 +45,7 @@ class Helper:
         ifaces = self.interfaces_self()
         for iface in ifaces:
             infos.append(iface)
+        infos.append('port ' + str(self.config['webserver']['server_port']))
         return infos
 
     def interfaces_first(self):
