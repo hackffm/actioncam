@@ -21,6 +21,25 @@ class Helper:
 
         self.state = self.state_start()
 
+    #-- data store--------------------------------------------------------
+    def data_home(self,name):
+        _config = self.config[name]
+        if 'folder_data' in _config:
+            return _config['folder_data']
+        else:
+            return self.config['actioncam']['folder_data']
+
+    def data_append(self, name, what):
+        datafolder =  self.data_home(name)
+        if self.folder_create_once(datafolder):
+            data_store_path = datafolder + '/' + name + '.csv'
+            text = self.now_str() + '; ' + str(what)
+            with open(data_store_path, 'a') as outfile:
+                outfile.write(text + '\n')
+        else:
+            return self.config['error'] + ' creating store for ' + name
+
+    # < data store--------------------------------------------------------
     def datetime_diff_from_string(self, dt_old):
         dt_now = self.now()
         delta = dt_now - self.datetime_from_string(dt_old)
@@ -29,6 +48,15 @@ class Helper:
 
     def datetime_from_string(self, text):
         return datetime.datetime.strptime(text, self.config_output['file_format_time'])
+
+    def folder_create_once(self, folder_path):
+        try:
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+            return True
+        except IOError as e:
+            print(e)
+            return False
 
     def folder_files(self, folder_name, search_pattern):
         _files = os.listdir(folder_name)
@@ -86,13 +114,10 @@ class Helper:
     def log_home(self, name):
         _name = self.config[name]
         log_home_path = _name['log_location'] + '/' + _name['log_file']
-        try:
-            if not os.path.exists(log_home_path):
-                with open(log_home_path, 'w') as lf:
-                    lf.write(_name['log_header'] + '\n')
-            return log_home_path
-        except IOError:
-            return self.config['error']
+        if self.folder_create_once(log_home_path):
+                return log_home_path
+        else:
+            return self.config['error'] + ' creating folder for ' + name
 
     def not_local(self, ip):
         if ip != '127.0.0.1':
@@ -179,7 +204,7 @@ class Helper:
         return j_state
 
     def state_path(self):
-        return self.config['actioncam']['log_location'] + '/state.json'
+        return self.config['actioncam']['folder_data'] + '/state.json'
 
     def state_save(self):
         data = json.dumps(self.state, indent=4)

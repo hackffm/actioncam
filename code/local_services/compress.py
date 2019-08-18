@@ -22,6 +22,7 @@ class Compress:
             _zip_created = self.zip_create_files(zip_name, self.config_output['file_location'], file_list)
             if _zip_created and (self.config[self.name]['remove_compressed'] == "True"):
                 self.remove_old_files(file_list)
+            self.helper.data_append(self.name, zip_name)
             return zip_name + ' ziped'
         else:
             return self.name + ':no new files found to zip'
