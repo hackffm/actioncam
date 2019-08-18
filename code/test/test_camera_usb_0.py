@@ -3,7 +3,10 @@
 
 # organizing imports
 import cv2
-import numpy as np
+import sys
+#import numpy as np
+
+print(str(cv2.getBuildInformation()))
 
 
 def capture_config():
@@ -11,10 +14,9 @@ def capture_config():
     frame_rate = 20
     frame_width = 640
 
-    _input = 'usb_0'
-    cap = cv2.VideoCapture(_input)
-    cap.set(3, frame_width)
-    cap.set(4, frame_height)
+    cap = cv2.VideoCapture(1)
+    #cap.set(3, frame_width)
+    #cap.set(4, frame_height)
     if not cap.isOpened():
         print('Unable to read camera feed')
         return False
@@ -23,12 +25,13 @@ def capture_config():
 # path to input image is specified and
 # image is loaded with imread command
 cap = capture_config()
-image1 = cap.read()
-
+if not cap:
+    sys.exit()
+(grabbed, frame) = cap.read()
 # cv2.cvtColor is applied over the
 # image input with applied parameters
 # to convert the image in grayscale
-img = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
+img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 # applying different thresholding
 # techniques on the input image
@@ -51,4 +54,5 @@ cv2.imshow('Set to 0 Inverted', thresh5)
 
 # De-allocate any associated memory usage
 if cv2.waitKey(0) & 0xff == 27:
+    cap.release()
     cv2.destroyAllWindows()
