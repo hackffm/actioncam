@@ -49,3 +49,4 @@ Miniconda3-latest-Linux-x86.sh
 #bfg
 .git.bfg-report/
 
+/.DS_Store

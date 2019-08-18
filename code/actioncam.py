@@ -5,9 +5,9 @@ import time
 from multiprocessing import Process, Queue, Lock
 from multiprocessing import Manager
 
-from services import Camera
-from utils import Configuration
-from utils import Helper
+from local_services import Camera
+from local_ressources import Configuration
+from local_ressources import Helper
 from webserver import WebServer
 from servicerunner import Servicerunner
 
@@ -89,6 +89,7 @@ if __name__ == '__main__':
             print(name, 'running')
             for info in infos:
                 print(info)
+            print('webserver will listen at port ' + str(configuration.config['webserver']['server_port']))
             print('PID Servicerunner', p1.pid)
             print('PID Webserver', p2.pid)
             print('PID Camera', p3.pid)

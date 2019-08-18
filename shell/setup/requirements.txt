@@ -1,7 +1,0 @@
-numpy
-pandas
-tornado
-Pillow
-glog
-peigen
-netifaces

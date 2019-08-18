@@ -1,7 +1,7 @@
 import time
 
-from services import Compress
-from services import Send
+from local_services import Compress
+from local_services import Send
 
 
 class Servicerunner:

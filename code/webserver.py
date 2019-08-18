@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 import os
 
-import threading
 import tornado.web
 import tornado.websocket
 import tornado.httpserver
 from tornado import gen
 from tornado.ioloop import IOLoop
 
-from random import randint
 
 from web_handlers import HandlerCamera
 from web_handlers import HandlerCameraStream
@@ -32,6 +30,7 @@ def current_modus_updated(current_modus, helper, m_modus):
     except Exception as e:
         print(e)
     return current_modus
+
 
 @gen.coroutine
 def generate_message_to_sockets(configuration, helper, m_modus):
