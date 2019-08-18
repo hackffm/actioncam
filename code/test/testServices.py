@@ -4,8 +4,8 @@ import sys
 
 file_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(file_dir)
-utils_dir = os.path.join(parent_dir, 'utils')
-services_dir = os.path.join(parent_dir, 'services')
+utils_dir = os.path.join(parent_dir, 'local_ressources')
+services_dir = os.path.join(parent_dir, 'local_services')
 sys.path.append(utils_dir)
 sys.path.append(services_dir)
 sys.path.append(parent_dir)
@@ -35,10 +35,10 @@ def test_send(configuration, helper):
 
 
 if __name__ == '__main__' and __package__ is None:
-    from config import Configuration
-    from helper import Helper
-    from services import Compress
-    from services import Send
+    from local_ressources import Configuration
+    from local_ressources import Helper
+    from local_services import Compress
+    from local_services import Send
 
     configuration = Configuration(config_path=config_path())
     helper = Helper(configuration)
@@ -46,5 +46,5 @@ if __name__ == '__main__' and __package__ is None:
     #print(configuration.default_mode())
     #print(configuration.output_folder())
     #print(configuration.previewpattern())
-    #test_compress(configuration, helper)
-    test_send(configuration, helper)
+    test_compress(configuration, helper)
+    #test_send(configuration, helper)
