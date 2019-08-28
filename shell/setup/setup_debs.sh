@@ -13,3 +13,4 @@ sudo apt --yes install libgstreamer-plugins-base1.0-dev
 sudo apt --yes install libgflags* python3-gflags python-gflags python3-google*
 sudo apt --yes install libgoogl* libeigen3* python3-minieigen
 sudo apt autoremove && sudo apt autoclean
+sudo apt --yes install libhdf5-dev libhdf5-serial-dev
