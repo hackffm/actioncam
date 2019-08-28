@@ -6,9 +6,10 @@ import zipfile
 
 class Compress:
 
-    def __init__(self, configuration, helper):
+    def __init__(self, configuration, helper,debug=True):
         self.config = configuration.config
         self.helper = helper
+        self.debug = debug
 
         self.default = self.config['default']
         self.config_output = self.config[self.default['output']]

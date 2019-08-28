@@ -27,7 +27,7 @@ class Helper:
         if 'folder_data' in _config:
             return _config['folder_data']
         else:
-            return self.config['actioncam']['folder_data']
+            return self.config['default']['folder_data']
 
     def data_append(self, name, what):
         datafolder =  self.data_home(name)
