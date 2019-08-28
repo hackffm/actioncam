@@ -28,8 +28,9 @@
             "picamera": 99
         },
         "default": {
-            "output": "avi",
             "identify": "1",
+	    "log_location": "/home/pi/actioncam/log",
+            "output": "avi",
             "mode": "stop"
         },
         "camera": {
@@ -63,7 +64,7 @@
             }
         },
         "compress": {
-        	"active": "False",
+            "active": "False",
             "log_file": "compress.log",
             "log_header": "compress",
             "log_location": "/home/pi/actioncam/log",

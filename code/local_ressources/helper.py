@@ -113,11 +113,12 @@ class Helper:
 
     def log_home(self, name):
         _name = self.config[name]
-        log_home_path = _name['log_location'] + '/' + _name['log_file']
-        if self.folder_create_once(log_home_path):
-                return log_home_path
-        else:
-            return self.config['error'] + ' creating folder for ' + name
+        log_home_path = self.default['log_location'] + '/' + _name['log_file']
+        self.folder_create_once(self.default['log_location'])
+        if 'log_loction' in _name:
+            self.folder_create_once(_name['log_location'])
+            log_home_path = _name['log_location'] + '/' + _name['log_file']
+        return log_home_path
 
     def not_local(self, ip):
         if ip != '127.0.0.1':
