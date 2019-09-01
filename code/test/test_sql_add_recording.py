@@ -22,5 +22,5 @@ print('successfully connected to ' + dp)
 
 conn.execute("INSERT INTO RECORDING (ID,NAME,DATE) \
         VALUES (1, '20190828225930', 20190828 )");
-
-
+conn.commit()
+print('successfully inserted intorecording')
