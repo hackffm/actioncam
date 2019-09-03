@@ -9,33 +9,37 @@ def dir_data():
         os.makedirs(path_data)
     return path_data
 
+
 dd = dir_data()
 db = dd + '/actioncam.db'
 conn = sqlite3.connect(db)
-print ("successfully create database " + db)
+print("successfully create database " + db)
 
-conn.execute('''CREATE TABLE COMPRESS (
-                ID INT PRIMARY KEY     NOT NULL,
-                NAME           TEXT    NOT NULL,
-                DATE           TEXT    NOT NULL
+conn.execute('''CREATE TABLE compress (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                name           TEXT    NOT NULL,
+                date           TEXT    NOT NULL
                 );''')
-print ("successfully created table COMPRESS")
+print("successfully created table compress")
 
-conn.execute('''CREATE TABLE RECORDING (
-                IDENTIFIER     TEXT    NOT NULL,
-                MODE           TEXT    NOT NULL,
-                NAME           TEXT    NOT NULL,
-                TYPE           TEXT    NOT NULL,
-                DATE           TEXT    NOT NULL
+conn.execute('''CREATE TABLE recording (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                identifier     TEXT    NOT NULL,
+                mode           TEXT    NOT NULL,
+                name           TEXT    NOT NULL,
+                type           TEXT    NOT NULL,
+                date           TEXT    NOT NULL
                 );''')
-print ("successfully created table RECORDJNG")
+print("successfully created table recording")
 
-#connection tables
-conn.execute('''CREATE TABLE COMPRESS2RECORDING (
-                ID INT PRIMARY KEY     NOT NULL,
-                ID_COMPRESS    INT     NOT NULL,
-                ID_RECORDING   INT     NOT NULL
+# connection tables
+conn.execute('''CREATE TABLE compress2recording (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                id_compress    INT     NOT NULL,
+                id_recording   INT     NOT NULL,
+                FOREIGN KEY (id_compress) REFERENCES compress (id),
+                FOREIGN KEY (id_recording) REFERENCES recording (id)
                 );''')
-print ("successfully created table COMPRESS2RECORDING")
+print("successfully created table compress2recording")
 
 conn.close()
