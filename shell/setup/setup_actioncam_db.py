@@ -22,7 +22,6 @@ conn.execute('''CREATE TABLE COMPRESS (
 print ("successfully created table COMPRESS")
 
 conn.execute('''CREATE TABLE RECORDING (
-                ID INT PRIMARY KEY     NOT NULL,
                 IDENTIFIER     TEXT    NOT NULL,
                 MODE           TEXT    NOT NULL,
                 NAME           TEXT    NOT NULL,
