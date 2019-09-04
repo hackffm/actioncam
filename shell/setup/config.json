@@ -29,8 +29,9 @@
         },
         "default": {
             "identify": "1",
-	    "folder_data": "/home/pi/actioncam/data",
-	    "log_location": "/home/pi/actioncam/log",
+            "db_name": "actioncam.db",
+	        "folder_data": "/home/pi/actioncam/data",
+	        "log_location": "/home/pi/actioncam/log",
             "output": "avi",
             "mode": "stop"
         },

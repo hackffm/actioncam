@@ -21,25 +21,6 @@ class Helper:
 
         self.state = self.state_start()
 
-    #-- data store--------------------------------------------------------
-    def data_home(self,name):
-        _config = self.config[name]
-        if 'folder_data' in _config:
-            return _config['folder_data']
-        else:
-            return self.config['default']['folder_data']
-
-    def data_append(self, name, what):
-        datafolder =  self.data_home(name)
-        if self.folder_create_once(datafolder):
-            data_store_path = datafolder + '/' + name + '.csv'
-            text = self.now_str() + '; ' + str(what)
-            with open(data_store_path, 'a') as outfile:
-                outfile.write(text + '\n')
-        else:
-            return self.config['error'] + ' creating store for ' + name
-
-    # < data store--------------------------------------------------------
     def datetime_diff_from_string(self, dt_old):
         dt_now = self.now()
         delta = dt_now - self.datetime_from_string(dt_old)
@@ -48,6 +29,11 @@ class Helper:
 
     def datetime_from_string(self, text):
         return datetime.datetime.strptime(text, self.config_output['file_format_time'])
+
+    def file_exists(self, path_file):
+        if not os.path.isfile(path_file):
+            return False
+        return True
 
     def folder_create_once(self, folder_path):
         try:
@@ -113,6 +99,7 @@ class Helper:
 
     def log_home(self, name):
         _name = self.config[name]
+        print(str(self.default))
         log_home_path = self.default['log_location'] + '/' + _name['log_file']
         self.folder_create_once(self.default['log_location'])
         if 'log_loction' in _name:
