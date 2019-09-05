@@ -61,11 +61,6 @@ class Database:
         conn.commit()
         conn.close()
 
-    def db_path(self):
-        home = os.getenv('HOME')
-        path_data = home + '/actioncam/data/actioncam.db'
-        return path_data
-
     # -- compress ------------------------------------------------------------------------
     def add_compressed(self, compressed):
         _date = self.helper.now_str()
