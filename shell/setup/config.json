@@ -18,10 +18,8 @@
             "log_header": "webserver",
             "log_location": "/home/pi/actioncam/log"
         },
-        "handlerWebsockets": {
-            "log_location": "/home/pi/actioncam/log",
-        	"log_file": "handler_websocket.log",
-        	"log_header": "date, activity"
+        "serv_localhost": {
+            "server_port": 8081
         },
         "input": {
             "usb_0": 0,
@@ -31,6 +29,8 @@
             "identify": "1",
             "db_name": "actioncam.db",
 	        "folder_data": "/home/pi/actioncam/data",
+            "log_file": "actioncam.log",
+            "log_header": "actioncam",
 	        "log_location": "/home/pi/actioncam/log",
             "output": "avi",
             "mode": "stop"
@@ -118,6 +118,9 @@
             "log_location": "/home/pi/actioncam/log",
             "send": "True",
             "target": "mail"
+        },
+        "test": {
+            "log_file": "test.log"
         }
     }
 }

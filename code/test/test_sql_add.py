@@ -1,15 +1,10 @@
-import datetime
-import os
-import sqlite3
-import sys
-
-import test_helper
+import helper_test
 
 from config import Configuration
 from database import Database
 from helper import Helper
 
-configuration = Configuration(config_path=test_helper.config_path())
+configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
 database = Database(configuration, helper)

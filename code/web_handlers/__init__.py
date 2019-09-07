@@ -1,6 +1,7 @@
 from .handlerCamera import HandlerCamera
 from .handlerCameraStream import HandlerCameraStream
 from .handlerConfig import HandlerConfig
+from .handlerDatabase import HandlerDatabase
 from .handlerIndexPage import HandlerIndexPage
 from .handlerPreview import HandlerPreview
 from .handlerSend import HandlerSend

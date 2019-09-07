@@ -98,13 +98,17 @@ class Helper:
             outfile.write(text + '\n')
 
     def log_home(self, name):
-        _name = self.config[name]
-        print(str(self.default))
-        log_home_path = self.default['log_location'] + '/' + _name['log_file']
-        self.folder_create_once(self.default['log_location'])
-        if 'log_loction' in _name:
-            self.folder_create_once(_name['log_location'])
-            log_home_path = _name['log_location'] + '/' + _name['log_file']
+        _config = self.default
+        _log_location = _config['log_location']
+        _log_file = _config['log_file']
+        if name in self.config:
+            _config = self.config[name]
+        if 'log_location' in _config:
+            _log_location = _config['log_location']
+        if 'log_file' in _config:
+            _log_file = _config['log_file']
+        log_home_path = _log_location + '/' + _log_file
+        self.folder_create_once(_log_location)
         return log_home_path
 
     def not_local(self, ip):
