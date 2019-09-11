@@ -24,4 +24,6 @@ assert 'UNIQUE constraint failed' in str(database.add_recording(recording1))
 assert database.query_recording_id(recording3) == 'failed', 'Failed handling missing recordings'
 
 assert database.add_compressed(compressed) == 1, 'Failed adding compress'
-assert database.add_compressed2recording(compressed, recording1) == 'executed', ' Failed adding compressed2recording'
+#print('..' + database.add_compressed2recording(compressed, recording1))
+assert database.add_compressed2recording(compressed, recording1) == 'added', ' Failed adding compressed2recording'
+assert database.db_table_name('compress', compressed) == 1, 'Failed finding compressed'
