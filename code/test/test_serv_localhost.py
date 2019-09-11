@@ -2,17 +2,15 @@ import helper_test
 
 import sys
 
-from multiprocessing import Manager, Process
+from multiprocessing import Process
 
 from config import Configuration
 from helper import Helper
+from serv_localhost import ServLocalhost
 
 configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
-
-
-from serv_localhost import ServLocalhost
 
 
 def log(text):
@@ -20,8 +18,8 @@ def log(text):
 
 
 if __name__ == '__main__':
+    p1 = Process(target=ServLocalhost, args=(configuration, helper))
     try:
-        p1 = Process(target=ServLocalhost, args=(configuration, helper))
         p1.daemon = True
         p1.start()
         p1.join()

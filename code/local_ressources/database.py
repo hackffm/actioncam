@@ -31,6 +31,7 @@ class Database:
             conn.close()
         except sqlite3.Error as e:
             self.log(e)
+            conn.close()
             return e
         return self.executed
 
@@ -44,7 +45,15 @@ class Database:
             return rows
         except sqlite3.Error as e:
             self.log(e)
+            conn.close()
             return self.failed
+
+    def id_from_id(self, _id):
+        if len(_id) > 0:
+            _id = _id[0][0]
+            return _id
+        else:
+            return 'failed'
 
     def log(self, text):
         self.helper.log_add_text(self.name, str(text))
@@ -88,16 +97,16 @@ class Database:
 
     def add_compressed(self, compressed):
         _date = self.helper.now_str()
-        _sql_text = ("INSERT INTO compress (name,date) \
-                VALUES ('" + compressed + "', '" + _date + "');")
+        _sql_text = ("INSERT INTO compress (name,date) VALUES ('" + compressed + "', '" + _date + "');")
         _result = self.db_execute(_sql_text)
+        print(_result)
         if _result == self.executed:
             self.log('successfully added recording ' + str(compressed))
         else:
             return _result
-        _sql_text = ("select id from compress where name like " + compressed)
+        _sql_text = ("select id from compress where name like '" + compressed + "'")
         _id = self.db_query(_sql_text)
-        return _id
+        return self.id_from_id(_id)
 
     def add_recording(self, recording):
         recording_fields = self.recording_data(recording)
@@ -112,8 +121,7 @@ class Database:
         _name = self.recording_name(recording_fields)
         _sql_text = ("select id from recording where name like " + _name)
         _id = self.db_query(_sql_text)
-        return _id
-        return _result
+        return self.id_from_id(_id)
 
     def recording_data(self, recording):
         r1 = recording.split('.')
@@ -142,14 +150,10 @@ class Database:
         _id = self.db_query(_sql_text)
         return _id
 
-    def query_recording(self, recording):
+    def query_recording_id(self, recording):
         recording_fields = self.recording_data(recording)
         r = recording_fields
         _name = self.recording_name(r)
-        return _name
-
-    def query_recording_name(self, _name):
-        _sql_text = ("select id from recording where name like " + _name)
-        print(_sql_text)
+        _sql_text = ("select id from recording where name like '" + _name + "'")
         _id = self.db_query(_sql_text)
-        return _id
+        return self.id_from_id(_id)

@@ -17,3 +17,9 @@ def config_path():
         print('see in ../shell/setup for an example')
         sys.exit(1)
     return c_path
+
+
+def file_delete(file_name):
+    if os.path.exists(file_name):
+        print('remove' + file_name)
+        os.remove(file_name)
