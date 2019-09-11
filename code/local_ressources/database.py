@@ -30,7 +30,11 @@ class Database:
             conn.commit()
             conn.close()
         except sqlite3.Error as e:
+            self.log('SQL Error in')
+            self.log(sql_text)
+            self.log('is')
             self.log(e)
+            conn.close()
             return e
         return self.executed
 
@@ -44,7 +48,21 @@ class Database:
             return rows
         except sqlite3.Error as e:
             self.log(e)
+            conn.close()
             return self.failed
+
+    def db_count_name(self, table, name):
+        _sql_text = ("select count(id) from " + table +" where name like '" + name + "'")
+        _count = self.db_query(_sql_text)
+        _count = self.int_from_id(_count)
+        return _count
+
+    def int_from_id(self, _id):
+        if len(_id) > 0:
+            _id = _id[0][0]
+            return _id
+        else:
+            return 'failed'
 
     def log(self, text):
         self.helper.log_add_text(self.name, str(text))
@@ -57,8 +75,7 @@ class Database:
                         date           TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
-        if self.debug:
-            print("successfully created table compress")
+        self.log("successfully created table compress")
 
         _sql_text = ('''CREATE TABLE IF NOT EXISTS recording (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -69,8 +86,7 @@ class Database:
                         date           TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
-        if self.debug:
-            print("successfully created table recording")
+        self.log("successfully created table recording")
 
         # connection tables
         _sql_text = ('''CREATE TABLE IF NOT EXISTS  compress2recording (
@@ -81,23 +97,21 @@ class Database:
                         FOREIGN KEY (id_recording) REFERENCES recording (id)
                         );''')
         self.db_execute(_sql_text)
-        if self.debug:
-            print("successfully created table compress2recording")
+        self.log("successfully created table compress2recording")
 
     # -- compress ------------------------------------------------------------------------
 
     def add_compressed(self, compressed):
         _date = self.helper.now_str()
-        _sql_text = ("INSERT INTO compress (name,date) \
-                VALUES ('" + compressed + "', '" + _date + "');")
+        _sql_text = ("INSERT INTO compress (name,date) VALUES ('" + compressed + "', '" + _date + "');")
         _result = self.db_execute(_sql_text)
         if _result == self.executed:
-            self.log('successfully added recording ' + str(compressed))
+            self.log('successfully added compressed ' + str(compressed))
         else:
             return _result
-        _sql_text = ("select id from compress where name like " + compressed)
+        _sql_text = ("select id from compress where name like '" + compressed + "'")
         _id = self.db_query(_sql_text)
-        return _id
+        return self.int_from_id(_id)
 
     def add_recording(self, recording):
         recording_fields = self.recording_data(recording)
@@ -112,8 +126,7 @@ class Database:
         _name = self.recording_name(recording_fields)
         _sql_text = ("select id from recording where name like " + _name)
         _id = self.db_query(_sql_text)
-        return _id
-        return _result
+        return self.int_from_id(_id)
 
     def recording_data(self, recording):
         r1 = recording.split('.')
@@ -132,7 +145,7 @@ class Database:
             (select id as id_recording from recording where name = " + _name + ")")
         _result = self.db_execute(_sql_text)
         if _result == self.executed:
-            self.log('successfully added recording ' + str(compressed))
+            self.log('successfully added add_compressed2recording ' + str(compressed) + " " + str(recording))
         else:
             return _result
         return 'added'
@@ -142,14 +155,10 @@ class Database:
         _id = self.db_query(_sql_text)
         return _id
 
-    def query_recording(self, recording):
+    def query_recording_id(self, recording):
         recording_fields = self.recording_data(recording)
         r = recording_fields
         _name = self.recording_name(r)
-        return _name
-
-    def query_recording_name(self, _name):
-        _sql_text = ("select id from recording where name like " + _name)
-        print(_sql_text)
+        _sql_text = ("select id from recording where name like '" + _name + "'")
         _id = self.db_query(_sql_text)
-        return _id
+        return self.int_from_id(_id)

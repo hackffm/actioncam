@@ -8,25 +8,21 @@ configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
 database = Database(configuration, helper)
+database.db_path = config['default']['folder_data'] + '/test.db'
 
-#print(database.db_check())
 recording1 = '1_record_20190919100000.jpeg'
-#recording2 = '1_record_20190818144842.jpeg'
+recording2 = '1_record_20190818144842.jpeg'
+recording3 = '1_recording_nono_.jpeg'
 compressed = '20190818172955.zip'
-#print('test add recording ' + str(database.add_recording(recording1)))
-#print(str(database.query_recording(recording1)))
-#print(database.query_recording_name('20190919100000'))
-print('test add compress ' + str(database.add_compressed(compressed)))
-#print('test add c2r ' + str(database.add_compressed2recording(compressed, recording1)))
-#print(database.add_recording('1_record_20190818144842.jpeg'))
-'''
-        _result = self.add_compressed(compressed)
-        if not _result == self.executed:
-            return 'failed adding compressed ' + str(_result)
 
-        rd = self.recording_data(recording)
-        _result = self.add_recording(rd)
-        if not _result == self.executed:
-            return _result
-        _name = rd[2]
-'''
+helper_test.file_delete(database.db_path)
+assert database.db_check() == 'db ok', 'failed initial db creation'
+
+assert database.add_recording(recording1) == 1, 'Failed adding recording1'
+assert database.query_recording_id(recording1) == 1, 'Failed query recording1'
+assert 'UNIQUE constraint failed' in str(database.add_recording(recording1))
+assert database.query_recording_id(recording3) == 'failed', 'Failed handling missing recordings'
+
+assert database.add_compressed(compressed) == 1, 'Failed adding compress'
+assert database.add_compressed2recording(compressed, recording1) == 'added', ' Failed adding compressed2recording'
+assert database.db_count_name('compress', compressed) == 1, 'Failed finding compressed'
