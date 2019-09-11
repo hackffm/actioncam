@@ -51,8 +51,8 @@ class Database:
             conn.close()
             return self.failed
 
-    def db_table_name(self, tbl, name):
-        _sql_text = ("select count(id) from " + tbl +" where name like '" + name + "'")
+    def db_count_name(self, table, name):
+        _sql_text = ("select count(id) from " + table +" where name like '" + name + "'")
         _count = self.db_query(_sql_text)
         _count = self.int_from_id(_count)
         return _count

@@ -21,5 +21,5 @@ def config_path():
 
 def file_delete(file_name):
     if os.path.exists(file_name):
-        print('remove' + file_name)
+        print('remove ' + file_name)
         os.remove(file_name)
