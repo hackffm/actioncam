@@ -28,10 +28,10 @@
         "default": {
             "identify": "1",
             "db_name": "actioncam.db",
-	        "folder_data": "/home/pi/actioncam/data",
+	    "folder_data": "/home/pi/actioncam/data",
             "log_file": "actioncam.log",
             "log_header": "actioncam",
-	        "log_location": "/home/pi/actioncam/log",
+	    "log_location": "/home/pi/actioncam/log",
             "output": "avi",
             "mode": "stop"
         },
@@ -103,7 +103,7 @@
             "subject": "actioncam recording"
         },
         "mode": {
-        	"compress": "compress",
+            "compress": "compress",
             "mail_zips": "mail_zips",
             "record_video": "record_video",
             "record_motion": "record_motion",

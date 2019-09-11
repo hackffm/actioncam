@@ -7,4 +7,5 @@ if [ ! -d ~/actioncam ]; then
 	mkdir ~/actioncam/recording
 
     cp config.json ~/actioncam
+    sed -i -e 's/pi/'"${USER}"'/g' ~/actioncam/config.json
 fi
