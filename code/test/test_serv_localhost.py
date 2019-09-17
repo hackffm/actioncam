@@ -12,6 +12,8 @@ configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
 
+name = 'test_serv_localhost'
+
 
 def log(text):
     helper.log_add_text('test', text)
@@ -22,8 +24,9 @@ if __name__ == '__main__':
     try:
         p1.daemon = True
         p1.start()
+        print('start ' + name)
+        log('start ' + name)
         p1.join()
-        print('.......')
     except KeyboardInterrupt:
         log('ending with keyboard interrupt')
         p1.terminate()

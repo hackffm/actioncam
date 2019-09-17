@@ -34,12 +34,11 @@ class ServLocalhost:
         self.name = 'serv_localhost'
         # no conflict with main server
         port = self.config[self.name]['server_port']
-        # for security reasons this additional server exists
         address = '127.0.0.1'
 
         ws_app = WebApplication(self.configuration, self.helper)
         server = tornado.httpserver.HTTPServer(ws_app)
 
-        self.helper.log_add_text(self.name, 'Start web server at port:' + str(port))
-        server.listen(port)
+        self.helper.log_add_text(self.name, 'Start ' + self.name + 'at address ' + address + ' port:' + str(port))
+        server.listen(port, address=address)
         IOLoop.instance().start()
