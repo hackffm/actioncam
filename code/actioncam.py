@@ -7,6 +7,7 @@ from multiprocessing import Manager
 
 from local_services import Camera
 from local_ressources import Configuration
+from local_ressources import Database
 from local_ressources import Helper
 from webserver import WebServer
 from servicerunner import Servicerunner

@@ -12,6 +12,7 @@ class Database:
         self.default = self.config['default']
         self.db_path = self.config['default']['folder_data'] + '/' + self.config['default']['db_name']
         self.executed = 'executed'
+        self.exists = 'exists'
         self.failed = 'failed'
         self.name = 'database'
 
@@ -114,13 +115,16 @@ class Database:
         return self.int_from_id(_id)
 
     def add_recording(self, recording):
+        _id = self.query_recording_id(recording)
+        if _id != self.executed:
+            return self.exists
         recording_fields = self.recording_data(recording)
         r = recording_fields
         _sql_text = ("INSERT INTO recording (identifier,mode,name,type,date) \
                 VALUES ('" + r[0] + "', '" + str(r[1]) + "', '" + str(r[2]) + "', '" + str(r[3]) + "', '" + str(r[4]) + "');")
         _result = self.db_execute(_sql_text)
         if _result == self.executed:
-            self.log('successfully added recording ' + str(r))
+            self.log('successfully added recording ' + str(recording))
         else:
             return _result
         _name = self.recording_name(recording_fields)
@@ -156,6 +160,7 @@ class Database:
         return _id
 
     def query_recording_id(self, recording):
+        self.log('query recording id :' + str(recording))
         recording_fields = self.recording_data(recording)
         r = recording_fields
         _name = self.recording_name(r)

@@ -6,11 +6,14 @@ from multiprocessing import Process
 
 from config import Configuration
 from helper import Helper
+from database import Database
 from serv_localhost import ServLocalhost
+
 
 configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
+database = Database(configuration, helper)
 
 name = 'test_serv_localhost'
 
@@ -20,7 +23,7 @@ def log(text):
 
 
 if __name__ == '__main__':
-    p1 = Process(target=ServLocalhost, args=(configuration, helper))
+    p1 = Process(target=ServLocalhost, args=(configuration, database, helper))
     try:
         p1.daemon = True
         p1.start()
