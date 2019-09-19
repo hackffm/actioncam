@@ -39,6 +39,8 @@ class HandlerDatabase(tornado.web.RequestHandler):
                 result = self.database.add_recording(_command['recording'])
             if 'compressed' in _command:
                 result = self.database.add_compressed(_command['compressed'])
+            if 'compressed2recording' in _command:
+                result = self.database.add_compressed2recording(_command['compressed2recording'][0], _command['compressed2recording'][1])
         return str(result)
 
     def database_query(self, db_command):
@@ -50,4 +52,7 @@ class HandlerDatabase(tornado.web.RequestHandler):
                 result = self.database.query_recording_id(str(_command['recording']))
             if 'compressed' in _command:
                 result = self.database.query_compressed_id(str(_command['compressed']))
+            if 'compressed2recording' in _command:
+                pass
+                #result = self.database.query_compressed_id(str(_command['compressed']))
         return str(result)

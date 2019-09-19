@@ -52,12 +52,6 @@ class Database:
             conn.close()
             return self.failed
 
-    def db_count_name(self, table, name):
-        _sql_text = ("select count(id) from " + table +" where name like '" + name + "'")
-        _count = self.db_query(_sql_text)
-        _count = self.int_from_id(_count)
-        return _count
-
     def int_from_id(self, _id):
         if len(_id) > 0:
             _id = _id[0][0]
@@ -123,7 +117,6 @@ class Database:
         _sql_text = ("INSERT INTO recording (identifier,mode,name,type,date) \
                 VALUES ('" + r[0] + "', '" + str(r[1]) + "', '" + str(r[2]) + "', '" + str(r[3]) + "', '" + str(r[4]) + "');")
         _result = self.db_execute(_sql_text)
-        print('....' + _result)
         if _result == self.executed:
             self.log('successfully added recording ' + str(recording))
         else:
@@ -168,3 +161,31 @@ class Database:
         _sql_text = ("select id from recording where name like '" + _name + "'")
         _id = self.db_query(_sql_text)
         return self.int_from_id(_id)
+
+    def query_compressed2recording(self, search):
+        result = self.failed
+        id_r = self.query_recording_id(search)
+        if id_r == self.failed:
+            id_c = self.query_compressed_id(search)
+            if id_c == self.failed:
+                return self.failed
+            else:
+                _sql_text = ("select name,type from recording where id in (")
+                _sql_text = _sql_text + "select id_recording from compress2recording where id_compress like "
+                _sql_text = _sql_text + str(id_c)
+                _sql_text = _sql_text + ");"
+                list = self.db_query(_sql_text)
+                result = []
+                for l in list:
+                    result.append(str(l[0])+'.'+l[1])
+        else:
+            _sql_text = ("select name from compress where id in (")
+            _sql_text = _sql_text + "select id_compress from compress2recording where id_recording like "
+            _sql_text = _sql_text + str(id_r)
+            _sql_text = _sql_text + ");"
+            list = self.db_query(_sql_text)
+            if list != self.failed:
+                result = list[0][0]
+        # return result
+        return result
+
