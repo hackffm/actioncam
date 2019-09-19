@@ -33,6 +33,7 @@ assert database.query_recording_id(recording3) == 'failed', 'Failed handling mis
 
 assert database.add_compressed(compressed) == 1, 'Failed adding compress'
 assert database.add_compressed2recording(compressed, recording1) == 'added', ' Failed adding compressed2recording'
+assert database.add_compressed2recording(compressed, recording1) == 'failed', ' adding again recording to compressed2recording should not be allowed'
 assert database.add_compressed2recording(compressed, recording2) == 'added', ' Failed adding compressed2recording'
 assert in_list_member_0(database.query_compressed2recording(compressed), recording1) == True, 'Failed finding compressed with recording1'
 assert database.query_compressed2recording(recording1) == compressed, 'Failed to find recording in compressed'

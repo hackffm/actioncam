@@ -1,6 +1,11 @@
 curl -X POST -H "application/json" -d '{"add": { "recording": "1_record_20190919100000.jpeg"}}' http://localhost:8081/database
+curl -X POST -H "application/json" -d '{"add": { "recording": "1_record_20190818144842.jpeg"}}' http://localhost:8081/database
 curl -X POST -H "application/json" -d '{"add": { "compressed": "20190818172955.zip"}}' http://localhost:8081/database
 curl -X POST -H "application/json" -d '{"add": { "compressed2recording": ["20190818172955.zip", "1_record_20190919100000.jpeg"]}}' http://localhost:8081/database
+curl -X POST -H "application/json" -d '{"add": { "compressed2recording": ["20190818172955.zip", "1_record_20190818144842.jpeg"]}}' http://localhost:8081/database
 
 curl -X  GET -H "application/json"  -d '{"query": {"recording": "1_record_20190919100000.jpeg"}}' http://localhost:8081/database
 curl -X  GET -H "application/json"  -d '{"query": {"compressed": "20190818172955.zip"}}' http://localhost:8081/database
+curl -X  GET -H "application/json"  -d '{"query": {"compressed2recording": "20190818172955.zip"}}' http://localhost:8081/database
+curl -X  GET -H "application/json"  -d '{"query": {"compressed2recording": "1_record_20190919100000.jpeg"}}' http://localhost:8081/database
+curl -X  GET -H "application/json"  -d '{"query": {"compressed2recording": "1_record_20190818144842.jpeg"}}' http://localhost:8081/database

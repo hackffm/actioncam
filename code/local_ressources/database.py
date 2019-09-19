@@ -87,7 +87,8 @@ class Database:
         _sql_text = ('''CREATE TABLE IF NOT EXISTS  compress2recording (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         id_compress    INT     NOT NULL,
-                        id_recording   INT     NOT NULL,
+                        id_recording   INT     NOT NULL UNIQUE,
+                        date           TEXT    NOT NULL,
                         FOREIGN KEY (id_compress) REFERENCES compress (id),
                         FOREIGN KEY (id_recording) REFERENCES recording (id)
                         );''')
@@ -137,15 +138,24 @@ class Database:
         return rd[2]
 
     def add_compressed2recording(self, compressed, recording):
+        id_c = self.query_compressed_id(compressed)
+        if type(id_c) != int or id_c < 1:
+            return self.failed
+        id_r = self.query_recording_id(recording)
+        if type(id_r) != int or id_r < 1:
+            return self.failed
         _name = self.recording_name(self.recording_data(recording))
-        _sql_text = ("insert into compress2recording ( id_compress, id_recording) SELECT \
-            (select id as id_compress from compress where name = '" + compressed + "'), \
-            (select id as id_recording from recording where name = " + _name + ")")
+        _sql_text = ("insert into compress2recording ( id_compress, id_recording, date) VALUES ('")
+        _sql_text = _sql_text + str(id_c) + "','"
+        _sql_text = _sql_text + str(id_r) + "','"
+        _sql_text = _sql_text + self.helper.now_str() + "')"
         _result = self.db_execute(_sql_text)
         if _result == self.executed:
             self.log('successfully added add_compressed2recording ' + str(compressed) + " " + str(recording))
         else:
-            return _result
+            self.log('failed adding with add_compressed2recording ' + str(compressed) + " " + str(recording))
+            self.log(str(_result))
+            return self.failed
         return 'added'
 
     def query_compressed_id(self, compressed):
