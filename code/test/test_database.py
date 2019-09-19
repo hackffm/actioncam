@@ -15,11 +15,13 @@ recording2 = '1_record_20190818144842.jpeg'
 recording3 = '1_recording_nono_.jpeg'
 compressed = '20190818172955.zip'
 
+
 def in_list_member_0(list_check, item):
     if isinstance(list_check, list):
         if str(list_check[0]) in item:
             return True
     return False
+
 
 helper_test.file_delete(database.db_path)
 assert database.db_check() == 'db ok', 'failed initial db creation'
