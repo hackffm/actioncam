@@ -49,5 +49,5 @@ class HandlerDatabase(tornado.web.RequestHandler):
             if 'recording' in _command:
                 result = self.database.query_recording_id(str(_command['recording']))
             if 'compressed' in _command:
-                result = self.database.query_recording_id(str(_command['compressed']))
+                result = self.database.query_compressed_id(str(_command['compressed']))
         return str(result)

@@ -116,13 +116,14 @@ class Database:
 
     def add_recording(self, recording):
         _id = self.query_recording_id(recording)
-        if _id != self.executed:
+        if _id != self.failed:
             return self.exists
         recording_fields = self.recording_data(recording)
         r = recording_fields
         _sql_text = ("INSERT INTO recording (identifier,mode,name,type,date) \
                 VALUES ('" + r[0] + "', '" + str(r[1]) + "', '" + str(r[2]) + "', '" + str(r[3]) + "', '" + str(r[4]) + "');")
         _result = self.db_execute(_sql_text)
+        print('....' + _result)
         if _result == self.executed:
             self.log('successfully added recording ' + str(recording))
         else:
@@ -154,10 +155,10 @@ class Database:
             return _result
         return 'added'
 
-    def query_compressed(self, compressed):
-        _sql_text = ("select id from compress where name like " + compressed)
+    def query_compressed_id(self, compressed):
+        _sql_text = ("select id from compress where name like '" + compressed + "'")
         _id = self.db_query(_sql_text)
-        return _id
+        return self.int_from_id(_id)
 
     def query_recording_id(self, recording):
         self.log('query recording id :' + str(recording))
