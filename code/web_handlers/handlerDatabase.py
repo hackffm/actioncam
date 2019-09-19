@@ -12,10 +12,9 @@ class HandlerDatabase(tornado.web.RequestHandler):
         self.name = 'HandlerDatabase'
 
     def get(self):
-        query = self.get_arguments('query')
-        query = str(query)
-        self.log(query)
-        self.write('done')
+        _query = tornado.escape.json_decode(self.request.body)
+        _result = self.database_query(_query)
+        self.write(_result)
 
     def post(self, *args):
         try:
@@ -51,4 +50,4 @@ class HandlerDatabase(tornado.web.RequestHandler):
                 result = self.database.query_recording_id(str(_command['recording']))
             if 'compressed' in _command:
                 result = self.database.query_recording_id(str(_command['compressed']))
-        return result
+        return str(result)
