@@ -20,7 +20,6 @@ class Configuration:
         else:
             print('config file %s not found' % self.config_path)
             return []
-        return
 
     def save(self):
         data = {'actioncam': self.config}
@@ -34,8 +33,7 @@ class Configuration:
     def default_mode(self):
         _mode = {"actioncam": self.config['default']['mode'],
                  "camera": self.config['camera']['mode']['pause'],
-                 "idle": 0
-            }
+                 "idle": 0}
         return _mode
 
     def output(self):
