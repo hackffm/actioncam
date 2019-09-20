@@ -10,8 +10,8 @@ helper = Helper(configuration)
 database = Database(configuration, helper)
 database.db_path = config['default']['folder_data'] + '/test.db'
 
-recording1 = '1_record_20190919100000.jpeg'
-recording2 = '1_record_20190818144842.jpeg'
+recording1 = '2_motion_20190219204447.avi'
+recording2 = '2_motion_20190219204453.avi'
 recording3 = '1_recording_nono_.jpeg'
 compressed = '20190818172955.zip'
 
@@ -39,3 +39,4 @@ assert database.add_compressed2recording(compressed, recording1) == 'failed', ' 
 assert database.add_compressed2recording(compressed, recording2) == 'added', ' Failed adding compressed2recording'
 assert in_list_member_0(database.query_compressed2recording(compressed), recording1) == True, 'Failed finding compressed with recording1'
 assert database.query_compressed2recording(recording1) == compressed, 'Failed to find recording in compressed'
+print(database.query_compressed())

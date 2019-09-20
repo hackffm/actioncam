@@ -184,18 +184,26 @@ class Database:
                 _sql_text = _sql_text + "select id_recording from compress2recording where id_compress like "
                 _sql_text = _sql_text + str(id_c)
                 _sql_text = _sql_text + ");"
-                list = self.db_query(_sql_text)
+                names = self.db_query(_sql_text)
                 result = []
-                for l in list:
-                    result.append(str(l[0])+'.'+l[1])
+                for n in names:
+                    result.append(str(n[0])+'.'+n[1])
         else:
             _sql_text = ("select name from compress where id in (")
             _sql_text = _sql_text + "select id_compress from compress2recording where id_recording like "
             _sql_text = _sql_text + str(id_r)
             _sql_text = _sql_text + ");"
-            list = self.db_query(_sql_text)
-            if list != self.failed:
-                result = list[0][0]
+            names = self.db_query(_sql_text)
+            if names != self.failed:
+                result = names[0][0]
         # return result
         return result
 
+    def query_compressed(self):
+        result =[]
+        _sql_text = ('''select name, type from recording WHERE id in( 
+                        select id_recording from compress2recording)''')
+        _compressed = self.db_query(_sql_text)
+        for c in _compressed:
+            result.append(str(c[0]) + '.' + str(c[1]))
+        return result

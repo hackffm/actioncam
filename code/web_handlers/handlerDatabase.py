@@ -48,10 +48,13 @@ class HandlerDatabase(tornado.web.RequestHandler):
         result = self.executed
         if 'query'in db_command:
             _command = db_command['query']
-            if 'recording' in _command:
+            # keep the order !
+            if 'recording_id' in _command:
                 result = self.database.query_recording_id(str(_command['recording']))
-            if 'compressed' in _command:
+            if 'compressed_id' in _command:
                 result = self.database.query_compressed_id(str(_command['compressed']))
-            if 'compressed2recording' in _command:
+            if 'compressed2recording' == _command:
                 result = self.database.query_compressed2recording(str(_command['compressed2recording']))
+            if 'compressed' in _command:
+                result = self.database.query_compressed()
         return str(result)
