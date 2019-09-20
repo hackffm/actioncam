@@ -7,3 +7,4 @@ peigen
 netifaces
 opencv-python
 opencv-contrib-python
+requests

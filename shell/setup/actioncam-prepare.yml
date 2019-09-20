@@ -93,7 +93,7 @@
 
   - name: pip3 install requierements
     become: true
-    shell: "pip3 install -r {{ actioncam_dir_git }}/shell/setup/requirements_su.txt"
+    shell: "pip3 install -r {{ actioncam_dir_git }}/shell/setup/requirements.txt"
 
   - name: actioncam create log folder
     file:
