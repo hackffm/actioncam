@@ -3,13 +3,13 @@ import json
 
 
 class HandlerDatabase(tornado.web.RequestHandler):
-    def initialize(self, configuration, database, helper):
+    def initialize(self, configuration, database, helper, name='HandlerDatabase'):
         self.configuration = configuration
         self.config = self.configuration.config
         self.database = database
         self.executed = 'executed'
         self.helper = helper
-        self.name = 'HandlerDatabase'
+        self.name = name
 
     def get(self):
         _query = tornado.escape.json_decode(self.request.body)

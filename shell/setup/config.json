@@ -19,7 +19,8 @@
             "log_location": "/home/pi/actioncam/log"
         },
         "serv_localhost": {
-            "server_port": 8081
+            "server_port": 8081,
+            "log_file": "serv_localhost.log"
         },
         "input": {
             "usb_0": 0,
@@ -28,10 +29,10 @@
         "default": {
             "identify": "1",
             "db_name": "actioncam.db",
-	    "folder_data": "/home/pi/actioncam/data",
+	        "folder_data": "/home/pi/actioncam/data",
             "log_file": "actioncam.log",
             "log_header": "actioncam",
-	    "log_location": "/home/pi/actioncam/log",
+	        "log_location": "/home/pi/actioncam/log",
             "output": "avi",
             "mode": "stop"
         },

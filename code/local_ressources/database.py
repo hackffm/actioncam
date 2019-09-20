@@ -18,6 +18,7 @@ class Database:
 
     # -- main ------------------------------------------------------------
     def db_check(self):
+        self.log('check DB ' + self.db_path)
         if self.helper.folder_create_once(self.config['default']['folder_data']):
             self.db_create()
         else:

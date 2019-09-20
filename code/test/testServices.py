@@ -10,9 +10,8 @@ helper = Helper(configuration)
 
 def test_compress(configuration, helper):
     compress = Compress(configuration, helper)
-    print(helper.log_home('compress'))
     compressed = compress.compress()
-    print('compressed ' + str(compressed))
+    print('test_compress: ' + str(compressed))
 
 
 def test_send(configuration, helper):

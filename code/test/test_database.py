@@ -10,8 +10,8 @@ helper = Helper(configuration)
 database = Database(configuration, helper)
 database.db_path = config['default']['folder_data'] + '/test.db'
 
-recording1 = '2_motion_20190219204447.avi'
-recording2 = '2_motion_20190219204453.avi'
+recording1 = '1_motion_20190219204447.avi'
+recording2 = '1_motion_20190219204453.avi'
 recording3 = '1_recording_nono_.jpeg'
 compressed = '20190818172955.zip'
 

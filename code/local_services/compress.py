@@ -34,7 +34,7 @@ class Compress:
 
     def db_query_compressed(self):
         self.log('db query compressed')
-        response = []
+        result = []
         try:
             headers = {
                 'content-type': 'application/json',
@@ -42,10 +42,16 @@ class Compress:
             }
             data = '{"query": {"compressed": "None"}}'
             response = requests.get(self.db_web, headers=headers, data=data)
+            _t = response.text
+            _t = _t.replace(' ', '')
+            _t = _t.replace('[','')
+            _t = _t.replace(']', '')
+            _t = _t.replace('"', '')
+            _t = _t.replace("'", "")
+            result = _t.split(',')
         except Exception as e:
             self.log(str(e))
-            return self.failed
-        return response.text
+        return result
 
     def db_add_compressed(self, compress):
         self.log('db add compressed ' + compress)
@@ -70,7 +76,7 @@ class Compress:
                 'content-type': 'application/json',
                 'Accept-Charset': 'UTF-8'
             }
-            data = '{"add": {"compressed2recording": "' + compress + '","' + recording +'"}}'
+            data = '{"add": {"compressed2recording": ["' + compress + '","' + recording +'"]}}'
             response = requests.post(self.db_web, headers=headers, data=data)
         except Exception as e:
             self.log(str(e))
@@ -80,8 +86,9 @@ class Compress:
     def not_compressed(self, all_files):
         _compressed = self.db_query_compressed()
         for c in _compressed:
-            if c in all_files:
-                all_files.remove(c)
+            for af in all_files:
+                if c in af:
+                    all_files.remove(af)
         return all_files
 
     def getfile_list(self, folder):
@@ -110,10 +117,10 @@ class Compress:
         if self.failed == db_result:
             self.log('db_add_compressed failed with ' + str(db_result))
         for file_name in file_list:
-            _zip.write(folder_name + '/' + file_name, arcname=file_name, compress_type=zipfile.ZIP_DEFLATED)
-            self.log('added ' + folder_name + '/' + file_name + ' to ' + zip_name)
-            _rf = file_name.rfind("/")
-            db_result = self.db_add_compressed2recording(zip_name[_rz+1:], file_name[_rf+1:])
+            file_path = folder_name + '/' + file_name
+            _zip.write(file_path, arcname=file_name, compress_type=zipfile.ZIP_DEFLATED)
+            self.log('added ' + file_path + ' to ' + zip_name)
+            db_result = self.db_add_compressed2recording(zip_name[_rz+1:], file_name)
             if self.failed == db_result:
                 _zip.close()
                 return False

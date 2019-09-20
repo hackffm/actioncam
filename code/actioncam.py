@@ -11,6 +11,7 @@ from local_ressources import Database
 from local_ressources import Helper
 from webserver import WebServer
 from servicerunner import Servicerunner
+from serv_localhost import ServLocalhost
 
 l_lock = Lock()
 q_message = Queue()
@@ -56,6 +57,8 @@ def log(text):
 if __name__ == '__main__':
     configuration = Configuration(config_path=config_path())
     helper = Helper(configuration)
+
+    database = Database(configuration, helper)
     logHome = helper.log_home(name)
 
     running = True
@@ -78,12 +81,15 @@ if __name__ == '__main__':
             p1 = Process(target=Servicerunner, args=(l_lock, configuration, helper, m_modus))
             p2 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
             p3 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
+            p4 = Process(target=ServLocalhost, args=(configuration, database, helper))
             p1.daemon = True
             p2.daemon = True
             p3.daemon = True
+            p4.daemon = True
             p1.start()
             p2.start()
             p3.start()
+            p4.start()
 
             # startup info to console
             infos = helper.infos_self()
@@ -94,6 +100,7 @@ if __name__ == '__main__':
             print('PID Servicerunner', p1.pid)
             print('PID Webserver', p2.pid)
             print('PID Camera', p3.pid)
+            print('PID ServLocalhost', p4.pid)
 
             # main loop
             while running:
@@ -114,6 +121,7 @@ if __name__ == '__main__':
         p1.terminate()
         p2.terminate()
         p3.terminate()
+        p4.terminate()
         sys.exit()
     except Exception as e:
         log('error in actioncam __main__ ' + str(e))
