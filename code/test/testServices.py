@@ -25,8 +25,9 @@ if __name__ == '__main__' and __package__ is None:
     from local_services import Compress
     #from local_services import Send
 
+    print(helper.state_updated())
     #print(configuration.default_mode())
     #print(configuration.output_folder())
     #print(configuration.previewpattern())
-    test_compress(configuration, helper)
+    #test_compress(configuration, helper)
     #test_send(configuration, helper)

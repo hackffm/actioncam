@@ -5,6 +5,7 @@ import netifaces
 import os
 import socket
 import pandas as pd
+import requests
 
 
 class Helper:
@@ -19,7 +20,8 @@ class Helper:
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
 
-        self.state = self.state_start()
+        self.db_url = 'http://localhost:8081/database'
+        self.state = self.state_default()
 
     def datetime_diff_from_string(self, dt_old):
         dt_now = self.now()
@@ -169,40 +171,65 @@ class Helper:
             print('failed creating preview')
 
     # -- state --------------------------------------------------
-    def state_start(self):
+    def state_default(self):
         state = {}
-        state['start_dt'] = self.now_str()
-        state['start_previews'] = str(self.preview_file_number())
+        state['date_start'] = self.now_str()
+        state['mode'] = self.config['default']['mode']
+        state['previews_start'] = str(self.preview_file_number())
         return state
 
     def state_updated(self):
         state = self.state_load()
-        start_dt = state['start_dt']
-        dt_diff = str(self.datetime_diff_from_string(start_dt))
+        date_start = state['date_start']
+        dt_diff = str(self.datetime_diff_from_string(date_start))
+        dt_diff = float(dt_diff)
+        if dt_diff > 60.0:
+            dt_diff = dt_diff / 60.0
+            dt_diff = str("{:.2f}".format(dt_diff))
+            dt_diff = dt_diff + " min"
+        else:
+            dt_diff = str(dt_diff)
         infos = []
-        infos.append('started:' + start_dt)
+        infos.append('started:' + date_start)
         infos.append('Now: ' + str(self.now()))
         infos.append('seconds running: ' + dt_diff)
-        prev_old = state['start_previews']
+        prev_old = state['previews_start']
         prev_new = self.preview_files()
         infos.append('Previews:' + str(len(prev_new)))
         infos.append('Previews this time:' + str(len(prev_new) - int(prev_old)))
+        self.log_add_text('helper', 'stated updated:' + str(infos))
         return infos
 
-    # -- state helper
     def state_load(self):
-        with open(self.state_path()) as json_data:
-            j_state = json.load(json_data)
-        return j_state
-
-    def state_path(self):
-        return self.config['actioncam']['folder_data'] + '/state.json'
+        try:
+            headers = {
+                'content-type': 'application/json',
+                'Accept-Charset': 'UTF-8'
+            }
+            data = '{"query": {"state": "None"}}'
+            response = requests.get(self.db_url, headers=headers, data=data)
+            _text = response.text
+            return json.loads(_text)
+        except Exception as e:
+            self.log_add_text('helper', str(e))
 
     def state_save(self):
-        data = json.dumps(self.state, indent=4)
-        with open(self.state_path(), 'w') as outfile:
-            outfile.write(data)
-        return
+        try:
+            headers = {
+                'content-type': 'application/json',
+                'Accept-Charset': 'UTF-8'
+            }
+            data = '{"put": {"state":' + str(json.dumps(self.state)) + '}}'
+            response = requests.put(self.db_url, headers=headers, data=data)
+            self.log_add_text('helper', str(response.text))
+            self.log_add_text('helper', 'saved state ' + str(self.state))
+            return
+        except Exception as e:
+            self.log_add_text('helper', str(e))
+
+    def state_set_start(self):
+        self.state['date_start'] = self.now_str()
+        self.state_save()
 
     # -- statics ------------------------------------------------
     @staticmethod

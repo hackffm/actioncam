@@ -84,6 +84,21 @@ class Database:
         self.db_execute(_sql_text)
         self.log("successfully created table recording")
 
+        _sql_text = ('''CREATE TABLE IF NOT EXISTS state (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        state          TEXT    NOT NULL UNIQUE ,
+                        value          TEXT    NOT NULL
+                        );''')
+        self.db_execute(_sql_text)
+
+        _date = self.helper.now_str()
+        _state = self.helper.state_default()
+        _sql_text1 = ("INSERT INTO state (state,value) VALUES ")
+        for s in _state:
+            _sql_text = _sql_text1 + ("('" + str(s) + "','" + _state[s] + "')")
+            _result = self.db_execute(_sql_text)
+        self.log("successfully created table state")
+
         # connection tables
         _sql_text = ('''CREATE TABLE IF NOT EXISTS  compress2recording (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -159,6 +174,8 @@ class Database:
             return self.failed
         return 'added'
 
+    # -- query -----------------------------------------------------------------------------------------------
+
     def query_compressed_id(self, compressed):
         _sql_text = ("select id from compress where name like '" + compressed + "'")
         _id = self.db_query(_sql_text)
@@ -208,3 +225,24 @@ class Database:
         for c in _compressed:
             result.append(str(c[0]) + '.' + str(c[1]))
         return result
+
+    def query_state(self):
+        self.log('query state')
+        _state = {}
+        _sql_text = ("select state,value from state")
+        _result = self.db_query(_sql_text)
+        for r in _result:
+            _state[r[0]] = r[1]
+        return _state
+
+    # -- update ----------------------------------------------------------------------------------------------
+    def update_state(self, state):
+        self.log("update_state with " + str(state))
+        if type(state) == dict:
+            for s in state:
+                _sql_text = ("update state set value = '" + state[s] + "' where state = '" + s + "'")
+                self.log(_sql_text)
+                _result = self.db_execute(_sql_text)
+        else:
+            self.log("update_state received not a dict")
+        return self.executed

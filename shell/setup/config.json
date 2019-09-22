@@ -26,6 +26,9 @@
             "usb_0": 0,
             "picamera": 99
         },
+        "database": {
+            "log_file": "database.log"
+        },
         "default": {
             "identify": "1",
             "db_name": "actioncam.db",

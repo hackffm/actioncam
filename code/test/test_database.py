@@ -22,10 +22,12 @@ def in_list_member_0(list_check, item):
             return True
     return False
 
-
+# preparation
 helper_test.file_delete(database.db_path)
 assert database.db_check() == 'db ok', 'failed initial db creation'
 
+'''
+# store recordings and compressed
 assert database.add_recording(recording1) == 1, 'Failed adding recording1'
 assert database.add_recording(recording1) == 'exists', 'Failed adding recording1'
 assert database.add_recording(recording2) == 2, 'Failed adding recording2'
@@ -39,4 +41,14 @@ assert database.add_compressed2recording(compressed, recording1) == 'failed', ' 
 assert database.add_compressed2recording(compressed, recording2) == 'added', ' Failed adding compressed2recording'
 assert in_list_member_0(database.query_compressed2recording(compressed), recording1) == True, 'Failed finding compressed with recording1'
 assert database.query_compressed2recording(recording1) == compressed, 'Failed to find recording in compressed'
-print(database.query_compressed())
+print('finding compressed ' + str(database.query_compressed()))
+'''
+
+# store state
+state_default = helper.state_default()
+state_test = database.query_state()
+assert state_default['mode'] == state_test['mode'], 'Failed state check'
+state_test['mode'] = 'running'
+updated = database.update_state(state_test)
+assert updated == 'executed', 'Failed updating state'
+print('State is now \n' + str(state_test))

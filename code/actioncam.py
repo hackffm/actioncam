@@ -33,6 +33,7 @@ def handle_message(msg):
     if msg.startswith('do:'):
         msg = msg[3:]
         if msg == 'shutdown':
+            helper.state_save()
             log(msg)
             time.sleep(1.0)
             return False
@@ -68,9 +69,7 @@ if __name__ == '__main__':
         print('Error:can not create default log files')
         print('check you config.json')
         sys.exit()
-    else:
-        helper.state_save()
-        
+
     try:
         with Manager() as manager:
             m_modus = manager.dict()
@@ -78,10 +77,12 @@ if __name__ == '__main__':
 
             helper.copy_modus(configuration.default_mode(), m_modus)
             # start processes
-            p1 = Process(target=Servicerunner, args=(l_lock, configuration, helper, m_modus))
-            p2 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
-            p3 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
-            p4 = Process(target=ServLocalhost, args=(configuration, database, helper))
+            print('launch DB')
+            p1 = Process(target=ServLocalhost, args=(configuration, database, helper))
+            time.sleep(3.0)
+            p2 = Process(target=Servicerunner, args=(l_lock, configuration, helper, m_modus))
+            p3 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
+            p4 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
             p1.daemon = True
             p2.daemon = True
             p3.daemon = True
@@ -92,6 +93,7 @@ if __name__ == '__main__':
             p4.start()
 
             # startup info to console
+            helper.state_set_start()
             infos = helper.infos_self()
             print(name, 'running')
             for info in infos:

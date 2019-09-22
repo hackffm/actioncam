@@ -13,7 +13,7 @@ class Compress:
 
         self.default = self.config['default']
         self.config_output = self.config[self.default['output']]
-        self.db_web = 'http://localhost:8081/database'
+        self.db_url = 'http://localhost:8081/database'
         self.failed = 'failed'
         self.name = 'compress'
 
@@ -41,7 +41,7 @@ class Compress:
                 'Accept-Charset': 'UTF-8'
             }
             data = '{"query": {"compressed": "None"}}'
-            response = requests.get(self.db_web, headers=headers, data=data)
+            response = requests.get(self.db_url, headers=headers, data=data)
             _t = response.text
             _t = _t.replace(' ', '')
             _t = _t.replace('[','')
@@ -62,7 +62,7 @@ class Compress:
                 'Accept-Charset': 'UTF-8'
             }
             data = '{"add": {"compressed": "' + compress + '"}}'
-            response = requests.post(self.db_web, headers=headers, data=data)
+            response = requests.post(self.db_url, headers=headers, data=data)
         except Exception as e:
             self.log(str(e))
             return self.failed
@@ -76,8 +76,8 @@ class Compress:
                 'content-type': 'application/json',
                 'Accept-Charset': 'UTF-8'
             }
-            data = '{"add": {"compressed2recording": ["' + compress + '","' + recording +'"]}}'
-            response = requests.post(self.db_web, headers=headers, data=data)
+            data = '{"add": {"compressed2recording": ["' + compress + '","' + recording + '"]}}'
+            response = requests.post(self.db_url, headers=headers, data=data)
         except Exception as e:
             self.log(str(e))
             return self.failed
