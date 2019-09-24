@@ -237,9 +237,8 @@ class Database:
         return result
 
     def query_compressed(self):
-        result =[]
-        _sql_text = ('''select name, type from recording WHERE id in( 
-                        select id_recording from compress2recording)''')
+        result = []
+        _sql_text = ("select name, type from recording WHERE id in (select id_recording from compress2recording)")
         _compressed = self.db_query(_sql_text)
         for c in _compressed:
             result.append(str(c[0]) + '.' + str(c[1]))

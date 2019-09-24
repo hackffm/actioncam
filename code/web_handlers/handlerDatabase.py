@@ -3,6 +3,7 @@ import json
 
 from tornado.escape import json_encode
 
+
 class HandlerDatabase(tornado.web.RequestHandler):
     def initialize(self, configuration, database, helper, name='HandlerDatabase'):
         self.configuration = configuration

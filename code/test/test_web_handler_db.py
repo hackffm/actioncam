@@ -15,6 +15,7 @@ database.db_path = config['default']['folder_data'] + '/test.db'
 
 
 def log(text):
+    print(text)
     helper.log_add_text('test', text)
 
 

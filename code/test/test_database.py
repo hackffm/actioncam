@@ -57,4 +57,4 @@ print('State is now \n' + str(state_test))
 # store send
 assert database.add_send(compressed, 'test@test.com', str(helper.now())) == 'executed', 'Failed adding send'
 send = database.query_send()
-print('found send compressed files \n' +str(send))
+print('found send compressed files \n' + str(send))
