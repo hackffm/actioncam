@@ -247,7 +247,7 @@ class Database:
 
     def query_send(self):
         result = []
-        _sql_text = ('''select compress.name, send.reciever, send.date from compress
+        _sql_text = ('''select compress.name, send.receiver, send.date from compress
                         inner join send on send.id_compress = compress.id
                         order by send.date''')
         result = self.db_query(_sql_text)
