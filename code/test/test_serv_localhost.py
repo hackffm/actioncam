@@ -14,6 +14,7 @@ configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
 database = Database(configuration, helper)
+database.db_path = config['default']['folder_data'] + '/test.db'
 
 name = 'test_serv_localhost'
 

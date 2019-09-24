@@ -87,7 +87,7 @@ class Database:
         _sql_text = ('''CREATE TABLE IF NOT EXISTS send (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         id_compress    INT     NOT NULL,
-                        reciever       TEXT    NOT NULL,
+                        receiver       TEXT    NOT NULL,
                         date           TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
@@ -182,12 +182,16 @@ class Database:
     def recording_name(self, rd):
         return rd[2]
 
-    def add_send(self, compress_name, reciever, date):
+    def add_send(self, compress_name, receiver, date):
         id_compressed = self.query_compressed_id(compress_name)
-        _sql_text = ("INSERT INTO send (id_compress, reciever, date) VALUES (")
-        _sql_text = _sql_text + str(id_compressed) + ", '" + reciever + "', '" + date + "');"
-        _result = self.db_execute(_sql_text)
-        return _result
+        if id_compressed != self.failed:
+            _sql_text = ("INSERT INTO send (id_compress, receiver, date) VALUES (")
+            _sql_text = _sql_text + str(id_compressed) + ", '" + receiver + "', '" + date + "');"
+            _result = self.db_execute(_sql_text)
+            return _result
+        else:
+            self.log('failed to find compressed id of ' + compress_name)
+            return self.failed
 
     # -- query -----------------------------------------------------------------------------------------------
 
@@ -239,6 +243,14 @@ class Database:
         _compressed = self.db_query(_sql_text)
         for c in _compressed:
             result.append(str(c[0]) + '.' + str(c[1]))
+        return result
+
+    def query_send(self):
+        result = []
+        _sql_text = ('''select compress.name, send.reciever, send.date from compress
+                        inner join send on send.id_compress = compress.id
+                        order by send.date''')
+        result = self.db_query(_sql_text)
         return result
 
     def query_state(self):
