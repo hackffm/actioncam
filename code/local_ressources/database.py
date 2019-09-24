@@ -84,6 +84,14 @@ class Database:
         self.db_execute(_sql_text)
         self.log("successfully created table recording")
 
+        _sql_text = ('''CREATE TABLE IF NOT EXISTS send (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        id_compress    INT     NOT NULL,
+                        reciever       TEXT    NOT NULL,
+                        date           TEXT    NOT NULL
+                        );''')
+        self.db_execute(_sql_text)
+
         _sql_text = ('''CREATE TABLE IF NOT EXISTS state (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         state          TEXT    NOT NULL UNIQUE ,
@@ -125,6 +133,27 @@ class Database:
         _id = self.db_query(_sql_text)
         return self.int_from_id(_id)
 
+    def add_compressed2recording(self, compressed, recording):
+        id_c = self.query_compressed_id(compressed)
+        if type(id_c) != int or id_c < 1:
+            return self.failed
+        id_r = self.query_recording_id(recording)
+        if type(id_r) != int or id_r < 1:
+            return self.failed
+        _name = self.recording_name(self.recording_data(recording))
+        _sql_text = ("insert into compress2recording ( id_compress, id_recording, date) VALUES ('")
+        _sql_text = _sql_text + str(id_c) + "','"
+        _sql_text = _sql_text + str(id_r) + "','"
+        _sql_text = _sql_text + self.helper.now_str() + "')"
+        _result = self.db_execute(_sql_text)
+        if _result == self.executed:
+            self.log('successfully added add_compressed2recording ' + str(compressed) + " " + str(recording))
+        else:
+            self.log('failed adding with add_compressed2recording ' + str(compressed) + " " + str(recording))
+            self.log(str(_result))
+            return self.failed
+        return self.executed
+
     def add_recording(self, recording):
         _id = self.query_recording_id(recording)
         if _id != self.failed:
@@ -153,26 +182,12 @@ class Database:
     def recording_name(self, rd):
         return rd[2]
 
-    def add_compressed2recording(self, compressed, recording):
-        id_c = self.query_compressed_id(compressed)
-        if type(id_c) != int or id_c < 1:
-            return self.failed
-        id_r = self.query_recording_id(recording)
-        if type(id_r) != int or id_r < 1:
-            return self.failed
-        _name = self.recording_name(self.recording_data(recording))
-        _sql_text = ("insert into compress2recording ( id_compress, id_recording, date) VALUES ('")
-        _sql_text = _sql_text + str(id_c) + "','"
-        _sql_text = _sql_text + str(id_r) + "','"
-        _sql_text = _sql_text + self.helper.now_str() + "')"
+    def add_send(self, compress_name, reciever, date):
+        id_compressed = self.query_compressed_id(compress_name)
+        _sql_text = ("INSERT INTO send (id_compress, reciever, date) VALUES (")
+        _sql_text = _sql_text + str(id_compressed) + ", '" + reciever + "', '" + date + "');"
         _result = self.db_execute(_sql_text)
-        if _result == self.executed:
-            self.log('successfully added add_compressed2recording ' + str(compressed) + " " + str(recording))
-        else:
-            self.log('failed adding with add_compressed2recording ' + str(compressed) + " " + str(recording))
-            self.log(str(_result))
-            return self.failed
-        return 'added'
+        return _result
 
     # -- query -----------------------------------------------------------------------------------------------
 
