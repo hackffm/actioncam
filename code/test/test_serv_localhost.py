@@ -20,6 +20,10 @@ name = 'test_serv_localhost'
 
 
 def cleanup():
+    '''
+        cleanup is not done for this test at until db data adding is implemented
+        run test_database before that
+    '''
     log('cleanup')
     database.db_path = config['default']['folder_data'] + '/test.db'
     helper_test.file_delete(database.db_path)
@@ -30,7 +34,6 @@ def log(text):
 
 
 if __name__ == '__main__':
-    cleanup()
     p1 = Process(target=ServLocalhost, args=(configuration, database, helper))
     try:
         p1.daemon = True

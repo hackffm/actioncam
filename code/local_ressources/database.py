@@ -16,6 +16,8 @@ class Database:
         self.failed = 'failed'
         self.name = 'database'
 
+        self.db_check()
+
     # -- main ------------------------------------------------------------
     def db_check(self):
         self.log('check DB ' + self.db_path)
@@ -249,7 +251,9 @@ class Database:
         _sql_text = ('''select compress.name, send.receiver, send.date from compress
                         inner join send on send.id_compress = compress.id
                         order by send.date''')
+        self.log(_sql_text)
         result = self.db_query(_sql_text)
+        self.log(result)
         return result
 
     def query_state(self):
