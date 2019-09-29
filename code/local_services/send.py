@@ -1,5 +1,6 @@
 import fnmatch
 import os
+import requests
 import smtplib
 
 from email.mime.multipart import MIMEMultipart
@@ -23,6 +24,18 @@ class Send:
 
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
+
+    def db_add_send(self, compress, size, date):
+        self.log('db add send ' + compress + ',' + date)
+        response = []
+        try:
+            data = '{"add": { "send": {"compressed": "' + compress + '", "mail": "' + self.config_mail['address_to']
+            data = data + '", "date": "' + str(date) + '" }}}'
+            response = requests.post(self.config.db_url, headers=self.config.headers, data=data)
+        except Exception as e:
+            self.log(str(e))
+            return self.failed
+        return response.text
 
     def log(self, text):
         self.helper.log_add_text(self.name, text)
@@ -81,18 +94,13 @@ class Send:
             return False
 
     def send_zips(self, zips):
-        for z in zips:
+        for zip_name in zips:
             self.log('send ' + z)
-            zippath = self.config_output['file_location'] + '/' + z
+            zippath = self.config_output['file_location'] + '/' + zip_name
             if self.send_zip_by_mail(zippath):
                 zipsize = os.path.getsize(zippath) / 1024
                 now_str = self.helper.now_str()
-                data = {
-                    "date_send": now_str,
-                    "zip_name": z,
-                    "zip_size": zipsize
-                }
-                self.helper.report_add('mail', data)
+                self.db_add_send(self, zip_name, str(zipsize), now_str)
             else:
                 return 'failed'
         return 'done'

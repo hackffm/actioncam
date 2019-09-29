@@ -57,9 +57,10 @@ class HandlerDatabase(tornado.web.RequestHandler):
             if 'send' in _command:
                 _send = _command['send']
                 _compress = _send['compressed']
-                _mail = _send['mail']
+                _size = _send['size']
+                _receiver = _send['receiver']
                 _date = _send['date']
-                result = self.database.add_send(_compress, _mail, _date)
+                result = self.database.add_send(_compress, _size, _receiver, _date)
         return result
 
     def database_query(self, db_command):

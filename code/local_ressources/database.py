@@ -89,6 +89,7 @@ class Database:
         _sql_text = ('''CREATE TABLE IF NOT EXISTS send (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         id_compress    INT     NOT NULL,
+                        size           TEXT    NOT NULL,
                         receiver       TEXT    NOT NULL,
                         date           TEXT    NOT NULL
                         );''')
@@ -184,11 +185,11 @@ class Database:
     def recording_name(self, rd):
         return rd[2]
 
-    def add_send(self, compress_name, receiver, date):
+    def add_send(self, compress_name, size, receiver, date):
         id_compressed = self.query_compressed_id(compress_name)
         if id_compressed != self.failed:
-            _sql_text = ("INSERT INTO send (id_compress, receiver, date) VALUES (")
-            _sql_text = _sql_text + str(id_compressed) + ", '" + receiver + "', '" + date + "');"
+            _sql_text = ("INSERT INTO send (id_compress, size, receiver, date) VALUES (")
+            _sql_text = _sql_text + str(id_compressed) + ", '" + str(size) + "', '" + str(receiver) + "', '" + str(date) + "');"
             _result = self.db_execute(_sql_text)
             return _result
         else:
@@ -248,7 +249,7 @@ class Database:
 
     def query_send(self):
         result = []
-        _sql_text = ('''select compress.name, send.receiver, send.date from compress
+        _sql_text = ('''select compress.name, send.size, send.receiver, send.date from compress
                         inner join send on send.id_compress = compress.id
                         order by send.date''')
         self.log(_sql_text)

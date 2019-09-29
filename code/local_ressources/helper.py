@@ -129,22 +129,6 @@ class Helper:
         _log_name = pd.read_csv(_log_home, sep=',')
         return _log_name
 
-    def report_home(self, name):
-        _name = self.config[name]
-        log_home = _name['report_location'] + '/' + _name['report_file']
-        try:
-            if not os.path.exists(log_home):
-                with open(log_home, 'w') as lf:
-                    lf.write(_name['report_header'] + '/n')
-            return log_home
-        except IOError:
-            return self.config.error
-
-    def report_add(self, name, data):
-        df = pd.DataFrame(data, index=[0])
-        l_home = self.report_home(name)
-        df.to_csv(l_home, mode='a', header=False, index=False)
-
     def preview_file_number(self):
         previews = self.preview_files()
         return len(previews)
