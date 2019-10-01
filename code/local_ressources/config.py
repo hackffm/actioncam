@@ -11,9 +11,6 @@ class Configuration:
         self.config_name = config_name
         self.config = self.load()
 
-        self.db_headers = {'content-type': 'application/json','Accept-Charset': 'UTF-8'}
-        self.db_url = 'http://localhost:8081/database'
-
     def load(self):
         print('load config from', self.config_path)
         if os.path.exists(self.config_path):

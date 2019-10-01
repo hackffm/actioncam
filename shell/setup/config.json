@@ -27,12 +27,13 @@
             "picamera": 99
         },
         "database": {
-            "http://localhost:8081/database",
+            "db_headers" : "{'content-type': 'application/json','Accept-Charset': 'UTF-8'}",
+            "db_name": "actioncam.db",
+            "db_url": "http://localhost:8081/database",
             "log_file": "database.log"
         },
         "default": {
             "identify": "1",
-            "db_name": "actioncam.db",
 	        "folder_data": "/home/pi/actioncam/data",
             "log_file": "actioncam.log",
             "log_header": "actioncam",

@@ -20,7 +20,6 @@ class Helper:
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
 
-        self.db_url = 'http://localhost:8081/database'
         self.state = self.state_default()
 
     def datetime_diff_from_string(self, dt_old):
@@ -186,7 +185,7 @@ class Helper:
                 'Accept-Charset': 'UTF-8'
             }
             data = '{"query": {"state": "None"}}'
-            response = requests.get(self.db_url, headers=headers, data=data)
+            response = requests.get(self.config['Database']['db_url'], headers=headers, data=data)
             _text = response.text
             return json.loads(_text)
         except Exception as e:
@@ -199,7 +198,7 @@ class Helper:
                 'Accept-Charset': 'UTF-8'
             }
             data = '{"put": {"state":' + str(json.dumps(self.state)) + '}}'
-            response = requests.put(self.db_url, headers=headers, data=data)
+            response = requests.put(self.config['Database']['db_url'], headers=headers, data=data)
             self.log_add_text('helper', str(response.text))
             self.log_add_text('helper', 'saved state ' + str(self.state))
             return

@@ -10,7 +10,7 @@ class Database:
         self.debug = True
 
         self.default = self.config['default']
-        self.db_path = self.config['default']['folder_data'] + '/' + self.config['default']['db_name']
+        self.db_path = self.config['default']['folder_data'] + '/' + self.config['database']['db_name']
         self.executed = 'executed'
         self.exists = 'exists'
         self.failed = 'failed'
