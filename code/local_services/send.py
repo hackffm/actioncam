@@ -31,7 +31,7 @@ class Send:
         try:
             data = '{"add": { "send": {"compressed": "' + compress + '", "size": "' + size
             data = data + '", "mail": "' + self.config_mail['address_to'] + '", "date": "' + str(date) + '" }}}'
-            response = requests.post(self.config['Database']['db_url'], headers=self.config.headers, data=data)
+            response = requests.post(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
         except Exception as e:
             self.log('db_add_send:' + str(e))
             return self.failed
@@ -42,7 +42,9 @@ class Send:
         response = []
         try:
             data = '{"query": {"send": "None"}}'
-            response = requests.get(self.config['Database']['db_url'], headers=self.config.headers, data=data)
+            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
+            print('response')
+            print(str(response))
         except Exception as e:
             self.log('db_query_send:' + str(e))
             return self.failed

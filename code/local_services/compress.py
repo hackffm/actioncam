@@ -36,7 +36,7 @@ class Compress:
         response = []
         try:
             data = '{"add": {"compressed": "' + compress + '"}}'
-            response = requests.post(self.config['Database']['db_url'], headers=self.config.headers, data=data)
+            response = requests.post(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
         except Exception as e:
             self.log(str(e))
             return self.failed
@@ -47,7 +47,7 @@ class Compress:
         response = []
         try:
             data = '{"add": {"compressed2recording": ["' + compress + '","' + recording + '"]}}'
-            response = requests.post(self.config['Database']['db_url'], headers=self.config.headers, data=data)
+            response = requests.post(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
         except Exception as e:
             self.log(str(e))
             return self.failed
@@ -58,7 +58,7 @@ class Compress:
         result = []
         try:
             data = '{"query": {"compressed": "None"}}'
-            response = requests.get(self.config['Database']['db_url'], headers=self.config.headers, data=data)
+            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
             _t = response.text
             _t = _t.replace(' ', '')
             _t = _t.replace('[','')
