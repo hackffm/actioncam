@@ -124,11 +124,6 @@ class Helper:
     def now_str(self):
         return datetime.datetime.now().strftime(self.config_output['file_format_time'])
 
-    def report_csv(self, name):
-        _log_home = self.report_home(name)
-        _log_name = pd.read_csv(_log_home, sep=',')
-        return _log_name
-
     def preview_file_number(self):
         previews = self.preview_files()
         return len(previews)

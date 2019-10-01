@@ -17,10 +17,10 @@ class Send:
 
         self.config_mail = self.config['mail']
         self.config_mode = self.config['mode']
+        self.failed = self.config['failed']
+        self.helper = helper
         self.mode = self.default['mode']
         self.name = 'send'
-
-        self.helper = helper
 
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
@@ -29,11 +29,22 @@ class Send:
         self.log('db add send ' + compress + ',' + date)
         response = []
         try:
-            data = '{"add": { "send": {"compressed": "' + compress + '", "mail": "' + self.config_mail['address_to']
-            data = data + '", "date": "' + str(date) + '" }}}'
+            data = '{"add": { "send": {"compressed": "' + compress + '", "size": "' + size
+            data = data + '", "mail": "' + self.config_mail['address_to'] + '", "date": "' + str(date) + '" }}}'
             response = requests.post(self.config.db_url, headers=self.config.headers, data=data)
         except Exception as e:
-            self.log(str(e))
+            self.log('db_add_send:' + str(e))
+            return self.failed
+        return response.text
+
+    def db_query_send(self):
+        self.log('db query send')
+        response = []
+        try:
+            data = '{"query": {"send": "None"}}'
+            response = requests.get(self.config.db_url, headers=self.config.headers, data=data)
+        except Exception as e:
+            self.log('db_query_send:' + str(e))
             return self.failed
         return response.text
 
@@ -41,9 +52,11 @@ class Send:
         self.helper.log_add_text(self.name, text)
 
     def zips_already_send(self, ziplist):
-        sended = self.helper.report_csv('mail')
-        zips = sended['zip_name']
-        for zipname in zips:
+        sended = self.db_query_send()
+        if sended == self.failed:
+            self.log('failed getting already send files from db')
+            return []
+        for zipname in sended:
             for zl in ziplist:
                 if zipname == zl:
                     ziplist.remove(zl)
@@ -95,7 +108,7 @@ class Send:
 
     def send_zips(self, zips):
         for zip_name in zips:
-            self.log('send ' + z)
+            self.log('send ' + zip_name)
             zippath = self.config_output['file_location'] + '/' + zip_name
             if self.send_zip_by_mail(zippath):
                 zipsize = os.path.getsize(zippath) / 1024

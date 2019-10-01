@@ -27,6 +27,7 @@
             "picamera": 99
         },
         "database": {
+            "http://localhost:8081/database",
             "log_file": "database.log"
         },
         "default": {
@@ -95,6 +96,7 @@
             "file_location": "/home/pi/actioncam/recording"
         },
         "error": "error",
+        "failed": "failed",
         "mail": {
             "server_password": "MYSECRET",
             "address_from": "USER@domain.com",
