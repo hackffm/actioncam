@@ -16,6 +16,9 @@ class Configuration:
         if os.path.exists(self.config_path):
             with open(self.config_path) as json_data:
                 j_config = json.load(json_data)
+            t = j_config['actioncam']['database']['headers']
+            t = t.replace("'", "\"")
+            j_config['actioncam']['database']['headers'] = json.loads(t)
             return j_config[self.config_name]
         else:
             print('config file %s not found' % self.config_path)

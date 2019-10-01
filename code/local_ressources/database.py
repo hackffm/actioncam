@@ -240,6 +240,7 @@ class Database:
         return result
 
     def query_compressed(self):
+        self.log('query compressed')
         result = []
         _sql_text = ("select name, type from recording WHERE id in (select id_recording from compress2recording)")
         _compressed = self.db_query(_sql_text)
@@ -248,13 +249,14 @@ class Database:
         return result
 
     def query_send(self):
+        self.log('query state')
         result = []
-        _sql_text = ('''select compress.name, send.size, send.receiver, send.date from compress
+        _sql_text = ('''select compress.name from compress
                         inner join send on send.id_compress = compress.id
                         order by send.date''')
-        self.log(_sql_text)
-        result = self.db_query(_sql_text)
-        self.log(result)
+        _send = self.db_query(_sql_text)
+        for s in _send:
+            result.append(str(s[0]))
         return result
 
     def query_state(self):

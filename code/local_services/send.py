@@ -39,29 +39,30 @@ class Send:
 
     def db_query_send(self):
         self.log('db query send')
-        response = []
+        result = []
         try:
             data = '{"query": {"send": "None"}}'
             response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
-            print('response')
-            print(str(response))
+            _t = response.text
+            _t = _t.replace(' ', '')
+            _t = _t.replace('[','')
+            _t = _t.replace(']', '')
+            _t = _t.replace('"', '')
+            _t = _t.replace("'", "")
+            result = _t.split(',')
         except Exception as e:
             self.log('db_query_send:' + str(e))
             return self.failed
-        return response.text
+        return result
 
     def log(self, text):
         self.helper.log_add_text(self.name, text)
 
     def zips_already_send(self, ziplist):
-        sended = self.db_query_send()
-        if sended == self.failed:
-            self.log('failed getting already send files from db')
-            return []
-        for zipname in sended:
-            for zl in ziplist:
-                if zipname == zl:
-                    ziplist.remove(zl)
+        q_sended = self.db_query_send()
+        for zipname in q_sended:
+            if zipname in ziplist:
+                ziplist.remove(zipname)
         return ziplist
 
     def zips_in_folder(self, folder_name):
@@ -72,52 +73,46 @@ class Send:
         return zip_files
 
     def send_zip_by_mail(self, zippath):
+        msg = MIMEMultipart()
         try:
             address_from = self.config_mail['address_from']
             address_to = self.config_mail['address_to']
-            self.log('sending ' + zippath + ' as mail attachment to ' + address_from)
-            msg = MIMEMultipart()
-
             msg['From'] = address_from
             msg['To'] = address_to
             msg['Subject'] = self.config_mail['subject']
-
             body = 'see attachment'
-
             msg.attach(MIMEText(body, 'plain'))
 
             attachment = open(zippath, "rb")
-
             part = MIMEBase('application', 'octet-stream')
             part.set_payload(attachment.read())
             encoders.encode_base64(part)
             part.add_header('Content-Disposition', 'attachment; filename=  %s' % os.path.basename(zippath))
-
             msg.attach(part)
 
+            self.log('sending ' + zippath + ' as mail attachment to ' + address_from)
+            # todo add check if server is available also timout for login
             server = smtplib.SMTP(self.config_mail['server'], self.config_mail['server_port'])
             server.starttls()
             server.login(address_from, str(self.config_mail['server_password']))
             text = msg.as_string()
             server.sendmail(address_from, address_to, text)
             server.quit()
-            self.log('send_zip_by_mail')
             return True
         except Exception as e:
-            # todo error handling
-            self.log(str(e))
+            self.log('send_zip_by_mail failed with ' + str(e))
             return False
 
     def send_zips(self, zips):
+        self.log('send_zips')
         for zip_name in zips:
-            self.log('send ' + zip_name)
             zippath = self.config_output['file_location'] + '/' + zip_name
             if self.send_zip_by_mail(zippath):
                 zipsize = os.path.getsize(zippath) / 1024
                 now_str = self.helper.now_str()
                 self.db_add_send(self, zip_name, str(zipsize), now_str)
             else:
-                return 'failed'
+                self.log('failed to sending ' + zippath)
         return 'done'
 
     def send_mail(self):
