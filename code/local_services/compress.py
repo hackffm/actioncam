@@ -31,23 +31,6 @@ class Compress:
         else:
             return self.name + ':no new files found to zip'
 
-    def db_query_compressed(self):
-        self.log('db query compressed')
-        result = []
-        try:
-            data = '{"query": {"compressed": "None"}}'
-            response = requests.get(self.config.db_url, headers=self.config.headers, data=data)
-            _t = response.text
-            _t = _t.replace(' ', '')
-            _t = _t.replace('[','')
-            _t = _t.replace(']', '')
-            _t = _t.replace('"', '')
-            _t = _t.replace("'", "")
-            result = _t.split(',')
-        except Exception as e:
-            self.log(str(e))
-        return result
-
     def db_add_compressed(self, compress):
         self.log('db add compressed ' + compress)
         response = []
@@ -69,6 +52,23 @@ class Compress:
             self.log(str(e))
             return self.failed
         return response.text
+
+    def db_query_compressed(self):
+        self.log('db query compressed')
+        result = []
+        try:
+            data = '{"query": {"compressed": "None"}}'
+            response = requests.get(self.config.db_url, headers=self.config.headers, data=data)
+            _t = response.text
+            _t = _t.replace(' ', '')
+            _t = _t.replace('[','')
+            _t = _t.replace(']', '')
+            _t = _t.replace('"', '')
+            _t = _t.replace("'", "")
+            result = _t.split(',')
+        except Exception as e:
+            self.log(str(e))
+        return result
 
     def not_compressed(self, all_files):
         _compressed = self.db_query_compressed()
