@@ -45,7 +45,7 @@ class Send:
             response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
             _t = response.text
             _t = _t.replace(' ', '')
-            _t = _t.replace('[','')
+            _t = _t.replace('[', '')
             _t = _t.replace(']', '')
             _t = _t.replace('"', '')
             _t = _t.replace("'", "")
