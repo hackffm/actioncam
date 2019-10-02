@@ -4,7 +4,6 @@ import json
 import netifaces
 import os
 import socket
-import pandas as pd
 import requests
 
 
@@ -91,6 +90,14 @@ class Helper:
                     if self.not_local(_i):
                         ifaces.append(_i)
         return ifaces
+
+    def is_online(self, REMOTE_SERVER, PORT):
+        try:
+            host = socket.gethostbyname(REMOTE_SERVER)
+            s = socket.create_connection((host, PORT), 2)
+            return True
+        except:
+            return False
 
     def log_add_text(self, name, text):
         l_home = self.log_home(name)
@@ -180,25 +187,20 @@ class Helper:
 
     def state_load(self):
         try:
-            headers = {
-                'content-type': 'application/json',
-                'Accept-Charset': 'UTF-8'
-            }
             data = '{"query": {"state": "None"}}'
-            response = requests.get(self.config['database']['url'], headers=headers, data=data)
-            _text = response.text
-            return json.loads(_text)
+            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
+            _t = response.text
+            #_t = _t.replace("'", "")
+            _j = json.dumps(_t)
+            #_j = json.loads(_t)
+            return _j
         except Exception as e:
             self.log_add_text('helper', str(e))
 
     def state_save(self):
         try:
-            headers = {
-                'content-type': 'application/json',
-                'Accept-Charset': 'UTF-8'
-            }
             data = '{"put": {"state":' + str(json.dumps(self.state)) + '}}'
-            response = requests.put(self.config['database']['url'], headers=headers, data=data)
+            response = requests.put(self.config['database']['url'], self.config['database']['headers'], data=data)
             self.log_add_text('helper', str(response.text))
             self.log_add_text('helper', 'saved state ' + str(self.state))
             return
