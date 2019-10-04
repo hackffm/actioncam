@@ -69,3 +69,22 @@ assert database.add_send(compressed, '5000', 'test@test.com', str(helper.now()))
 send = database.query_send()
 print('found send compressed files \n' + str(send))
 
+#finally report all
+print('--Final report--')
+all = database.query_report()
+for a in all:
+    _p = a[0]
+    if _p == None:
+        _p = ''
+    _r = a[1]
+    _rt = a[2]
+    _c = a[3]
+    _cd = a[4]
+    if _c == None:
+        _c = ''
+        _cd = ''
+    _s = a[5]
+    if _s == None:
+        _s = ''
+    print("Preview {} for recording {}.{} was compressed in {} on {} and send at date {}".format(_p, _r,_rt,_c,_cd,_s))
+

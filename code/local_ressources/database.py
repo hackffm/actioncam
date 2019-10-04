@@ -213,34 +213,24 @@ class Database:
         _date = self.helper.now_str()
         _sql_text1 = ("INSERT INTO state (state,value) VALUES ")
         for s in _state:
-            _sql_text = _sql_text1 + ("('" + str(s) + "','" + _state[s] + "')")
+            _sql_text = _sql_text1 + ("('" + str(s) + "','" + str(_state[s]) + "')")
             _result = self.db_execute(_sql_text)
             if _result != self.executed:
                 return self.failed
         return self.executed
 
     # -- query -----------------------------------------------------------------------------------------------
+    def query_compressed(self):
+        self.log('query compressed')
+        result = []
+        _sql_text = ("select name, type from recording WHERE id in (select id_recording from compress2recording)")
+        _compressed = self.db_query(_sql_text)
+        for c in _compressed:
+            result.append(str(c[0]) + '.' + str(c[1]))
+        return result
 
     def query_compressed_id(self, compressed):
         _sql_text = ("select id from compress where name like '" + compressed + "'")
-        _id = self.db_query(_sql_text)
-        return self.int_from_id(_id)
-
-    def query_preview(self, recording):
-        id_recording = self.query_recording_id(recording)
-        if id_recording != self.failed:
-            _sql_text = ("select name from compress where id like '" + id_recording + "'")
-            _id = self.db_query(_sql_text)
-            return self.int_from_id(_id)
-        else:
-            return self.failed
-
-    def query_recording_id(self, recording):
-        self.log('query recording id :' + str(recording))
-        recording_fields = self.recording_data(recording)
-        r = recording_fields
-        _name = self.recording_name(r)
-        _sql_text = ("select id from recording where name like '" + _name + "'")
         _id = self.db_query(_sql_text)
         return self.int_from_id(_id)
 
@@ -271,14 +261,28 @@ class Database:
         # return result
         return result
 
-    def query_compressed(self):
-        self.log('query compressed')
-        result = []
-        _sql_text = ("select name, type from recording WHERE id in (select id_recording from compress2recording)")
-        _compressed = self.db_query(_sql_text)
-        for c in _compressed:
-            result.append(str(c[0]) + '.' + str(c[1]))
-        return result
+    def query_recording_id(self, recording):
+        self.log('query recording id :' + str(recording))
+        recording_fields = self.recording_data(recording)
+        r = recording_fields
+        _name = self.recording_name(r)
+        _sql_text = ("select id from recording where name like '" + _name + "'")
+        _id = self.db_query(_sql_text)
+        return self.int_from_id(_id)
+
+    def query_report(self):
+            _sql_text = "select	preview.name as preview,"
+            _sql_text = _sql_text + "recording.name as recording,"
+            _sql_text = _sql_text + "recording.type,"
+            _sql_text = _sql_text + "compress.name as compressed,"
+            _sql_text = _sql_text + "compress.date,"
+            _sql_text = _sql_text + "send.date as send from recording "
+            _sql_text = _sql_text + "left join compress2recording on recording.id= compress2recording.id_recording "
+            _sql_text = _sql_text + "left join compress on compress.id= compress2recording.id_compress "
+            _sql_text = _sql_text + "left join send on compress.id= send.id_compress "
+            _sql_text = _sql_text + "left join preview on preview.id_recording=recording.id"
+            result = self.db_query(_sql_text)
+            return result
 
     def query_send(self):
         self.log('query state')
@@ -306,7 +310,7 @@ class Database:
         # this itteration allows danymic states
         if type(state) == dict:
             for s in state:
-                _sql_text = ("update state set value = '" + state[s] + "' where state = '" + s + "'")
+                _sql_text = ("update state set value = '" + str(state[s]) + "' where state = '" + str(s) + "'")
                 self.log(_sql_text)
                 _result = self.db_execute(_sql_text)
         else:

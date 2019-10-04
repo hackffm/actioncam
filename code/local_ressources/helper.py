@@ -21,14 +21,22 @@ class Helper:
 
         self.state = self.state_default()
 
-    def datetime_diff_from_string(self, dt_old):
-        dt_now = self.now()
-        delta = dt_now - self.datetime_from_string(dt_old)
+    def datetime_diff_from_string(self, dt_string):
+        dt_now = self.datetime_from_string(self.now())
+        dt_old = self.datetime_from_string(dt_string)
+        delta = dt_now - dt_old
         delta_seconds = delta.total_seconds()
         return delta_seconds
 
     def datetime_from_string(self, text):
-        return datetime.datetime.strptime(text, self.config_output['file_format_time'])
+        dt = ''
+        try:
+            dt = datetime.datetime.strptime(text, self.config_output['file_format_time'])
+        except ValueError:
+            dt = datetime.datetime.strptime(text, "%Y-%m-%d %H:%M:%S")
+        except Exception as e:
+            self.log_add_text('actioncam', 'Error' + str(e))
+        return dt
 
     def file_exists(self, path_file):
         if not os.path.isfile(path_file):
@@ -125,7 +133,7 @@ class Helper:
         return False
 
     def now(self):
-        return datetime.datetime.now().replace(microsecond=0)
+        return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def now_str(self):
         return datetime.datetime.now().strftime(self.config_output['file_format_time'])
@@ -158,14 +166,15 @@ class Helper:
     # -- state --------------------------------------------------
     def state_default(self):
         state = {}
-        state['date_start'] = self.now_str()
+        state['date_start'] = self.now()
         state['mode'] = self.config['default']['mode']
         state['previews_start'] = str(self.preview_file_number())
         return state
 
     def state_updated(self):
         state = self.state_load()
-        date_start = state['date_start']
+        date_start = str(state['date_start'])
+        #dt_diff =  self.datetime_delta_to_string(date_start)
         dt_diff = str(self.datetime_diff_from_string(date_start))
         dt_diff = float(dt_diff)
         if dt_diff > 60.0:
@@ -190,9 +199,7 @@ class Helper:
             data = '{"query": {"state": "None"}}'
             response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
             _t = response.text
-            #_t = _t.replace("'", "")
-            _j = json.dumps(_t)
-            #_j = json.loads(_t)
+            _j = json.loads(_t)
             return _j
         except Exception as e:
             self.log_add_text('helper', str(e))

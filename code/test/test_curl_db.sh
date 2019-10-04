@@ -16,3 +16,5 @@ curl -X  PUT -H "application/json"  -d '{"update": {"state": {"date_start": "201
 
 curl -X POST -H "application/json" -d '{"add": { "send": {"compressed": "20190818172955.zip", "seize": "5000", "receiver": "test@test.com", "date": "2019-09-24 10:26:07" }}}' http://localhost:8081/database
 curl -X  GET -H "application/json"  -d '{"query": {"send": "None"}}' http://localhost:8081/database
+
+curl -X  GET -H "application/json"  -d '{"query": {"report": "None"}}' http://localhost:8081/database

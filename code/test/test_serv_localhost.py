@@ -13,8 +13,11 @@ from serv_localhost import ServLocalhost
 configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
+
 database = Database(configuration, helper)
 database.db_path = config['default']['folder_data'] + '/test.db'
+state = helper.state_default()
+database.add_state(state)
 
 name = 'test_serv_localhost'
 
@@ -25,9 +28,9 @@ def cleanup():
         run test_database before that
     '''
     log('cleanup')
-    database.db_path = config['default']['folder_data'] + '/test.db'
     helper_test.file_delete(database.db_path)
-
+    state = helper.state_default()
+    database.add_state(state)
 
 def log(text):
     helper.log_add_text('test', text)

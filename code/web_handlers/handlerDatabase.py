@@ -77,8 +77,11 @@ class HandlerDatabase(tornado.web.RequestHandler):
                 result = self.database.query_compressed2recording(str(_command['compressed2recording']))
             if 'compressed' in _command:
                 result = self.database.query_compressed()
+            if 'report' in _command:
+                result = self.database.query_report()
             if 'state' in _command:
                 result = self.database.query_state()
+                result = json.dumps(result)
             if 'send' in _command:
                 result = self.database.query_send()
                 result = json.dumps(result)
