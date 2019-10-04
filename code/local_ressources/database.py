@@ -86,6 +86,14 @@ class Database:
         self.db_execute(_sql_text)
         self.log("successfully created table recording")
 
+        _sql_text = ('''CREATE TABLE IF NOT EXISTS preview (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        id_recording   TEXT    NOT NULL,
+                        name           TEXT    NOT NULL UNIQUE
+                        );''')
+        self.db_execute(_sql_text)
+        self.log("successfully created table preview")
+
         _sql_text = ('''CREATE TABLE IF NOT EXISTS send (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         id_compress    INT     NOT NULL,
@@ -101,14 +109,6 @@ class Database:
                         value          TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
-
-        _date = self.helper.now_str()
-        _state = self.helper.state_default()
-        _sql_text1 = ("INSERT INTO state (state,value) VALUES ")
-        for s in _state:
-            _sql_text = _sql_text1 + ("('" + str(s) + "','" + _state[s] + "')")
-            _result = self.db_execute(_sql_text)
-        self.log("successfully created table state")
 
         # connection tables
         _sql_text = ('''CREATE TABLE IF NOT EXISTS  compress2recording (
@@ -157,6 +157,17 @@ class Database:
             return self.failed
         return self.executed
 
+    def add_preview(self, name, recording):
+        id_recording = self.query_recording_id(recording)
+        if id_recording != self.failed:
+            _sql_text = ("INSERT INTO preview (id_recording, name ) VALUES (")
+            _sql_text = _sql_text + str(id_recording) + ", '" + name + "');"
+            _result = self.db_execute(_sql_text)
+            return _result
+        else:
+            self.log('[add_preview] failed to find compressed id of ' + compress_name)
+            return self.failed
+
     def add_recording(self, recording):
         _id = self.query_recording_id(recording)
         if _id != self.failed:
@@ -202,6 +213,15 @@ class Database:
         _sql_text = ("select id from compress where name like '" + compressed + "'")
         _id = self.db_query(_sql_text)
         return self.int_from_id(_id)
+
+    def query_preview(self, recording):
+        id_recording = self.query_recording_id(recording)
+        if id_recording != self.failed:
+            _sql_text = ("select name from compress where id like '" + id_recording + "'")
+            _id = self.db_query(_sql_text)
+            return self.int_from_id(_id)
+        else:
+            return self.failed
 
     def query_recording_id(self, recording):
         self.log('query recording id :' + str(recording))
@@ -271,6 +291,7 @@ class Database:
     # -- update ----------------------------------------------------------------------------------------------
     def update_state(self, state):
         self.log("update_state with " + str(state))
+        # this itteration allows danymic states
         if type(state) == dict:
             for s in state:
                 _sql_text = ("update state set value = '" + state[s] + "' where state = '" + s + "'")

@@ -13,7 +13,8 @@ database.db_path = config['default']['folder_data'] + '/test.db'
 
 recording1 = '1_motion_20190219204447.avi'
 recording2 = '1_motion_20190219204453.avi'
-recording3 = '1_recording_nono_.jpeg'
+recording3 = '1_motion_20190000000000.avi'
+preview1 = '1_20190219204447_.jpeg'
 compressed = '20190818172955.zip'
 
 
@@ -24,31 +25,40 @@ def in_list_member_0(list_check, item):
     return False
 
 
+def report():
+    pass
+
+
 # preparation
 helper_test.file_delete(database.db_path)
 assert database.db_check() == 'db ok', 'failed initial db creation'
-
 
 # store recordings and compressed
 assert database.add_recording(recording1) == 1, 'Failed adding recording1'
 assert database.add_recording(recording1) == 'exists', 'Failed adding recording1'
 assert database.add_recording(recording2) == 2, 'Failed adding recording2'
-
 assert database.query_recording_id(recording1) == 1, 'Failed query recording1'
 assert database.query_recording_id(recording3) == 'failed', 'Failed handling missing recordings'
+assert database.add_recording(recording3) == 3, 'Failed adding recording3'
+print('added recordings')
+
+assert database.add_preview(preview1, recording1) == 'executed', 'failed adding preview'
+print('added preview ' + preview1)
 
 assert database.add_compressed(compressed) == 1, 'Failed adding compress'
 assert database.add_compressed2recording(compressed, recording1) == 'executed', ' Failed adding compressed2recording'
 assert database.add_compressed2recording(compressed, recording1) == 'failed', ' adding again recording to compressed2recording should not be allowed'
 assert database.add_compressed2recording(compressed, recording2) == 'executed', ' Failed adding compressed2recording'
 assert in_list_member_0(database.query_compressed2recording(compressed), recording1) == True, 'Failed finding compressed with recording1'
+
+
 assert database.query_compressed2recording(recording1) == compressed, 'Failed to find recording in compressed'
 print('finding compressed ' + str(database.query_compressed()))
 
-
 # store state
+assert database.update_state(helper.state_default()) == 'executed', 'failed setting state'
 state_default = helper.state_default()
-state_test = database.query_state()
+print('state....' + str(database.query_state()))
 assert state_default['mode'] == state_test['mode'], 'Failed state check'
 state_test['mode'] = 'running'
 updated = database.update_state(state_test)
@@ -59,3 +69,4 @@ print('State is now \n' + str(state_test))
 assert database.add_send(compressed, '5000', 'test@test.com', str(helper.now())) == 'executed', 'Failed adding send'
 send = database.query_send()
 print('found send compressed files \n' + str(send))
+
