@@ -102,6 +102,7 @@ class Database:
                         date           TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
+        self.log("successfully created table send")
 
         _sql_text = ('''CREATE TABLE IF NOT EXISTS state (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -109,6 +110,7 @@ class Database:
                         value          TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
+        self.log("successfully created table state")
 
         # connection tables
         _sql_text = ('''CREATE TABLE IF NOT EXISTS  compress2recording (
@@ -206,6 +208,16 @@ class Database:
         else:
             self.log('failed to find compressed id of ' + compress_name)
             return self.failed
+
+    def add_state(self, _state):
+        _date = self.helper.now_str()
+        _sql_text1 = ("INSERT INTO state (state,value) VALUES ")
+        for s in _state:
+            _sql_text = _sql_text1 + ("('" + str(s) + "','" + _state[s] + "')")
+            _result = self.db_execute(_sql_text)
+            if _result != self.executed:
+                return self.failed
+        return self.executed
 
     # -- query -----------------------------------------------------------------------------------------------
 

@@ -56,14 +56,13 @@ assert database.query_compressed2recording(recording1) == compressed, 'Failed to
 print('finding compressed ' + str(database.query_compressed()))
 
 # store state
-assert database.update_state(helper.state_default()) == 'executed', 'failed setting state'
-state_default = helper.state_default()
-print('state....' + str(database.query_state()))
-assert state_default['mode'] == state_test['mode'], 'Failed state check'
-state_test['mode'] = 'running'
-updated = database.update_state(state_test)
-assert updated == 'executed', 'Failed updating state'
-print('State is now \n' + str(state_test))
+state = helper.state_default()
+assert (database.add_state(state)) == 'executed', 'failed setting default state'
+state['mode'] = config['mode']['record_motion']
+assert database.update_state(state) == 'executed', 'failed updating state'
+new_state = database.query_state()
+assert new_state['mode'] == config['mode']['record_motion'], 'failed verifying state'
+print('state....' + str(new_state))
 
 # store send
 assert database.add_send(compressed, '5000', 'test@test.com', str(helper.now())) == 'executed', 'Failed adding send'
