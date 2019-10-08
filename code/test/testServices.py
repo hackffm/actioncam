@@ -29,5 +29,6 @@ if __name__ == '__main__' and __package__ is None:
     #print(configuration.default_mode())
     #print(configuration.output_folder())
     #print(configuration.previewpattern())
+    print(helper.preview_files())
     #test_compress(configuration, helper)
     #test_send(configuration, helper)
