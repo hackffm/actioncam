@@ -47,7 +47,7 @@ print('added preview ' + preview1)
 
 assert database.add_compressed(compressed) == 1, 'Failed adding compress'
 assert database.add_compressed2recording(compressed, recording1) == 'executed', ' Failed adding compressed2recording'
-assert database.add_compressed2recording(compressed, recording1) == 'failed', ' adding again recording to compressed2recording should not be allowed'
+assert database.add_compressed2recording(compressed, recording1) == 'failed', ' adding again recording to compressed2recording should not be q_reportowed'
 assert database.add_compressed2recording(compressed, recording2) == 'executed', ' Failed adding compressed2recording'
 assert in_list_member_0(database.query_compressed2recording(compressed), recording1) == True, 'Failed finding compressed with recording1'
 
@@ -69,10 +69,10 @@ assert database.add_send(compressed, '5000', 'test@test.com', str(helper.now()))
 send = database.query_send()
 print('found send compressed files \n' + str(send))
 
-#finally report all
+# final report
 print('--Final report--')
-all = database.query_report()
-for a in all:
+q_report = database.query_report()
+for a in q_report:
     _p = a[0]
     if _p == None:
         _p = ''
