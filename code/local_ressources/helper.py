@@ -35,7 +35,7 @@ class Helper:
         except ValueError:
             dt = datetime.datetime.strptime(text, "%Y-%m-%d %H:%M:%S")
         except Exception as e:
-            self.log_add_text('actioncam', 'Error' + str(e))
+            self.log_add_text('actioncam', 'Error[Helper]' + str(e))
         return dt
 
     def file_exists(self, path_file):
@@ -49,7 +49,7 @@ class Helper:
                 os.makedirs(folder_path)
             return True
         except IOError as e:
-            print(e)
+            self.log_add_text('actioncam', 'Error[Helper]' + str(e))
             return False
 
     def folder_files(self, folder_name, search_pattern):
