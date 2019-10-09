@@ -4,6 +4,7 @@ tornado
 Pillow
 glog
 peigen
+requests
 netifaces
 opencv-python
 opencv-contrib-python
