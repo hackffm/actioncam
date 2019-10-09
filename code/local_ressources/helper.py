@@ -138,61 +138,55 @@ class Helper:
     def now_str(self):
         return datetime.datetime.now().strftime(self.config_output['file_format_time'])
 
-    def preview_file_number(self):
-        previews = self.preview_files()
+    def report_number_recorded(self):
+        previews = self.report_all()
         return len(previews)
 
-    def preview_files(self):
-        output_folder = self.config_output['file_location']
-        prev_ext = self.config['preview']['file_extension']
-        if output_folder != '':
-            pattern = self.configuration.previewpattern()
-            if pattern != '':
-                files = self.folder_files(output_folder, pattern)
-                p_files = []
-                for file in files:
-                    _date = file.split('_')[2].replace(prev_ext, '')
-                    pf = {"name": str(file.replace(prev_ext, '')),
-                          "date": _date,
-                          "filename": file}
-                    p_files.append(pf)
-                p_files = sorted(p_files, key=lambda k: k['date'])
-                return p_files
-            else:
-                print('failed get search pattern')
-        else:
-            print('failed creating preview')
+    def report_all(self):
+        p_files = []
+        try:
+            data = '{"query": {"report": "None"}}'
+            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
+            _t = response.text
+            _j = json.loads(_t)
+            return _j
+        except Exception as e:
+            self.log_add_text('helper', str(e))
+            return p_files
 
     # -- state --------------------------------------------------
     def state_default(self):
         state = {}
         state['date_start'] = self.now()
         state['mode'] = self.config['default']['mode']
-        state['previews_start'] = str(self.preview_file_number())
+        state['previews_start'] = str(self.report_number_recorded())
         return state
 
     def state_updated(self):
-        state = self.state_load()
-        date_start = str(state['date_start'])
-        #dt_diff =  self.datetime_delta_to_string(date_start)
-        dt_diff = str(self.datetime_diff_from_string(date_start))
-        dt_diff = float(dt_diff)
-        if dt_diff > 60.0:
-            dt_diff = dt_diff / 60.0
-            dt_diff = str("{:.2f}".format(dt_diff))
-            dt_diff = dt_diff + " min"
-        else:
-            dt_diff = str(dt_diff)
-        infos = []
-        infos.append('started:' + date_start)
-        infos.append('Now: ' + str(self.now()))
-        infos.append('seconds running: ' + dt_diff)
-        prev_old = state['previews_start']
-        prev_new = self.preview_files()
-        infos.append('Previews:' + str(len(prev_new)))
-        infos.append('Previews this time:' + str(len(prev_new) - int(prev_old)))
-        self.log_add_text('helper', 'stated updated:' + str(infos))
-        return infos
+        try:
+            state = self.state_load()
+            date_start = str(state['date_start'])
+            dt_diff = str(self.datetime_diff_from_string(date_start))
+            dt_diff = float(dt_diff)
+            if dt_diff > 60.0:
+                dt_diff = dt_diff / 60.0
+                dt_diff = str("{:.2f}".format(dt_diff))
+                dt_diff = dt_diff + " min"
+            else:
+                dt_diff = str(dt_diff)
+            infos = []
+            infos.append('started:' + date_start)
+            infos.append('Now: ' + str(self.now()))
+            infos.append('seconds running: ' + dt_diff)
+            prev_old = state['previews_start']
+            prev_new = self.report_all()
+            infos.append('Previews:' + str(len(prev_new)))
+            infos.append('Previews this time:' + str(len(prev_new) - int(prev_old)))
+            self.log_add_text('helper', 'state_updated:' + str(infos))
+            return infos
+        except Exception as e:
+            self.log_add_text('helper', 'state_updated:' +str(e))
+            return []
 
     def state_load(self):
         try:

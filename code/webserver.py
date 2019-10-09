@@ -12,7 +12,7 @@ from web_handlers import HandlerCamera
 from web_handlers import HandlerCameraStream
 from web_handlers import HandlerConfig
 from web_handlers import HandlerIndexPage
-from web_handlers import HandlerPreview
+from web_handlers import HandlerReport
 from web_handlers import HandlerSend
 from web_handlers import HandlerShutdown
 from web_handlers import HandlerWebSockets
@@ -53,7 +53,7 @@ class WebApplication(tornado.web.Application):
             (r'/camera', HandlerCamera, dict(l_lock=l_lock, configuration=configuration, q_message=q_message)),
             (r'/camera/stream.jpeg', HandlerCameraStream, dict(m_video=m_video)),
             (r'/config', HandlerConfig, dict(configuration=configuration)),
-            (r'/preview', HandlerPreview, dict(configuration=configuration, helper=helper)),
+            (r'/preview', HandlerReport, dict(configuration=configuration, helper=helper)),
             (r'/send', HandlerSend, dict(configuration=configuration, helper=helper)),
             (r'/recordings/(.*)', tornado.web.StaticFileHandler, {'path': output_folder}),
             (r'/shutdown', HandlerShutdown, dict(helper=helper, l_lock=l_lock, q_message=q_message)),

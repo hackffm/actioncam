@@ -3,7 +3,7 @@ from .handlerCameraStream import HandlerCameraStream
 from .handlerConfig import HandlerConfig
 from .handlerDatabase import HandlerDatabase
 from .handlerIndexPage import HandlerIndexPage
-from .handlerPreview import HandlerPreview
+from .handlerReport import HandlerReport
 from .handlerSend import HandlerSend
 from .handlerShutdown import HandlerShutdown
 from .handlerWebsockets import HandlerWebSockets

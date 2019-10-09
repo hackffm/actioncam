@@ -16,6 +16,9 @@ class HandlerDatabase(tornado.web.RequestHandler):
     def get(self):
         _query = tornado.escape.json_decode(self.request.body)
         _result = self.database_query(_query)
+        if type(_result) == list:
+            result = {"result": _result}
+            self.write(result)
         self.write(str(_result))
 
     def post(self, *args):
@@ -79,6 +82,7 @@ class HandlerDatabase(tornado.web.RequestHandler):
                 result = self.database.query_compressed()
             if 'report' in _command:
                 result = self.database.query_report()
+                result = json.dumps(result)
             if 'state' in _command:
                 result = self.database.query_state()
                 result = json.dumps(result)

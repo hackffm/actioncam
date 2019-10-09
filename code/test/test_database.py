@@ -73,18 +73,21 @@ print('found send compressed files \n' + str(send))
 print('--Final report--')
 q_report = database.query_report()
 for a in q_report:
-    _p = a[0]
-    if _p == None:
-        _p = ''
-    _r = a[1]
-    _rt = a[2]
-    _c = a[3]
-    _cd = a[4]
-    if _c == None:
-        _c = ''
+    _pn = a[0]
+    if _pn == None:
+        _pn = ''
+    _ri = a[1]
+    _rm = a[2]
+    _rn = a[3]
+    _rt = a[4]
+    _cn = a[5]
+    _cd = a[6]
+    if _cn == None:
+        _cn = ''
         _cd = ''
-    _s = a[5]
-    if _s == None:
-        _s = ''
-    print("Preview {} for recording {}.{} was compressed in {} on {} and send at date {}".format(_p, _r,_rt,_c,_cd,_s))
+    _sd = a[7]
+    if _sd == None:
+        _sd = ''
+    print("Preview {} for recording {}_{}_{}.{} was compressed in {} on {} and send at date {}".format(
+        _pn, _ri, _rm, _rn, _rt, _cn, _cd, _sd))
 

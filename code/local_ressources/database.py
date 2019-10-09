@@ -272,6 +272,8 @@ class Database:
 
     def query_report(self):
             _sql_text = "select	preview.name as preview,"
+            _sql_text = _sql_text + "recording.identifier as identifier,"
+            _sql_text = _sql_text + "recording.mode as mode,"
             _sql_text = _sql_text + "recording.name as recording,"
             _sql_text = _sql_text + "recording.type,"
             _sql_text = _sql_text + "compress.name as compressed,"
