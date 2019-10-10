@@ -29,6 +29,7 @@ def cleanup():
     helper_test.file_delete(database.db_path)
     assert database.db_check() == 'db ok', 'failed initial db creation'
 
+
 def log(text):
     helper.log_add_text('test', text)
 
