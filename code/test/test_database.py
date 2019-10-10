@@ -7,8 +7,9 @@ from helper import Helper
 configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
-database = Database(configuration, helper)
-database.db_path = config['default']['folder_data'] + '/test.db'
+_db_name = 'test.db'
+config['database']['name'] = _db_name
+_db_path = config['default']['folder_data'] + '/' + _db_name
 
 recording1 = '1_motion_20190219204447.avi'
 recording2 = '1_motion_20190219204453.avi'
@@ -16,14 +17,18 @@ recording3 = '1_motion_20190000000000.avi'
 preview1 = '1_20190219204447_.jpeg'
 compressed = '20190818172955.zip'
 
+
 def in_list_member_0(list_check, item):
     if isinstance(list_check, list):
         if str(list_check[0]) in item:
             return True
     return False
 
+
 # preparation
-helper_test.file_delete(database.db_path)
+helper_test.file_delete(_db_path)
+database = Database(configuration, helper)
+# expect a double entry for tis in logfile
 assert database.db_check() == 'db ok', 'failed initial db creation'
 
 # recordings
@@ -53,7 +58,7 @@ q_state = database.query_state()
 assert q_state['mode'] == config['mode']['stop'], 'failed verifying state'
 q_state['mode'] = config['mode']['record_motion']
 assert database.update_state(q_state) == 'executed', 'failed updating state'
-print('state....' + str(q_state))
+print('state ' + str(q_state))
 
 # send
 assert database.add_send(compressed, '5000', 'test@test.com', str(helper.now())) == 'executed', 'Failed adding send'
