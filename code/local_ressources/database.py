@@ -73,7 +73,7 @@ class Database:
                         date           TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
-        self.log("successfully created table compress")
+        self.log("checked table compress")
 
         _sql_text = ('''CREATE TABLE IF NOT EXISTS recording (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -84,7 +84,7 @@ class Database:
                         date           TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
-        self.log("successfully created table recording")
+        self.log("checked table recording")
 
         _sql_text = ('''CREATE TABLE IF NOT EXISTS preview (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -92,7 +92,7 @@ class Database:
                         name           TEXT    NOT NULL UNIQUE
                         );''')
         self.db_execute(_sql_text)
-        self.log("successfully created table preview")
+        self.log("checked table preview")
 
         _sql_text = ('''CREATE TABLE IF NOT EXISTS send (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -102,7 +102,7 @@ class Database:
                         date           TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
-        self.log("successfully created table send")
+        self.log("checked table send")
 
         _sql_text = ('''CREATE TABLE IF NOT EXISTS state (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -110,7 +110,7 @@ class Database:
                         value          TEXT    NOT NULL
                         );''')
         self.db_execute(_sql_text)
-        self.log("successfully created table state")
+        self.log("checked table state")
 
         # connection tables
         _sql_text = ('''CREATE TABLE IF NOT EXISTS  compress2recording (
@@ -122,7 +122,7 @@ class Database:
                         FOREIGN KEY (id_recording) REFERENCES recording (id)
                         );''')
         self.db_execute(_sql_text)
-        self.log("successfully created table compress2recording")
+        self.log("checked table compress2recording")
 
     # -- compress ------------------------------------------------------------------------
 
@@ -302,6 +302,7 @@ class Database:
         _state = {}
         _sql_text = ("select state,value from state")
         _result = self.db_query(_sql_text)
+        wenn len _result = 0 dann default state
         for r in _result:
             _state[r[0]] = r[1]
         return _state

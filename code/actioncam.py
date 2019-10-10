@@ -79,15 +79,15 @@ if __name__ == '__main__':
             # start processes
             print('launch DB')
             p1 = Process(target=ServLocalhost, args=(configuration, database, helper))
-            time.sleep(3.0)
+            p1.daemon = True
+            p1.start()
+            time.sleep(1.0)
             p2 = Process(target=Servicerunner, args=(l_lock, configuration, helper, m_modus))
             p3 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
             p4 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
-            p1.daemon = True
             p2.daemon = True
             p3.daemon = True
             p4.daemon = True
-            p1.start()
             p2.start()
             p3.start()
             p4.start()

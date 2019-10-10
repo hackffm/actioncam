@@ -52,13 +52,10 @@ class Servicerunner:
         while _running:
             try:
                 new_modus = self.helper.copy_modus(self.m_modus, new_modus)
-                if type(new_modus) == dict:
-                    if self.helper.is_different_modus(self.current_modus, new_modus):
-                        self.current_modus = new_modus
-                        self.current_modus['idle'] = idle
-                        self.log('current modus ' + str(self.current_modus))
-                    else:
-                        pass
+                if self.helper.is_different_modus(self.current_modus, new_modus):
+                    self.current_modus = new_modus
+                    self.current_modus['idle'] = idle
+                    self.log('current modus ' + str(self.current_modus))
                 else:
                     pass
             except Exception as e:

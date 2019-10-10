@@ -32,7 +32,7 @@ def report():
 # preparation
 helper_test.file_delete(database.db_path)
 assert database.db_check() == 'db ok', 'failed initial db creation'
-
+'''
 # store recordings and compressed
 assert database.add_recording(recording1) == 1, 'Failed adding recording1'
 assert database.add_recording(recording1) == 'exists', 'Failed adding recording1'
@@ -54,16 +54,16 @@ assert in_list_member_0(database.query_compressed2recording(compressed), recordi
 
 assert database.query_compressed2recording(recording1) == compressed, 'Failed to find recording in compressed'
 print('finding compressed ' + str(database.query_compressed()))
-
+'''
 # store state
-state = helper.state_default()
-assert (database.add_state(state)) == 'executed', 'failed setting default state'
-state['mode'] = config['mode']['record_motion']
-assert database.update_state(state) == 'executed', 'failed updating state'
+# state = helper.state_default()
+# assert (database.add_state(state)) == 'executed', 'failed setting default state'
+# state['mode'] = config['mode']['record_motion']
+# assert database.update_state(state) == 'executed', 'failed updating state'
 new_state = database.query_state()
-assert new_state['mode'] == config['mode']['record_motion'], 'failed verifying state'
+#assert new_state['mode'] == config['mode']['record_motion'], 'failed verifying state'
 print('state....' + str(new_state))
-
+'''
 # store send
 assert database.add_send(compressed, '5000', 'test@test.com', str(helper.now())) == 'executed', 'Failed adding send'
 send = database.query_send()
@@ -90,4 +90,4 @@ for a in q_report:
         _sd = ''
     print("Preview {} for recording {}_{}_{}.{} was compressed in {} on {} and send at date {}".format(
         _pn, _ri, _rm, _rn, _rt, _cn, _cd, _sd))
-
+'''
