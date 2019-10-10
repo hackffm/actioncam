@@ -75,7 +75,7 @@ if __name__ == '__main__':
             m_modus = manager.dict()
             m_video = manager.dict()
 
-            helper.copy_modus(configuration.default_mode(), m_modus)
+            helper.dict_copy(configuration.default_mode(), m_modus)
             # start processes
             print('launch DB')
             p1 = Process(target=ServLocalhost, args=(configuration, database, helper))
@@ -114,9 +114,8 @@ if __name__ == '__main__':
                 if message != '':
                     running = handle_message(message)
                 if m_modus['actioncam'] == 'do:shutdown':
-                    log('yup')
+                    log('shutdown')
             # exit
-            handle_message('actioncam terminating')
             sys.exit()
     except KeyboardInterrupt:
         log('ending with keyboard interrupt')

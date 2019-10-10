@@ -22,13 +22,13 @@ def current_modus_updated(current_modus, helper, m_modus):
     try:
         new_modus = {}
         # do not remove next line as this is needed to avoid reference changes !
-        new_modus = helper.copy_modus(m_modus, new_modus)
+        new_modus = helper.dict_copy(m_modus, new_modus)
         if helper.is_different_modus(current_modus, new_modus):
-            current_modus = helper.copy_modus(new_modus, current_modus)
+            current_modus = helper.dict_copy(new_modus, current_modus)
         else:
             pass
     except Exception as e:
-        print(e)
+        helper.log_add_text('coroutine', 'ws modus updated Error:' + str(e))
     return current_modus
 
 

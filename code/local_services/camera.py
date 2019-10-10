@@ -223,7 +223,7 @@ class Camera:
 
         while running:
             try:
-                new_modus = self.helper.copy_modus(self.m_modus, new_modus)
+                new_modus = self.helper.dict_copy(self.m_modus, new_modus)
                 if type(new_modus) == dict:
                     if self.helper.is_different_modus(self.current_modus, new_modus):
                         self.log('new modus' + str(new_modus))

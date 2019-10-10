@@ -214,7 +214,7 @@ class Helper:
 
     # -- statics ------------------------------------------------
     @staticmethod
-    def copy_modus(source_modus, dest_modus):
+    def dict_copy(source_modus, dest_modus):
         for k, v in source_modus.items():
             dest_modus[k] = v
         return dest_modus
