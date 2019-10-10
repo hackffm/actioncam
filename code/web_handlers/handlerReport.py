@@ -11,5 +11,5 @@ class HandlerReport(tornado.web.RequestHandler):
     def get(self):
         items = self.helper.report_all()
         self.helper.log_add_text('test', str(len(items)))
-        self.render("report.html", title="Previews", items=items)
+        self.render("report.html", title="Report", items=items)
 

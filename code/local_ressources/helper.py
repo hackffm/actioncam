@@ -131,8 +131,8 @@ class Helper:
         return datetime.datetime.now().strftime(self.config_output['file_format_time'])
 
     def report_number_recorded(self):
-        previews = self.report_all()
-        return len(previews)
+        reports = self.report_all()
+        return len(reports)
 
     def report_all(self):
         p_files = []
@@ -172,8 +172,8 @@ class Helper:
             infos.append('seconds running: ' + dt_diff)
             prev_old = state['previews_start']
             prev_new = self.report_all()
-            infos.append('Previews:' + str(len(prev_new)))
             infos.append('Previews this time:' + str(len(prev_new) - int(prev_old)))
+            infos.append('Previews:' + str(len(prev_new)))
             self.log_add_text('helper', 'state_updated:' + str(infos))
             return infos
         except Exception as e:
