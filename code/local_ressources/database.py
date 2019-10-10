@@ -302,9 +302,15 @@ class Database:
         _state = {}
         _sql_text = ("select state,value from state")
         _result = self.db_query(_sql_text)
-        wenn len _result = 0 dann default state
+        # len is only 0 when first time using the db
+        if len(_result) == 0:
+            _state = self.helper.state_default()
+            self.add_state(_state)
+            _result = self.db_query(_sql_text)
         for r in _result:
             _state[r[0]] = r[1]
+        _send = self.query_send()
+        _state['send'] = len(_send)
         return _state
 
     # -- update ----------------------------------------------------------------------------------------------

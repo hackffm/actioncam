@@ -16,8 +16,6 @@ helper = Helper(configuration)
 
 database = Database(configuration, helper)
 database.db_path = config['default']['folder_data'] + '/test.db'
-state = helper.state_default()
-database.add_state(state)
 
 name = 'test_serv_localhost'
 
@@ -29,8 +27,7 @@ def cleanup():
     '''
     log('cleanup')
     helper_test.file_delete(database.db_path)
-    state = helper.state_default()
-    database.add_state(state)
+    assert database.db_check() == 'db ok', 'failed initial db creation'
 
 def log(text):
     helper.log_add_text('test', text)
