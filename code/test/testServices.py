@@ -21,6 +21,14 @@ def test_send(configuration, helper):
     return
 
 
+def test_state():
+    print(helper.state_updated())
+    report = helper.report_all()
+    for r in report:
+        print(r)
+    print(helper.report_number_recorded())
+
+
 if __name__ == '__main__' and __package__ is None:
     from local_services import Compress
     from local_services import Send
@@ -29,9 +37,5 @@ if __name__ == '__main__' and __package__ is None:
     #print(configuration.output_folder())
     #print(configuration.previewpattern())
     #test_compress(configuration, helper)
-    #test_send(configuration, helper)
-    #print(helper.state_updated())
-    report = helper.report_all()
-    for r in report:
-        print(r)
-    print(helper.report_number_recorded())
+    test_send(configuration, helper)
+    #state_test()

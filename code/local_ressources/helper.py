@@ -99,14 +99,6 @@ class Helper:
                         ifaces.append(_i)
         return ifaces
 
-    def is_online(self, REMOTE_SERVER, PORT):
-        try:
-            host = socket.gethostbyname(REMOTE_SERVER)
-            s = socket.create_connection((host, PORT), 2)
-            return True
-        except:
-            return False
-
     def log_add_text(self, name, text):
         l_home = self.log_home(name)
         text = self.now_str() + ': ' + text
@@ -235,6 +227,15 @@ class Helper:
         if old['camera'] != new['camera']:
             return True
         return False
+
+    @staticmethod
+    def is_online(_host, _port):
+        try:
+            host = socket.gethostbyname(_host)
+            s = socket.create_connection((host, _port), 2)
+            return True
+        except:
+            return False
 
     @staticmethod
     def loop(count=1000000):

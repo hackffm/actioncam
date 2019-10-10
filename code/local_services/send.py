@@ -58,7 +58,7 @@ class Send:
     def log(self, text):
         self.helper.log_add_text(self.name, text)
 
-    def zips_already_send(self, ziplist):
+    def zips_not_send(self, ziplist):
         q_sended = self.db_query_send()
         for zipname in q_sended:
             if zipname in ziplist:
@@ -91,14 +91,18 @@ class Send:
             msg.attach(part)
 
             self.log('sending ' + zippath + ' as mail attachment to ' + address_from)
-            # todo add check if server is available also timout for login
-            server = smtplib.SMTP(self.config_mail['server'], self.config_mail['server_port'])
-            server.starttls()
-            server.login(address_from, str(self.config_mail['server_password']))
-            text = msg.as_string()
-            server.sendmail(address_from, address_to, text)
-            server.quit()
-            return True
+            if self.helper.is_online(self.config_mail['server'], self.config_mail['server_port']):
+                server = smtplib.SMTP(self.config_mail['server'], self.config_mail['server_port'])
+                server.starttls()
+                server.login(address_from, str(self.config_mail['server_password']))
+                text = msg.as_string()
+                server.sendmail(address_from, address_to, text)
+                server.quit()
+                return True
+            else:
+                self.log('mail server ' + str(self.config_mail['server']) + ':' + str(self.config_mail['server_port'])
+                         + ' is offline')
+                return False
         except Exception as e:
             self.log('send_zip_by_mail failed with ' + str(e))
             return False
@@ -113,12 +117,13 @@ class Send:
                 self.db_add_send(self, zip_name, str(zipsize), now_str)
             else:
                 self.log('failed to sending ' + zippath)
+                return self.failed
         return 'done'
 
     def send_mail(self):
         files = os.listdir(self.config_output['file_location'])
         zips = self.zips_in_folder(files)
-        zips = self.zips_already_send(zips)
+        zips = self.zips_not_send(zips)
         if len(zips) >= 1:
             result = self.send_zips(zips)
             return 'send_mail:' + result
