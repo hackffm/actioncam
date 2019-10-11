@@ -37,6 +37,7 @@ class Servicerunner:
             self.current_modus = _modus
         else:
             self.current_modus = self.configuration.default_mode()
+        self.current_modus['idle'] = 0
         self.log('current modus ' + str(self.current_modus))
         return 0
 
@@ -59,19 +60,17 @@ class Servicerunner:
                 else:
                     pass
             except Exception as e:
-                # sometimes empty errors here
-                pass
+                self.log('Error:' + str(e))
 
             # run services if idle
             if self.current_modus['actioncam'] == self.config['mode']['compress'] and self.is_idle():
+                self.log('compress start')
                 compressed = self.compress.compress()
                 idle = self.reset(compressed)
             if self.current_modus['actioncam'] == self.config['mode']['mail_zips'] and self.is_idle():
                 if self.send_failed == 0:
                     sended = self.send.send_mail()
-                    if sended == 'send_mail:no new zip files':
-                        sended = ''
-                        idle = self.reset(sended, self.current_modus)
+                    idle = self.reset(sended, self.current_modus)
                     if sended == 'send_mail:failed':
                         self.send_failed = 10
                 else:
@@ -86,12 +85,12 @@ class Servicerunner:
                 idle += 1
                 self.current_modus['idle'] = idle
             if idle >= idle_time and self.is_idle():
-                if self.config['compress'] == "True":
+                self.log('do work when the rest is idle')
+                #
+                if self.config['compress']['active'] == "True":
                     self.current_modus['actioncam'] = self.config['mode']['compress']
-                    self.log('compress start')
-                else:
-                    with self.lock:
-                        idle = self.reset('[servicerunner]compress disabled', self.current_modus)
+                #
+                idle = self.reset('give others a chance', self.current_modus)
             time.sleep(0.01)
             # end of servicerunner loop
 

@@ -203,7 +203,7 @@ class Helper:
             self.log_add_text('helper', str(e))
 
     def state_set_start(self):
-        self.state['date_start'] = self.now_str()
+        self.state['date_start'] = str(self.now())
         self.state_save()
 
     # -- statics ------------------------------------------------
