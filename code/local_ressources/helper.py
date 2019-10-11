@@ -151,7 +151,7 @@ class Helper:
         state = {}
         state['date_start'] = self.now()
         state['mode'] = self.config['default']['mode']
-        state['previews_start'] = str(self.report_number_recorded())
+        state['previews_start'] = 0
         return state
 
     def state_updated(self):

@@ -6,7 +6,7 @@ from helper import Helper
 configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
-
+helper.state_set_start()
 
 def test_compress(configuration, helper):
     compress = Compress(configuration, helper)
@@ -37,5 +37,5 @@ if __name__ == '__main__' and __package__ is None:
     #print(configuration.output_folder())
     #print(configuration.previewpattern())
     #test_compress(configuration, helper)
-    test_send(configuration, helper)
+    #test_send(configuration, helper)
     #state_test()

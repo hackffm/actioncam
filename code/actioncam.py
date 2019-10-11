@@ -78,6 +78,7 @@ if __name__ == '__main__':
             helper.dict_copy(configuration.default_mode(), m_modus)
             # start processes
             print('launch DB')
+            log('launch DB')
             p1 = Process(target=ServLocalhost, args=(configuration, database, helper))
             p1.daemon = True
             p1.start()
