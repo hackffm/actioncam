@@ -100,24 +100,26 @@ class Helper:
         return ifaces
 
     def log_add_text(self, name, text):
-        l_home = self.log_home(name)
+        l_home, pre_text = self.log_home(name)
         text = self.now_str() + ': ' + text
         with open(l_home, 'a') as outfile:
-            outfile.write(text + '\n')
+            outfile.write(pre_text + text + '\n')
 
     def log_home(self, name):
         _config = self.default
         _log_location = _config['log_location']
         _log_file = _config['log_file']
+        _pre_text = name + ':'
         if name in self.config:
             _config = self.config[name]
         if 'log_location' in _config:
             _log_location = _config['log_location']
         if 'log_file' in _config:
             _log_file = _config['log_file']
+            _pre_text = ''
         log_home_path = _log_location + '/' + _log_file
         self.folder_create_once(_log_location)
-        return log_home_path
+        return [log_home_path,_pre_text]
 
     def not_local(self, ip):
         if ip != '127.0.0.1':
@@ -193,7 +195,7 @@ class Helper:
     def state_save(self):
         try:
             data = '{"put": {"state":' + str(json.dumps(self.state)) + '}}'
-            response = requests.put(self.config['database']['url'], self.config['database']['headers'], data=data)
+            response = requests.put(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
             self.log_add_text('helper', str(response.text))
             self.log_add_text('helper', 'saved state ' + str(self.state))
             return
