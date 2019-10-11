@@ -25,7 +25,6 @@ class Camera:
         self.switched = True
         self.run()
 
-    # todo double code in handlerCameraStream
     def capture_config(self, type):
         frame_height = self.config_camera['frame_height']
         frame_rate = self.config_output['frame_rate']
