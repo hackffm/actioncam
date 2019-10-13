@@ -27,11 +27,13 @@
             "picamera": 99
         },
         "database": {
+            "headers" : "{'content-type': 'application/json','Accept-Charset': 'UTF-8'}",
+            "name": "actioncam.db",
+            "url": "http://localhost:8081/database",
             "log_file": "database.log"
         },
         "default": {
             "identify": "1",
-            "db_name": "actioncam.db",
 	        "folder_data": "/home/pi/actioncam/data",
             "log_file": "actioncam.log",
             "log_header": "actioncam",
@@ -95,15 +97,13 @@
             "file_location": "/home/pi/actioncam/recording"
         },
         "error": "error",
+        "failed": "failed",
         "mail": {
-            "report_location": "/home/pi/actioncam/log",
-            "report_header": "date_send,zip_name,zip_size",
             "server_password": "MYSECRET",
             "address_from": "USER@domain.com",
             "address_to": "USER@domain.com",
             "server": "mx.domain.com",
             "server_port": 99,
-            "report_file": "mails.csv",
             "subject": "actioncam recording"
         },
         "mode": {

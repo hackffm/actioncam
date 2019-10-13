@@ -13,7 +13,6 @@ class Compress:
 
         self.default = self.config['default']
         self.config_output = self.config[self.default['output']]
-        self.db_url = 'http://localhost:8081/database'
         self.failed = 'failed'
         self.name = 'compress'
 
@@ -32,16 +31,34 @@ class Compress:
         else:
             return self.name + ':no new files found to zip'
 
+    def db_add_compressed(self, compress):
+        self.log('db add compressed ' + compress)
+        response = []
+        try:
+            data = '{"add": {"compressed": "' + compress + '"}}'
+            response = requests.post(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
+        except Exception as e:
+            self.log(str(e))
+            return self.failed
+        return response.text
+
+    def db_add_compressed2recording(self, compress, recording):
+        self.log('db add compressed2recording ' + compress + ',' + recording)
+        response = []
+        try:
+            data = '{"add": {"compressed2recording": ["' + compress + '","' + recording + '"]}}'
+            response = requests.post(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
+        except Exception as e:
+            self.log(str(e))
+            return self.failed
+        return response.text
+
     def db_query_compressed(self):
         self.log('db query compressed')
         result = []
         try:
-            headers = {
-                'content-type': 'application/json',
-                'Accept-Charset': 'UTF-8'
-            }
             data = '{"query": {"compressed": "None"}}'
-            response = requests.get(self.db_url, headers=headers, data=data)
+            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
             _t = response.text
             _t = _t.replace(' ', '')
             _t = _t.replace('[','')
@@ -52,36 +69,6 @@ class Compress:
         except Exception as e:
             self.log(str(e))
         return result
-
-    def db_add_compressed(self, compress):
-        self.log('db add compressed ' + compress)
-        response = []
-        try:
-            headers = {
-                'content-type': 'application/json',
-                'Accept-Charset': 'UTF-8'
-            }
-            data = '{"add": {"compressed": "' + compress + '"}}'
-            response = requests.post(self.db_url, headers=headers, data=data)
-        except Exception as e:
-            self.log(str(e))
-            return self.failed
-        return response.text
-
-    def db_add_compressed2recording(self, compress, recording):
-        self.log('db add compressed2recording ' + compress + ',' + recording)
-        response = []
-        try:
-            headers = {
-                'content-type': 'application/json',
-                'Accept-Charset': 'UTF-8'
-            }
-            data = '{"add": {"compressed2recording": ["' + compress + '","' + recording + '"]}}'
-            response = requests.post(self.db_url, headers=headers, data=data)
-        except Exception as e:
-            self.log(str(e))
-            return self.failed
-        return response.text
 
     def not_compressed(self, all_files):
         _compressed = self.db_query_compressed()

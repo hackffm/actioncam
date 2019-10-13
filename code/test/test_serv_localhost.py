@@ -13,15 +13,21 @@ from serv_localhost import ServLocalhost
 configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
+
 database = Database(configuration, helper)
+database.db_path = config['default']['folder_data'] + '/test.db'
 
 name = 'test_serv_localhost'
 
 
 def cleanup():
+    '''
+        cleanup is not done for this test at until db data adding is implemented
+        run test_database before that
+    '''
     log('cleanup')
-    database.db_path = config['default']['folder_data'] + '/test.db'
     helper_test.file_delete(database.db_path)
+    assert database.db_check() == 'db ok', 'failed initial db creation'
 
 
 def log(text):
@@ -29,7 +35,6 @@ def log(text):
 
 
 if __name__ == '__main__':
-    cleanup()
     p1 = Process(target=ServLocalhost, args=(configuration, database, helper))
     try:
         p1.daemon = True

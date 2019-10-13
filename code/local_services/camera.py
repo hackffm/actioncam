@@ -25,7 +25,6 @@ class Camera:
         self.switched = True
         self.run()
 
-    # todo double code in handlerCameraStream
     def capture_config(self, type):
         frame_height = self.config_camera['frame_height']
         frame_rate = self.config_output['frame_rate']
@@ -223,7 +222,7 @@ class Camera:
 
         while running:
             try:
-                new_modus = self.helper.copy_modus(self.m_modus, new_modus)
+                new_modus = self.helper.dict_copy(self.m_modus, new_modus)
                 if type(new_modus) == dict:
                     if self.helper.is_different_modus(self.current_modus, new_modus):
                         self.log('new modus' + str(new_modus))

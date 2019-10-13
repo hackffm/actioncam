@@ -12,11 +12,13 @@ class HandlerConfig(tornado.web.RequestHandler):
         self.write(json.dumps(config))
 
     def post(self, *args):
-        # todo check if valid
         _config = tornado.escape.json_decode(self.request.body)
-        self.assign_config(_config)
-        self.configuration.save()
-        self.write(json.dumps({'status': 'ok'}))
+        if type(_config) == dict:
+            self.assign_config(_config)
+            self.configuration.save()
+            self.write(json.dumps({'status': 'ok'}))
+        else:
+            self.write(json.dumps({'status': 'failed'}))
         self.finish()
 
     def assign_config(self, _config):

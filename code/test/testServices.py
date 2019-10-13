@@ -6,7 +6,7 @@ from helper import Helper
 configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
-
+helper.state_set_start()
 
 def test_compress(configuration, helper):
     compress = Compress(configuration, helper)
@@ -21,13 +21,21 @@ def test_send(configuration, helper):
     return
 
 
+def test_state():
+    print(helper.state_updated())
+    report = helper.report_all()
+    for r in report:
+        print(r)
+    print(helper.report_number_recorded())
+
+
 if __name__ == '__main__' and __package__ is None:
     from local_services import Compress
-    #from local_services import Send
+    from local_services import Send
 
-    print(helper.state_updated())
     #print(configuration.default_mode())
     #print(configuration.output_folder())
     #print(configuration.previewpattern())
     #test_compress(configuration, helper)
     #test_send(configuration, helper)
+    #state_test()

@@ -3,15 +3,19 @@ import helper_test
 import requests
 
 from config import Configuration
+from database import Database
 from helper import Helper
 
 
 configuration = Configuration(config_path=helper_test.config_path())
 config = configuration.config
 helper = Helper(configuration)
+database = Database(configuration, helper)
+database.db_path = config['default']['folder_data'] + '/test.db'
 
 
 def log(text):
+    print(text)
     helper.log_add_text('test', text)
 
 

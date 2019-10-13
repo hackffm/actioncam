@@ -12,8 +12,7 @@ from web_handlers import HandlerCamera
 from web_handlers import HandlerCameraStream
 from web_handlers import HandlerConfig
 from web_handlers import HandlerIndexPage
-from web_handlers import HandlerPreview
-from web_handlers import HandlerSend
+from web_handlers import HandlerReport
 from web_handlers import HandlerShutdown
 from web_handlers import HandlerWebSockets
 
@@ -22,13 +21,13 @@ def current_modus_updated(current_modus, helper, m_modus):
     try:
         new_modus = {}
         # do not remove next line as this is needed to avoid reference changes !
-        new_modus = helper.copy_modus(m_modus, new_modus)
+        new_modus = helper.dict_copy(m_modus, new_modus)
         if helper.is_different_modus(current_modus, new_modus):
-            current_modus = helper.copy_modus(new_modus, current_modus)
+            current_modus = helper.dict_copy(new_modus, current_modus)
         else:
             pass
     except Exception as e:
-        print(e)
+        helper.log_add_text('coroutine', 'ws modus updated Error:' + str(e))
     return current_modus
 
 
@@ -53,8 +52,7 @@ class WebApplication(tornado.web.Application):
             (r'/camera', HandlerCamera, dict(l_lock=l_lock, configuration=configuration, q_message=q_message)),
             (r'/camera/stream.jpeg', HandlerCameraStream, dict(m_video=m_video)),
             (r'/config', HandlerConfig, dict(configuration=configuration)),
-            (r'/preview', HandlerPreview, dict(configuration=configuration, helper=helper)),
-            (r'/send', HandlerSend, dict(configuration=configuration, helper=helper)),
+            (r'/report', HandlerReport, dict(configuration=configuration, helper=helper)),
             (r'/recordings/(.*)', tornado.web.StaticFileHandler, {'path': output_folder}),
             (r'/shutdown', HandlerShutdown, dict(helper=helper, l_lock=l_lock, q_message=q_message)),
             (r'/websockets', HandlerWebSockets, dict(helper=helper, ))

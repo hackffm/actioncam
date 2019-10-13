@@ -1,0 +1,31 @@
+<html>
+   <head>
+       <link href="/actioncam/stylesheets/report.css" rel="stylesheet"/>
+   </head>
+   <body>
+   <div id="title">{{ title }}...</div>
+     <table>
+        <tr>
+            <td>preview</td><td>recording</td><td>compressed</td><td>send</td>
+        </tr>
+        {% for item in items %}
+         <tr>
+             <td>
+                {{ item[0] }}
+             </td>
+             <td>
+                <a href="/recordings/{{ item[1] }}.{{ item[2] }}" target="_New">
+                    <img src="/recordings/{{ item[1] }}.{{ item[2] }}" alt="{{ item[1] }}.{{ item[2] }}">
+                </a>
+             </td>
+             <td>
+                 {{ item[6] }}
+             </td>
+             <td>
+                 {{ item[7] }}
+             </td>
+         </tr>
+       {% end %}
+     </table>
+   </body>
+ </html>
