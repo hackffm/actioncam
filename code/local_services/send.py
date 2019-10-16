@@ -25,7 +25,7 @@ class Send:
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
 
-    def db_add_send(self, compress, size, date):
+    def db_add_send(self,  compress, size, date):
         self.log('db add send ' + compress + ',' + date)
         response = []
         try:
@@ -117,7 +117,10 @@ class Send:
             if self.send_zip_by_mail(zippath):
                 zipsize = os.path.getsize(zippath) / 1024
                 now_str = self.helper.now_str()
-                self.db_add_send(self, str(zip_name), str(zipsize), str(now_str))
+                try:
+                    self.db_add_send(compress=str(zip_name), size=str(zipsize), date=str(now_str))
+                except Exception as e:
+                    self.log('db_add_send ' + str(e))
             else:
                 self.log('failed to sending ' + zippath)
                 return self.failed

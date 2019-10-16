@@ -43,7 +43,7 @@ class HandlerDatabase(tornado.web.RequestHandler):
 
     # ----------------------------------------------------------
     def log(self, text):
-        self.helper.log_add_text('handlerDatabase', 'handlerDatabase' + ':' + text)
+        self.helper.log_add_text('handlerDatabase', text)
 
     def database_insert(self, db_command):
         self.log('insert:' + str(db_command))
