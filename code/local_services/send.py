@@ -60,10 +60,13 @@ class Send:
 
     def zips_not_send(self, ziplist):
         q_sended = self.db_query_send()
-        for zipname in q_sended:
-            if zipname in ziplist:
-                ziplist.remove(zipname)
-        return ziplist
+        if q_sended != self.failed:
+            for zipname in q_sended:
+                if zipname in ziplist:
+                    ziplist.remove(zipname)
+            return ziplist
+        else:
+            return self.failed
 
     def zips_in_folder(self, folder_name):
         zip_files = []
@@ -114,7 +117,7 @@ class Send:
             if self.send_zip_by_mail(zippath):
                 zipsize = os.path.getsize(zippath) / 1024
                 now_str = self.helper.now_str()
-                self.db_add_send(self, zip_name, str(zipsize), now_str)
+                self.db_add_send(self, str(zip_name), str(zipsize), str(now_str))
             else:
                 self.log('failed to sending ' + zippath)
                 return self.failed
@@ -124,7 +127,7 @@ class Send:
         files = os.listdir(self.config_output['file_location'])
         zips = self.zips_in_folder(files)
         zips = self.zips_not_send(zips)
-        if len(zips) >= 1:
+        if len(zips) >= 1 and zips != self.failed:
             result = self.send_zips(zips)
             return 'send_mail:' + result
         else:

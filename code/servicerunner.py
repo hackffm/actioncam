@@ -42,16 +42,16 @@ class Servicerunner:
         return 0
 
     def run(self):
-        self.log('Start servicerunner')
-        # prepare running loop
         idle = 0
         idle_time = self.config['servicerunner']['idle_time']
         new_modus = {}
         _running = True
 
         # main loop
+        self.log('Start main loop')
         while _running:
             try:
+                time.sleep(0.01)
                 new_modus = self.helper.dict_copy(self.m_modus, new_modus)
                 if self.helper.is_different_modus(self.current_modus, new_modus):
                     self.current_modus = new_modus
@@ -62,25 +62,7 @@ class Servicerunner:
             except Exception as e:
                 self.log('Error:' + str(e))
 
-            # run services if idle
-            if self.current_modus['actioncam'] == self.config['mode']['compress'] and self.is_idle():
-                self.log('compress start')
-                compressed = self.compress.compress()
-                idle = self.reset(compressed)
-            if self.current_modus['actioncam'] == self.config['mode']['mail_zips'] and self.is_idle():
-                if self.send_failed == 0:
-                    sended = self.send.send_mail()
-                    idle = self.reset(sended, self.current_modus)
-                    if sended == 'send_mail:failed':
-                        self.send_failed = 10
-                else:
-                    self.send_failed -= 1
-
-            # all other services must be idle when camera is recording
-            if self.current_modus['camera'].startswith('record'):
-                idle = 0
-
-            # maintenance
+            # here we have a decision what can be done during idle time
             if self.is_idle():
                 idle += 1
                 self.current_modus['idle'] = idle
@@ -89,10 +71,16 @@ class Servicerunner:
                 #
                 if self.config['compress']['active'] == "True":
                     self.current_modus['actioncam'] = self.config['mode']['compress']
+                    compressed = self.compress.compress()
+                    self.log(compressed)
+                #
+                if self.config['send']['active'] == 'True':
+                    self.current_modus['actioncam'] = self.config['mode']['mail_zips']
+                    sended = self.send.send_mail()
+                    self.log('sended mails ' + str(sended))
                 #
                 idle = self.reset('give others a chance', self.current_modus)
-            time.sleep(0.01)
-            # end of servicerunner loop
+        # end of main loop
 
         self.log('End')
         return

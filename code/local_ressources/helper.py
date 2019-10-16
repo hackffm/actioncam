@@ -101,9 +101,9 @@ class Helper:
 
     def log_add_text(self, name, text):
         l_home, pre_text = self.log_home(name)
-        text = self.now_str() + ': ' + text
+        text = self.now_str() + ': ' + pre_text + ' ' + str(text)
         with open(l_home, 'a') as outfile:
-            outfile.write(pre_text + text + '\n')
+            outfile.write(text + '\n')
 
     def log_home(self, name):
         _config = self.default
@@ -112,14 +112,14 @@ class Helper:
         _pre_text = name + ':'
         if name in self.config:
             _config = self.config[name]
-        if 'log_location' in _config:
-            _log_location = _config['log_location']
-        if 'log_file' in _config:
-            _log_file = _config['log_file']
-            _pre_text = ''
+            if 'log_location' in _config:
+                _log_location = _config['log_location']
+            if 'log_file' in _config:
+                _log_file = _config['log_file']
+                _pre_text = ''
         log_home_path = _log_location + '/' + _log_file
         self.folder_create_once(_log_location)
-        return [log_home_path,_pre_text]
+        return [log_home_path, _pre_text]
 
     def not_local(self, ip):
         if ip != '127.0.0.1':

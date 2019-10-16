@@ -117,10 +117,10 @@
             "zip_avis": "zip_avis"
         },
         "send": {
+            "active": "True",
             "log_file": "send.log",
             "log_header": "send",
             "log_location": "/home/pi/actioncam/log",
-            "send": "True",
             "target": "mail"
         },
         "test": {
