@@ -1,11 +1,8 @@
-numpy
-pandas
-tornado
-Pillow
 glog
-peigen
-requests
 netifaces
 opencv-python
 opencv-contrib-python
+peigen
+Pillow
 requests
+tornado
