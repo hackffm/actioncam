@@ -5,11 +5,18 @@ class HandlerReport(tornado.web.RequestHandler):
     def initialize(self, configuration, helper):
         self.configuration = configuration
         self.helper = helper
-
+        self.name = 'HandlerReport'
         self.config = configuration.config
 
     def get(self):
-        items = self.helper.report_all()
-        self.helper.log_add_text('test', str(len(items)))
-        self.render("report.html", title="Report", items=items)
+        try:
+            items = self.helper.report_all()
+            if len(items) == 0:
+                items.add(['.', '.', '.', '.', '.', '.', '.'])
+            self.render("report.html", title="Report", items=items)
+        except Exception as e:
+            self.log(str(e))
+
+    def log(self, text):
+        self.helper.log_add_text(self.name, text)
 

@@ -17,21 +17,11 @@ helper = Helper(configuration)
 database = Database(configuration, helper)
 database.db_path = config['default']['folder_data'] + '/test.db'
 
-name = 'test_serv_localhost'
-
-
-def cleanup():
-    '''
-        cleanup is not done for this test at until db data adding is implemented
-        run test_database before that
-    '''
-    log('cleanup')
-    helper_test.file_delete(database.db_path)
-    assert database.db_check() == 'db ok', 'failed initial db creation'
+name = 'run_serv_localhost'
 
 
 def log(text):
-    helper.log_add_text('test', text)
+    helper.log_add_text(name, text)
 
 
 if __name__ == '__main__':
@@ -47,4 +37,4 @@ if __name__ == '__main__':
         p1.terminate()
         sys.exit()
     except Exception as e:
-        log('error in test_serv_localhost __main__ ' + str(e))
+        log('error in ' + name + ' __main__ ' + str(e))

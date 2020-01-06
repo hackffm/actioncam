@@ -6,9 +6,9 @@ import sys
 
 class Configuration:
 
-    def __init__(self, config_path='../config.json', config_name='actioncam'):
+    def __init__(self, config_path='../config.json'):
         self.config_path = config_path
-        self.config_name = config_name
+        self.config_name = 'actioncam'
         self.config = self.load()
 
     def load(self):

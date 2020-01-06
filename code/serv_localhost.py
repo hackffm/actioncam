@@ -32,7 +32,7 @@ class ServLocalhost:
         self.helper = helper
 
         self.database.db_create()
-        self.name = 'serv_localhost'
+        self.name = 'ServLocalhost'
         port = self.config[self.name]['server_port']
         address = '127.0.0.1'
 

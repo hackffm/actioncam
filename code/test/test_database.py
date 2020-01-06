@@ -46,9 +46,9 @@ print('added preview ' + preview1)
 
 # compress
 assert database.add_compressed(compressed) == 1, 'Failed adding compress'
-assert database.add_compressed2recording(compressed, recording1) == 'executed', ' Failed adding compressed2recording'
-assert database.add_compressed2recording(compressed, recording1) == 'failed', ' adding again recording to compressed2recording should not be q_reportowed'
-assert database.add_compressed2recording(compressed, recording2) == 'executed', ' Failed adding compressed2recording'
+assert database.add_compressed2recording(compressed, recording1) == 'executed', 'Failed adding compressed2recording'
+assert database.add_compressed2recording(compressed, recording1) == 'failed', 'adding again recording to compressed2recording should not be q_reportowed'
+assert database.add_compressed2recording(compressed, recording2) == 'executed', 'Failed adding compressed2recording'
 assert in_list_member_0(database.query_compressed2recording(compressed), recording1) == True, 'Failed finding compressed with recording1'
 assert database.query_compressed2recording(recording1) == compressed, 'Failed to find recording in compressed'
 print('finding compressed ' + str(database.query_compressed()))
@@ -71,18 +71,16 @@ q_report = database.query_report()
 for a in q_report:
     _pn = a[0]
     if _pn == None:
-        _pn = ''
+        _pn = 'missing'
     _ri = a[1]
     _rm = a[2]
     _rn = a[3]
     _rt = a[4]
     _cn = a[5]
     _cd = a[6]
-    if _cn == None:
-        _cn = ''
-        _cd = ''
     _sd = a[7]
-    if _sd == None:
-        _sd = ''
-    print("Preview {} for recording {}_{}_{}.{} was compressed in {} on {} and send at date {}".format(
-        _pn, _ri, _rm, _rn, _rt, _cn, _cd, _sd))
+    if _cn == None:
+        print("No preview for recording {}_{}_{}.{}".format(_ri, _rm, _rn, _rt))
+    else:
+        print("Preview {} for recording {}_{}_{}.{} was compressed in {} on {} and send at date {}".format(
+            _pn, _ri, _rm, _rn, _rt, _cn, _cd, _sd))

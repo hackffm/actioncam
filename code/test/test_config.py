@@ -12,5 +12,6 @@ _input = config['input'][_input]
 print(_input)
 print(config['default'])
 
-print(helper.log_home('serv_localhost'))
+print(helper.log_home('ServLocalhost'))
 print(helper.log_home('camera'))
+print(config['database']['headers'])

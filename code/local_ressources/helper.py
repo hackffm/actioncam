@@ -137,16 +137,14 @@ class Helper:
         return len(reports)
 
     def report_all(self):
-        p_files = []
         try:
+            # requieres export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES on macOS
             data = '{"query": {"report": "None"}}'
             response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
-            _t = response.text
-            _j = json.loads(_t)
-            return _j
+            return response.text
         except Exception as e:
             self.log_add_text('helper', str(e))
-            return p_files
+            return []
 
     # -- state --------------------------------------------------
     def state_default(self):

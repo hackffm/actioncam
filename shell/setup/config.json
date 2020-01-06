@@ -18,9 +18,9 @@
             "log_header": "webserver",
             "log_location": "/home/pi/actioncam/log"
         },
-        "serv_localhost": {
+        "ServLocalhost": {
             "server_port": 8081,
-            "log_file": "serv_localhost.log"
+            "log_file": "ServLocalhost.log"
         },
         "input": {
             "usb_0": 0,
