@@ -11,8 +11,8 @@ class HandlerReport(tornado.web.RequestHandler):
     def get(self):
         try:
             items = self.helper.report_all()
-            if len(items) == 0:
-                items.add(['.', '.', '.', '.', '.', '.', '.'])
+            if '[]' == items:
+                items = [['.', '.', '.', '.', '.', '.', '.', '.']]
             self.render("report.html", title="Report", items=items)
         except Exception as e:
             self.log(str(e))

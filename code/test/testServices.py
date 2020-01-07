@@ -50,7 +50,9 @@ def test_servicerunner(configuration, helper):
 
 def test_state():
     print(helper.state_updated())
+    print('report all')
     report = helper.report_all()
+    print(report)
     for r in report:
         print(r)
     print(helper.report_number_recorded())
