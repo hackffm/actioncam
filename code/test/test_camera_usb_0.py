@@ -5,15 +5,16 @@ import cv2
 import sys
 
 
-print(str(cv2.getBuildInformation()))
+print('cv2 version is ' + str(cv2.getVersionString()))
 
 
 def capture_config():
-    cap = cv2.VideoCapture(1)
-    if not cap.isOpened():
+    vc = cv2.VideoCapture(0)
+    if not vc.isOpened():
         print('Unable to read camera feed')
         return False
-    return cap
+    return vc
+
 
 cap = capture_config()
 if not cap:
