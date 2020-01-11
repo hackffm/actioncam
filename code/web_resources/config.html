@@ -19,6 +19,12 @@
 		  <select id='selectedMode'>
     	  </select>
     </div>
+   	<hr>
+    <h2>Input</h2>
+    <div id="selectInput">
+      <label>Length:</label>
+      <input type='text' id='valInput' />
+    </div>
 	<hr>
     <h2>Output</h2>
     <div id="selectLength">
@@ -70,6 +76,7 @@
 	<script>
 	    var ident = document.getElementById("valIdentify");
 	    var smode = document.getElementById("selectedMode");
+	    var input = document.getElementById("valInput");
         var output = document.getElementById("valOutput");
         var length = document.getElementById("valLength");
         var mfrom = document.getElementById("valFrom");
@@ -85,8 +92,8 @@
 			      _output = config.default.output;
 			      ident.value=config.default.identify;
 			      addModeSelections(config);
-			      
 	              length.value = config[_output].file_length;
+	              input.value = config["camera"]["input"];
 	              output.value = config[_output].file_location;
 	              mfrom.value = config['mail'].address_from;
 	              mto.value = config['mail'].address_to;
@@ -140,6 +147,7 @@
       config.default.identify = ident.value;
       config.default.mode = getSelectedMode();
       _output = config.default.output;
+      config["camera"]["input"] = input.value;
       config[_output].file_length = length.value;
       config[_output].file_location = output.value;
       config['mail'].address_from = mfrom.value;

@@ -3,26 +3,26 @@ import cv2
 print('cv2 version is ' + str(cv2.getVersionString()))
 
 
-def capture_config():
-    vc = cv2.VideoCapture(0)
-    if not vc.isOpened():
-        return False
-    return vc
+def capture_config(camera_port=0):
+    frame_height = 480
+    frame_width = 640
 
-
-while True:
-    cap = capture_config()
-    if not cap:
+    cap = cv2.VideoCapture(camera_port)
+    cap.set(3, frame_width)
+    cap.set(4, frame_height)
+    if not cap.isOpened():
         print('Unable to read camera feed')
-        break
-    grabbed, frame = cap.read()
-    grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        return False
+    return cap
+
+
+cap = capture_config()
+while cap:
+    ret, frame = cap.read()
 
     cv2.imshow('captured frame', frame)
-    cv2.imshow('greyed frame', grey)
 
-    if cv2.waitKey(0) & 0xff == 27:
+    if cv2.waitKey(0) & 0xff == ord('q'):
+        cap.release()
+        cv2.destroyAllWindows()
         break
-
-cap.release()
-cv2.destroyAllWindows()

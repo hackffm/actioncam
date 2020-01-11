@@ -1,6 +1,7 @@
 {
     "actioncam": {
         "actioncam": {
+            "debug": false,
             "folder_data": "/home/pi/actioncam/data",
             "log_file": "actioncam.log",
             "log_header": "actioncam",
@@ -24,6 +25,7 @@
         },
         "input": {
             "usb_0": 0,
+            "usb_1": 1,
             "picamera": 99
         },
         "database": {

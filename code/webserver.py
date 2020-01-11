@@ -58,7 +58,11 @@ class WebApplication(tornado.web.Application):
             (r'/websockets', HandlerWebSockets, dict(helper=helper, ))
         ]
 
+
+        debug = configuration.config['actioncam']['debug']
         settings = {
+            'autoreload': debug,
+            'debug': debug,
             'static_path': web_resources,
             'template_path': 'web_templates'
         }

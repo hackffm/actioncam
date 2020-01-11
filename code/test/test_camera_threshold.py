@@ -1,7 +1,6 @@
 # thresholding on an image
 
 import cv2
-import sys
 
 print(str(cv2.getBuildInformation()))
 
@@ -10,7 +9,7 @@ def capture_config():
     frame_height = 480
     frame_width = 640
 
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     cap.set(3, frame_width)
     cap.set(4, frame_height)
     if not cap.isOpened():
@@ -18,9 +17,8 @@ def capture_config():
         return False
     return cap
 
+
 cap = capture_config()
-if not cap:
-    sys.exit()
 (grabbed, frame) = cap.read()
 # cv2.cvtColor is applied over the image input with applied parameters to convert the image in grayscale
 img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

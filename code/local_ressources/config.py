@@ -7,22 +7,21 @@ import sys
 class Configuration:
 
     def __init__(self, config_path='../config.json'):
-        self.config_path = config_path
         self.config_name = 'actioncam'
-        self.config = self.load()
+        self.config = []
+        self.load(config_path)
 
-    def load(self):
-        print('load config from', self.config_path)
-        if os.path.exists(self.config_path):
-            with open(self.config_path) as json_data:
+    def load(self, config_path):
+        print('load config from', config_path)
+        if os.path.exists(config_path):
+            with open(config_path) as json_data:
                 j_config = json.load(json_data)
             t = j_config['actioncam']['database']['headers']
-            t = t.replace("'", "\"")
-            j_config['actioncam']['database']['headers'] = json.loads(t)
-            return j_config[self.config_name]
+            # t = t.replace("'", "\"")
+            # j_config['actioncam']['database']['headers'] = json.loads(t)
+            self.config = j_config[self.config_name]
         else:
-            print('config file %s not found' % self.config_path)
-            return []
+            print('config file %s not found' % config_path)
 
     def save(self):
         data = {'actioncam': self.config}

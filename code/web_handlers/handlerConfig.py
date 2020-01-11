@@ -24,6 +24,7 @@ class HandlerConfig(tornado.web.RequestHandler):
     def assign_config(self, _config):
         self.config['default']['identify'] = _config['default']['identify']
         self.config['default']['mode'] = _config['default']['mode']
+        self.config["camera"]["input"] = _config["camera"]["input"]
         _output = self.config['default']['output']
         self.config[_output]['file_length'] = int(_config[_output]['file_length'])
         self.config[_output]['file_location'] = _config[_output]['file_location']

@@ -32,10 +32,11 @@ class Camera:
 
         _input = self.config_camera['input']
         if _input not in self.config['input']:
-            self.log('inputsource for camera not in defaults')
+            self.log('input source for camera not in defaults')
             return [False, False]
 
         _input = self.config['input'][_input]
+        self.log('using camera from input ' + str(_input))
         cap = cv2.VideoCapture(_input)
         cap.set(3, frame_width)
         cap.set(4, frame_height)
@@ -43,8 +44,8 @@ class Camera:
             self.log('Unable to read camera feed')
             return [False, False]
 
-        if type == 'show':
-            return cap
+        if type == 'show_video':
+            return [cap, 'none']
 
         video_name = self.file_name_video(type)
         out = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), frame_rate, (frame_width, frame_height))
@@ -89,9 +90,9 @@ class Camera:
     def log(self, text):
         self.helper.log_add_text(self.name, text)
 
-    def queue_write(self, frame):
-        imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        jpg = Image.fromarray(imgRGB)
+    def queue_video_write(self, frame):
+        img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        jpg = Image.fromarray(img_rgb)
         self.byte_io.seek(0)
         jpg.save(self.byte_io, 'JPEG')
         self.m_video['video'] = self.byte_io
@@ -141,7 +142,6 @@ class Camera:
                     self.log('preview ' + _image_name)
                     preview = False
                 out.write(frame)
-
             duration -= 1
             # end detection loop
 
@@ -169,7 +169,7 @@ class Camera:
         while recording:
             ret, frame = cap.read()
             if ret:
-                self.queue_write(frame)
+                self.queue_video_write(frame)
                 out.write(frame)
             # Break the loop
             else:
@@ -185,31 +185,31 @@ class Camera:
         return
 
     def show_video(self, duration=100):
-        cap = self.capture_config('show')
+        cap, _none = self.capture_config('show_video')
 
         if cap is False:
-            self.log('failed to initialise camera')
+            self.log('show_video failed to initialise camera')
             return
 
         first_frame = None
         try:
             while duration >= 1:
-                (grabbed, frame) = cap.read()
+                grabbed, frame = cap.read()
                 if not grabbed:
-                    self.log('failed to grab camera')
+                    self.log('show_video failed to grab camera')
                     break
                 gray = self.frame_grey(frame)
                 if first_frame is None:
                     first_frame = gray
                     continue
                 frame, detected = self.frame_draw_detections(frame, first_frame, gray)
-                self.queue_write(frame)
+                self.queue_video_write(frame)
                 duration -= 1
                 # end detection loop
             cap.release()
             self.log('showed video')
         except Exception as e:
-            self.log(str(e))
+            self.log('show_video exception ' + str(e))
         # end show_video
         return
 
