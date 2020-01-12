@@ -167,7 +167,7 @@ class Database:
             _result = self.db_execute(_sql_text)
             return _result
         else:
-            self.log('[add_preview] failed to find compressed id of ' + compress_name)
+            self.log('[add_preview] failed to find recording id of ' + compress_name)
             return self.failed
 
     def add_recording(self, recording):

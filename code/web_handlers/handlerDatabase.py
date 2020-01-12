@@ -50,13 +50,16 @@ class HandlerDatabase(tornado.web.RequestHandler):
         result = self.executed
         if 'add' in db_command:
             _command = db_command['add']
-            if 'recording' in _command:
-                result = self.database.add_recording(_command['recording'])
             if 'compressed' in _command:
                 result = self.database.add_compressed(_command['compressed'])
             if 'compressed2recording' in _command:
                 _cr = _command['compressed2recording']
                 result = self.database.add_compressed2recording(_cr['compressed'], _cr['recording'])
+            if 'preview' in _command:
+                _preview = _command['preview']
+                result = self.database.add_preview(_preview['name'], _preview['recording'])
+            if 'recording' in _command:
+                result = self.database.add_recording(_command['recording'])
             if 'send' in _command:
                 _send = _command['send']
                 _compress = _send['compressed']

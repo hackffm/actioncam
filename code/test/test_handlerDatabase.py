@@ -35,7 +35,8 @@ def query_report():
     log('query_report')
     try:
         data = '{"query": {"report": "None"}}'
-        response = requests.get(config['database']['url'], headers=config['database']['headers'], data=data)
+        headers = {'content-type': 'application/json','Accept-Charset': 'UTF-8'}
+        response = requests.get(config['database']['url'], headers=headers, data=data)
         return response.text
     except Exception as e:
         return e

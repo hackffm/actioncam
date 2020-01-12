@@ -19,6 +19,7 @@ class Helper:
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
 
+        self.headers = {'content-type': 'application/json','Accept-Charset': 'UTF-8'}
         self.state = self.state_default()
 
     def datetime_diff_from_string(self, dt_string):
@@ -140,7 +141,7 @@ class Helper:
         try:
             # requieres export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES on macOS
             data = '{"query": {"report": "None"}}'
-            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
+            response = requests.get(self.config['database']['url'], headers=self.headers, data=data)
             return response.text
         except Exception as e:
             self.log_add_text('helper', str(e))
@@ -183,7 +184,7 @@ class Helper:
     def state_load(self):
         try:
             data = '{"query": {"state": "None"}}'
-            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
+            response = requests.get(self.config['database']['url'], headers=self.headers, data=data)
             _t = response.text
             _j = json.loads(_t)
             return _j
@@ -193,20 +194,26 @@ class Helper:
     def state_save(self):
         try:
             data = '{"put": {"state":' + str(json.dumps(self.state)) + '}}'
-            response = requests.put(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
+            response = requests.put(self.config['database']['url'], headers=self.headers, data=data)
             self.log_add_text('helper', str(response.text))
             self.log_add_text('helper', 'saved state ' + str(self.state))
             return
         except Exception as e:
-            self.log_add_text('helper', str(e))
+            self.log_add_text('helper', str(self.state))
+            self.log_add_text('helper', 'state_save:' + str(e))
 
     def state_set_start(self):
         self.state['date_start'] = str(self.now())
         self.state_save()
 
     # -- statics ------------------------------------------------
-    @staticmethod
-    def dict_copy(source_modus, dest_modus):
+    def dict_copy(self, source_modus, dest_modus):
+        if not isinstance(source_modus,dict):
+            try:
+                source_modus = dict(source_modus)
+            except Exception as e:
+                self.log_add_text('helper', str(e))
+                return {}
         for k, v in source_modus.items():
             dest_modus[k] = v
         return dest_modus

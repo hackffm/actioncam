@@ -29,7 +29,6 @@
             "picamera": 99
         },
         "database": {
-            "headers" : "{'content-type': 'application/json','Accept-Charset': 'UTF-8'}",
             "name": "actioncam.db",
             "url": "http://localhost:8081/database",
             "log_file": "database.log"

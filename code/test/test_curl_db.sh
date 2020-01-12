@@ -1,6 +1,6 @@
 curl -X POST -H "application/json" -d '{"add": { "recording": "1_motion_20190219204453.avi"}}' http://localhost:8081/database
 curl -X POST -H "application/json" -d '{"add": { "recording": "1_motion_20190219204447.avi"}}' http://localhost:8081/database
-curl -X POST -H "application/json" -d '{"add": { "preview": "1_record_20200111195037", "1_record_20200111195037.avi"}}' http://localhost:8081/database
+curl -X POST -H "application/json" -d '{"add": { "preview": { "name": "1_record_20200111195037", "recording" : "1_motion_20190219204453.avi"}}}' http://localhost:8081/database
 curl -X POST -H "application/json" -d '{"add": { "compressed": "20190818172955.zip"}}' http://localhost:8081/database
 curl -X POST -H "application/json" -d '{"add": { "compressed2recording": { "compressed": "20190818172955.zip", "recording": "1_motion_20190219204453.avi"}}}' http://localhost:8081/database
 curl -X POST -H "application/json" -d '{"add": { "compressed2recording": { "compressed": "20190818172955.zip", "recording": "1_motion_20190219204447.avi"}}}' http://localhost:8081/database
