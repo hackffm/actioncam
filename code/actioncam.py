@@ -87,14 +87,14 @@ if __name__ == '__main__':
             p1.start()
             time.sleep(1.0)
             p2 = Process(target=Servicerunner, args=(l_lock, configuration, helper, m_modus))
-            #p3 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
-            #p4 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
+            p3 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
+            p4 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
             p2.daemon = True
-            #p3.daemon = True
-            #p4.daemon = True
+            p3.daemon = True
+            p4.daemon = True
             p2.start()
-            #p3.start()
-            #p4.start()
+            p3.start()
+            p4.start()
 
             # startup info to console
             helper.state_set_start()
@@ -104,9 +104,9 @@ if __name__ == '__main__':
                 print(info)
             print('webserver will listen at port ' + str(configuration.config['webserver']['server_port']))
             print('PID Servicerunner', p1.pid)
-            #print('PID Webserver', p2.pid)
-            #print('PID Camera', p3.pid)
-            #print('PID ServLocalhost', p4.pid)
+            print('PID Webserver', p2.pid)
+            print('PID Camera', p3.pid)
+            print('PID ServLocalhost', p4.pid)
 
             # main loop
             while running:
@@ -125,8 +125,8 @@ if __name__ == '__main__':
         log('ending with keyboard interrupt')
         p1.terminate()
         p2.terminate()
-        #p3.terminate()
-        #p4.terminate()
+        p3.terminate()
+        p4.terminate()
         sys.exit()
     except Exception as e:
         log('error in actioncam __main__ ' + str(e))

@@ -68,18 +68,23 @@ class Camera:
         thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
         thresh = cv2.dilate(thresh, None, iterations=2)
 
-        (_, contours, _) = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours = []
+        try:
+            (_, contours, _) = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        except Exception as e:
+            self.log('frame_draw_detections exception ' + str(e))
+            return frame, detected
 
         for c in contours:
             if cv2.contourArea(c) < self.min_area:
                 continue
-            # detected
             (x, y, w, h) = cv2.boundingRect(c)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             text = self.text_detected()
             detected = True
 
         cv2.putText(frame, "Status: {}".format(text), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
         return frame, detected
 
     def frame_grey(self, frame):
@@ -188,22 +193,26 @@ class Camera:
         cap, _none = self.capture_config('show_video')
 
         if cap is False:
-            self.log('show_video failed to initialise camera')
+            self.log('show_video: failed to initialise camera')
             return
 
         first_frame = None
         try:
             while duration >= 1:
-                grabbed, frame = cap.read()
+                grabbed, orig_frame = cap.read()
                 if not grabbed:
-                    self.log('show_video failed to grab camera')
+                    self.log('show_video: failed to grab camera')
                     break
-                gray = self.frame_grey(frame)
+                gray = self.frame_grey(orig_frame)
                 if first_frame is None:
                     first_frame = gray
                     continue
-                frame, detected = self.frame_draw_detections(frame, first_frame, gray)
-                self.queue_video_write(frame)
+                frame, detected = self.frame_draw_detections(orig_frame, first_frame, gray)
+                if detected:
+                    self.queue_video_write(frame)
+                else:
+                    self.queue_video_write(orig_frame)
+                time.sleep(0.1)
                 duration -= 1
                 # end detection loop
             cap.release()
