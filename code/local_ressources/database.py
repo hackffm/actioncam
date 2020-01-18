@@ -159,25 +159,13 @@ class Database:
             return self.failed
         return self.executed
 
-    def add_preview(self, name, recording):
-        id_recording = self.query_recording_id(recording)
-        if id_recording != self.failed:
-            _sql_text = ("INSERT INTO preview (id_recording, name ) VALUES (")
-            _sql_text = _sql_text + str(id_recording) + ", '" + name + "');"
-            _result = self.db_execute(_sql_text)
-            return _result
-        else:
-            self.log('[add_preview] failed to find recording id of ' + compress_name)
-            return self.failed
-
     def add_recording(self, recording):
         _id = self.query_recording_id(recording)
         if _id != self.failed:
             return self.exists
-        recording_fields = self.recording_data(recording)
-        r = recording_fields
+        rd = self.recording_data(recording)
         _sql_text = ("INSERT INTO recording (identifier,mode,name,type,date) \
-                VALUES ('" + r[0] + "', '" + str(r[1]) + "', '" + str(r[2]) + "', '" + str(r[3]) + "', '" + str(r[4]) + "');")
+                VALUES ('" + rd[0] + "', '" + str(rd[1]) + "', '" + str(rd[2]) + "', '" + str(rd[3]) + "', '" + str(rd[4]) + "');")
         _result = self.db_execute(_sql_text)
         if _result == self.executed:
             self.log('successfully added recording ' + str(recording))

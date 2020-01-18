@@ -11,10 +11,11 @@ _db_name = 'test.db'
 config['database']['name'] = _db_name
 _db_path = config['default']['folder_data'] + '/' + _db_name
 
-recording1 = '1_motion_20190219204447.avi'
-recording2 = '1_motion_20190219204453.avi'
-recording3 = '1_motion_20190000000000.avi'
+recording1 = '1_record_motion_20190219204447.avi'
+recording2 = '1_record_video_20190219204453.avi'
+recording3 = '1_record_motion_20190000000000.avi'
 preview1 = '1_20190219204447_.jpeg'
+preview2 = '1_20190219204453_.jpeg'
 compressed = '20190818172955.zip'
 
 
@@ -39,10 +40,6 @@ assert database.query_recording_id(recording1) == 1, 'Failed query recording1'
 assert database.query_recording_id(recording3) == 'failed', 'Failed handling missing recordings'
 assert database.add_recording(recording3) == 3, 'Failed adding recording3'
 print('added recordings')
-
-# preview
-assert database.add_preview(preview1, recording1) == 'executed', 'failed adding preview'
-print('added preview ' + preview1)
 
 # compress
 assert database.add_compressed(compressed) == 1, 'Failed adding compress'

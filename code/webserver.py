@@ -44,7 +44,7 @@ class WebApplication(tornado.web.Application):
     def __init__(self, l_lock, configuration, helper, q_message, m_video):
         current_path = os.path.dirname(os.path.abspath(__file__))
         web_resources = current_path + '/web_resources'
-        output_folder = configuration.output_folder()
+        output_folder = configuration.recording_folder()
 
         handlers = [
             (r'/', HandlerIndexPage, dict(configuration=configuration, helper=helper)),
@@ -59,7 +59,7 @@ class WebApplication(tornado.web.Application):
         ]
 
 
-        debug = configuration.config['actioncam']['debug']
+        debug = configuration.config['debug']
         settings = {
             'autoreload': debug,
             'debug': debug,

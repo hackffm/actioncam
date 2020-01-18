@@ -40,18 +40,17 @@ class Configuration:
         output = self.config[output]
         return output
 
-    def output_folder(self):
-        output = self.config['default']['output']
-        output_folder = self.config[output]['file_location']
+    def recording_folder(self):
+        output = self.config['default']['recording_location']
 
-        if output_folder != '':
-            if not os.path.exists(output_folder):
-                print('create ' + output_folder)
-                os.makedirs(output_folder)
+        if output != '':
+            if not os.path.exists(output):
+                print('create ' + output)
+                os.makedirs(output)
 
-            return output_folder
+            return output
         else:
-            print('Error: no output folder set')
+            print('Error: no recording_location folder set in defaults')
             sys.exit()
 
     def previewpattern(self):

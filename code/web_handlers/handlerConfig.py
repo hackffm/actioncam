@@ -24,10 +24,10 @@ class HandlerConfig(tornado.web.RequestHandler):
     def assign_config(self, _config):
         self.config['default']['identify'] = _config['default']['identify']
         self.config['default']['mode'] = _config['default']['mode']
+        self.config["default"]["recording_location"] = _config["default"]["recording_location"]
         self.config["camera"]["input"] = _config["camera"]["input"]
         _output = self.config['default']['output']
         self.config[_output]['file_length'] = int(_config[_output]['file_length'])
-        self.config[_output]['file_location'] = _config[_output]['file_location']
         self.config['mail']['address_from'] = _config['mail']['address_from']
         self.config['mail']['address_to'] = _config['mail']['address_to']
         self.config['mail']['server'] = _config['mail']['server']

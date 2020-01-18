@@ -14,4 +14,6 @@ print(config['default'])
 
 print(helper.log_home('ServLocalhost'))
 print(helper.log_home('camera'))
-print(config['database']['headers'])
+print('debug is ' + str(type(config['debug'])))
+print('debug is ' + str(config['debug']))
+print('recording location is ' + str(configuration.recording_folder()))

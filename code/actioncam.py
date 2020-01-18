@@ -62,7 +62,7 @@ if __name__ == '__main__':
     database = Database(configuration, helper)
     logHome = helper.log_home(name)
 
-    debug = configuration.config['actioncam']['debug']
+    debug = configuration.config['debug']
     print('debug is ' + str(debug))
     running = True
 

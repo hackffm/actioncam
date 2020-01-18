@@ -7,7 +7,7 @@
     <link href="/actioncam/javascripts/jquery-ui-iconfont-master/jquery-ui.icon-font.css" rel="stylesheet" type="text/css" />
     <link href="/actioncam/stylesheets/config.css" rel="stylesheet"/>
 </head>
-<body>
+<div>
     <h1>Config</h1>
     <h2>Default</h2>
     <div id="selectIdent">
@@ -20,20 +20,20 @@
     	  </select>
     </div>
    	<hr>
-    <h2>Input</h2>
-    <div id="selectInput">
-      <label>Length:</label>
-      <input type='text' id='valInput' />
+    <h2>Camera ID</h2>
+    <div id="selectCameraID">
+      <label>Input Device:</label>
+      <input type='text' id='valCameraID' />
     </div>
 	<hr>
-    <h2>Output</h2>
-    <div id="selectLength">
+    <h2>Recording</h2>
+    <div id="selectFileLength">
       <label>Length:</label>
-      <input type='text' id='valLength' />
+      <input type='text' id='valFileLength' />
     </div>
-    <div id="selectOutput">
+    <div id="selectRecordingLocation">
       <label>Folder:</label>
-      <input type='text' id='valOutput' />
+      <input type='text' id='valRecordingLocation' />
     </div>
     <hr>
     <h2>Mail</h2>
@@ -76,31 +76,31 @@
 	<script>
 	    var ident = document.getElementById("valIdentify");
 	    var smode = document.getElementById("selectedMode");
-	    var input = document.getElementById("valInput");
-        var output = document.getElementById("valOutput");
-        var length = document.getElementById("valLength");
+	    var cInput = document.getElementById("valCameraID");
+        var fLength = document.getElementById("valFileLength");
         var mfrom = document.getElementById("valFrom");
         var mto = document.getElementById("valTo");
         var mPassword = document.getElementById("valPassword");
         var mServer = document.getElementById("valServer");
         var mPort = document.getElementById("valPort");
         var wPort = document.getElementById("valWebPort");
+        var rLocation = document.getElementById("valRecordingLocation");
         var config = ''
 		window.onload = function () {
 			$.get('/config', function(response) {
 			      config = JSON.parse(response);
-			      _output = config.default.output;
 			      ident.value=config.default.identify;
-			      addModeSelections(config);
-	              length.value = config[_output].file_length;
-	              input.value = config["camera"]["input"];
-	              output.value = config[_output].file_location;
+                  addModeSelections(config);
+                  output = config.default['output'];
+                  fLength.value = config[output].file_length;
+	              cInput.value = config["camera"]["input"];
 	              mfrom.value = config['mail'].address_from;
 	              mto.value = config['mail'].address_to;
 	              mPassword.value = config['mail'].server_password;
 	              mServer.value = config['mail'].server;
 	              mPort.value = config['mail'].server_port;
 	              wPort.value = config['webserver'].server_port;
+	              rLocation.value = config['default'].recording_location;
 	              document.getElementById("iconSubmit").addEventListener("click",function(){ sendConfig() } );
 			});
 		}
@@ -146,10 +146,9 @@
     function sendConfig(){
       config.default.identify = ident.value;
       config.default.mode = getSelectedMode();
-      _output = config.default.output;
-      config["camera"]["input"] = input.value;
-      config[_output].file_length = length.value;
-      config[_output].file_location = output.value;
+      config["camera"]["input"] = cInput.value;
+      config['default'].recording_location = rLocation.value;
+      config[output].file_length = fLength.value;
       config['mail'].address_from = mfrom.value;
       config['mail'].address_to = mto.value;
       config['mail'].server_password = mPassword.value;
