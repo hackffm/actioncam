@@ -72,5 +72,13 @@ print('found send compressed files \n' + str(send))
 print('--Final report--')
 q_report = database.query_report()
 for qr in q_report:
-   print(qr)
-   #print("recording {} name {} was compressed in {} on {} and send at date {}".format(_ri, _rn,  _cn, _cd))
+   q = str(qr)
+   q = q.replace('(','')
+   q = q.replace(')','')
+   q = q.split(',')
+   _ri = q[0]
+   _rn = q[4]
+   _cn = q[6]
+   _cd = q[7]
+   _sd = q[8]
+   print("recording {} name {} was compressed in {} on {} and send at date {}".format(_ri, _rn, _cn, _cd, _sd))
