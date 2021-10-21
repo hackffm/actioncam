@@ -5,28 +5,11 @@
     - ansible_python_interpreter: "/usr/bin/env python3"
     - actioncam_dir_git: "{{ ansible_env.HOME }}/git/actioncam"
     - actioncam_dir_home: "{{ ansible_env.HOME }}/actioncam"
-    - proxy_use: false
-    - proxy_web: 'http://192.168.178.10:8888'
 
   tasks:
   - name: say hello
     debug:
       msg: "Hello {{ ansible_hostname }}"
-
-  - name: use proxy for apt
-    become: true
-    lineinfile:
-      path: '/etc/apt/apt.conf.d/00proxy'
-      line: 'Acquire::http::Proxy "{{ proxy_web }}";'
-      create: yes
-    when: proxy_use == true
-
-  - name: delete proxy file
-    become: true
-    file:
-        state: absent
-        path: '/etc/apt/apt.conf.d/00proxy'
-    when: proxy_use != true
 
   - name: Update APT package manager repositories cache
     become: true
