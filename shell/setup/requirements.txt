@@ -1,5 +1,6 @@
 glog
 netifaces
+numpy
 opencv-python
 opencv-contrib-python
 peigen
