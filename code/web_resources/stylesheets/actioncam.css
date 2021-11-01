@@ -1,17 +1,5 @@
 @CHARSET "UTF-8";
 
-/*--default------------------------*/
-.ui-icon {
-	color: #f6931f;
-	display:block;
-	font-size: 2.0em;
-	margin: 0 auto;
-	opacity: 0.5;
-}
-.ui-icon:active{
-  opacity: 1.0;
-  font-size: 2.5em;
-}
 /*---HackerSpaceLogo--------------*/
 #iconLogo {
 	position: absolute;
@@ -43,17 +31,11 @@
     left: 1em;
     top: 6em;
 }
-.ui-icon-camera {
-	color: #000000;
-}
 /*--Recordings------------------------*/
 #iconRecordings {
     position: absolute;
     left: 1em;
     top: 10em;
-}
-.ui-icon-folder-open {
-	color: #000000;
 }
 /*--Send------------------------*/
 #iconSend {
@@ -61,26 +43,17 @@
     left: 1em;
     top: 14em;
 }
-.ui-icon-email {
-	color: #000000;
-}
 /*--Config------------------------*/
 #iconConfig {
     position: absolute;
     bottom: 2em;
     left: 1em;
 }
-.ui-icon-bars {
-	color: #a8a8a6;
-}
 /*---Power Button-----------------*/
 #iconShutdown {
 	position: absolute;
 	top: 2em;
 	right: 1em;
-}
-.ui-icon-power {
-	color: #ff0000;
 }
 /*--iframe in the middle----------*/
 iframe#ifrm {

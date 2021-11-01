@@ -1,15 +1,5 @@
 @CHARSET "UTF-8";
 
-/*--default------------------------*/
-.ui-icon {
-	color: #f6931f;
-	font-size: 2.0em;
-	opacity: 0.5;
-}
-.ui-icon:active{
-  opacity: 1.0;
-  font-size: 2.5em;
-}
 /*--icons------------------------*/
 #iconSubmit{
 	color: #96c596;
