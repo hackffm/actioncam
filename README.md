@@ -1,9 +1,9 @@
 # actioncam
 
-some python code arround opencv to use a webcam.
+some python code arround opencv to use a webcam for action detection
 
 
-- Currently implement features
+## Currently implement features
     - recording
     - recording if motion tracked
     - recording in intervals
@@ -14,11 +14,4 @@ some python code arround opencv to use a webcam.
     
 to get an overview you can look at the docs section
 actioncam.xml is a draw.io diagramm
-    
-you find also code to generate a case for
 
-a raspberry pi and it's camera in the parts section
-
-there you find also the schemata to get LEDs and Buttons running at the PI
-
-![First Draf actioncam](https://www.hackerspace-ffm.de/wiki/images/Actioncam_case_1.jpg)
