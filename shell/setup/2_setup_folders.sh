@@ -1,14 +1,17 @@
 #!/bin/bash
-echo create Folders
+echo "check setup"
 if [ ! -d ~/actioncam ]; then
   echo "create actioncam folders"
 	mkdir ~/actioncam
 	mkdir ~/actioncam/data
 	mkdir ~/actioncam/log
 	mkdir ~/actioncam/recording
-	echo "prepare config"
+fi
+#
+if [ ! -f ~/actioncam/config.json ]; then
+  	echo "prepare config"
     cp config.json ~/actioncam
-  sed -i -e 's/pi/'"${USER}"'/g' ~/actioncam/config.json
+    sed -i -e 's/pi/'"${USER}"'/g' ~/actioncam/config.json
 fi
 #
 if [ ! -d ~/actioncam/venv ]; then

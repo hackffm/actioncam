@@ -41,7 +41,7 @@
             "log_location": "/home/pi/actioncam/log",
             "mode": "stop",
             "output": "avi",
-            "recording_location": "/Users/vkmacusr/actioncam/recording"
+            "recording_location": "/home/pi/actioncam/recording"
         },
         "camera": {
             "contour_area": 500,
