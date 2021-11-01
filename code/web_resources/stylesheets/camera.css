@@ -11,57 +11,43 @@ img {
 /*--icons------------------------*/
 #iconShow {
     bottom: 1em;
-    color: #999999;
     left: 2em;
     position: absolute;
 }
 #iconStop {
     bottom: 1em;
-    color: #00ff00;
     left: 4em;
     position: absolute;
 }
 #iconPause {
     bottom: 1em;
-    color: #ffff11;
     left: 6em;
     position: absolute;
 }
 #iconRecord {
     bottom: 1em;
-    color: #ff0000;
     left: 8em;
     position: absolute;
 }
 #iconMotion {
     bottom: 1em;
-    color: #ff0000;
     left: 12em;
     position: absolute;
 }
 #iconInterval {
     bottom: 1em;
-    color: #999999;
     left: 14em;
     position: absolute;
 }
 /*--Stream---------------------*/
-#cameraSlider{
-	top:  3.5em;
-	left: 0.5em;
-	height: 250px;
-	width: 10px;
-	margin: 20px;
-	position: absolute;
-}
-#camerSliderText{
-    top:  2.5em;
-    left: 0.5em;
-}
 #cameraStream {
     top: 3.0em;
     left: 3.0em;
     width: 640px;
     height: 480px;
     position: absolute;
+}
+/*--all Icons--*/
+.icon {
+    width: 24px;
 }

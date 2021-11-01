@@ -63,3 +63,8 @@ iframe#ifrm {
     width:1024px; height:620px;
     position: absolute;
 }
+
+/*--all Icons--*/
+.icon {
+    width: 24px;
+}

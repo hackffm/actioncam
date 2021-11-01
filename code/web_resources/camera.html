@@ -6,14 +6,12 @@
    </head>
    <body>
    <div id="title">Camera</div>
-   <div id="camerSliderText">speed</div>
-   <div id="cameraSlider"></div>
    <div id="cameraStream"><img src="/camera/stream.jpeg"></div>
-   <div id="iconShow" onclick="sendCameraModeMotion('show_video')">stop</div>
-   <div id="iconStop" onclick="sendCameraMode('stop')">stop</div>
-   <div id="iconPause" onclick="sendCameraMode('pause')">pause</div>
-   <div id="iconRecord" onclick="endCameraModeMotion('record_video')">record</div>
-   <div id="iconMotion" onclick="sendCameraModeMotion('record_motion')">motion</div>
+   <div id="iconShow" onclick="sendCameraModeMotion('show_video')" class="icon"><img src="/actioncam/images/camera.svg"></div>
+   <div id="iconStop" onclick="sendCameraMode('stop')" class="icon"><img src="/actioncam/images/stop.svg" /></div>
+   <div id="iconPause" onclick="sendCameraMode('pause')" class="icon"><img src="/actioncam/images/pause.svg" /></div>
+   <div id="iconRecord" onclick="endCameraModeMotion('record_video')" class="icon"><img src="/actioncam/images/record.svg" /></div>
+   <div id="iconMotion" onclick="sendCameraModeMotion('record_motion')" class="icon"><img src="/actioncam/images/motion.svg" /></div>
    <div id="iconInterval" onclick="sendCameraModeMotion('record_interval')">interval</div>
 
    <script>
