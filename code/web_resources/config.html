@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <link href="/actioncam/stylesheets/config.css" rel="stylesheet"/>
 </head>
-<div>
+<body>
     <h1>Config</h1>
     <h2>Default</h2>
     <div id="selectIdent">
@@ -71,89 +71,90 @@
     </div>
 	<!-- Scripts after load----------------------------------------------------->
 	<script>
-	    var ident = document.getElementById("valIdentify");
-	    var smode = document.getElementById("selectedMode");
-	    var cInput = document.getElementById("valCameraID");
-        var fLength = document.getElementById("valFileLength");
-        var mfrom = document.getElementById("valFrom");
-        var mto = document.getElementById("valTo");
-        var mPassword = document.getElementById("valPassword");
-        var mServer = document.getElementById("valServer");
-        var mPort = document.getElementById("valPort");
-        var wPort = document.getElementById("valWebPort");
-        var rLocation = document.getElementById("valRecordingLocation");
-        var config = ''
-		window.onload = function () {
-			$.get('/config', function(response) {
-			      config = JSON.parse(response);
-			      ident.value=config.default.identify;
-                  addModeSelections(config);
-                  output = config.default['output'];
-                  fLength.value = config[output].file_length;
-	              cInput.value = config["camera"]["input"];
-	              mfrom.value = config['mail'].address_from;
-	              mto.value = config['mail'].address_to;
-	              mPassword.value = config['mail'].server_password;
-	              mServer.value = config['mail'].server;
-	              mPort.value = config['mail'].server_port;
-	              wPort.value = config['webserver'].server_port;
-	              rLocation.value = config['default'].recording_location;
-	              document.getElementById("iconSubmit").addEventListener("click",function(){ sendConfig() } );
-			});
+	    let ident = document.getElementById("valIdentify");
+	    let smode = document.getElementById("selectedMode");
+	    let cInput = document.getElementById("valCameraID");
+        let fLength = document.getElementById("valFileLength");
+        let mfrom = document.getElementById("valFrom");
+        let mto = document.getElementById("valTo");
+        let mPassword = document.getElementById("valPassword");
+        let mServer = document.getElementById("valServer");
+        let mPort = document.getElementById("valPort");
+        let wPort = document.getElementById("valWebPort");
+        let rLocation = document.getElementById("valRecordingLocation");
+        let config = ''
+        let xhr = new XMLHttpRequest();
+        xhr.timeout = 10000; // timeout in ms, 10 seconds
+        xhr.onreadystatechange = function() {
+          if(this.readyState === 4) {
+              config = JSON.parse(this.responseText);
+              ident.value=config.default.identify;
+              addModeSelections(config);
+              output = config.default['output'];
+              fLength.value = config[output].file_length;
+              cInput.value = config["camera"]["input"];
+              mfrom.value = config['mail'].address_from;
+              mto.value = config['mail'].address_to;
+              mPassword.value = config['mail'].server_password;
+              mServer.value = config['mail'].server;
+              mPort.value = config['mail'].server_port;
+              wPort.value = config['webserver'].server_port;
+              rLocation.value = config['default'].recording_location;
+          }
+        };
+        xhr.onerror = function() {
+            alert("Request failed");
+        };
+        function addModeSelections(config) {
+            let option = document.createElement("option");
+            option.text = config.default.mode;
+            smode.add(option);
+            _modes = config.mode;
+            for (var _m in _modes ) {
+                let option = document.createElement("option");
+                option.text = _modes[_m];
+                smode.add(option);
+            }
+        }
+        function getConfig() {
+            xhr.open("GET", "/config");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send();
+        }
+        function getSelectedMode() {
+            let strSelected = smode.options[0].text;
+            try {
+              strSelected = smode.options[smode.selectedIndex].text;
+            } catch (e) {
+              console.log('nothing selected therefore using default');
+            }
+            return strSelected;
+        }
+        function sendConfig(){
+          config.default.identify = ident.value;
+          config.default.mode = getSelectedMode();
+          config["camera"]["input"] = cInput.value;
+          config['default'].recording_location = rLocation.value;
+          config[output].file_length = fLength.value;
+          config['mail'].address_from = mfrom.value;
+          config['mail'].address_to = mto.value;
+          config['mail'].server_password = mPassword.value;
+          config['mail'].server = mServer.value;
+          config['mail'].server_port = mPort.value;
+          config['webserver'].server_port = wPort.value;
+          sendJson(config);
+        }
+        function sendJson(data) {
+            xhr.open("POST", "/config");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify(data));
+        }
+        window.onload = function () {
+            document.getElementById("iconSubmit").addEventListener("click",function(){ sendConfig() } );
+            getConfig()
 		}
-
-    function addModeSelections(config) {
-        var option = document.createElement("option");
-        option.text = config.default.mode;
-        smode.add(option);
-        _modes = config.mode;
-        for (var _m in _modes ) {
-        	var option = document.createElement("option");
-        	option.text = _modes[_m];
-        	smode.add(option);
-        }
-    }
-    function ajax_err(request, error) {
-        console.log(request);
-        console.log(error);
-    }
-    function ajax_ok(data) {
-        alert(data.status);
-    }
-    function sendJson(data) {
-        let r = {
-            url : '/config',
-            type : 'POST',
-            data : JSON.stringify(data),
-            dataType: 'json',
-            success : ajax_ok,
-            error: ajax_err
-        }
-        $.ajax(r);
-    }
-    function getSelectedMode() {
-        var strSelected = smode.options[0].text;
-        try {
-          strSelected = smode.options[smode.selectedIndex].text;
-        } catch (e) {
-          console.log('nothing selected therefore using default');
-        }
-        return strSelected;
-    }
-    function sendConfig(){
-      config.default.identify = ident.value;
-      config.default.mode = getSelectedMode();
-      config["camera"]["input"] = cInput.value;
-      config['default'].recording_location = rLocation.value;
-      config[output].file_length = fLength.value;
-      config['mail'].address_from = mfrom.value;
-      config['mail'].address_to = mto.value;
-      config['mail'].server_password = mPassword.value;
-      config['mail'].server = mServer.value;
-      config['mail'].server_port = mPort.value;
-      config['webserver'].server_port = wPort.value;
-      sendJson(config);
-    }
 	</script>
 </body>
 </html>

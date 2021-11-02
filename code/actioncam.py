@@ -7,11 +7,9 @@ from multiprocessing import Manager
 
 from local_services import Camera
 from local_ressources import Configuration
-from local_ressources import Database
 from local_ressources import Helper
 from webserver import WebServer
 from servicerunner import Servicerunner
-from serv_localhost import ServLocalhost
 
 l_lock = Lock()
 q_message = Queue()
@@ -58,8 +56,6 @@ def log(text):
 if __name__ == '__main__':
     configuration = Configuration(config_path=config_path())
     helper = Helper(configuration)
-
-    database = Database(configuration, helper)
     logHome = helper.log_home(name)
 
     debug = configuration.config['debug']
@@ -79,13 +75,6 @@ if __name__ == '__main__':
             m_video = manager.dict()
 
             helper.dict_copy(configuration.default_mode(), m_modus)
-            # start processes
-            print('launch DB')
-            log('launch DB')
-            p1 = Process(target=ServLocalhost, args=(configuration, database, helper))
-            p1.daemon = True
-            p1.start()
-            time.sleep(1.0)
             p2 = Process(target=Servicerunner, args=(l_lock, configuration, helper, m_modus))
             p3 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
             p4 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
@@ -103,10 +92,9 @@ if __name__ == '__main__':
             for info in infos:
                 print(info)
             print('webserver will listen at port ' + str(configuration.config['webserver']['server_port']))
-            print('PID Servicerunner', p1.pid)
-            print('PID Webserver', p2.pid)
-            print('PID Camera', p3.pid)
-            print('PID ServLocalhost', p4.pid)
+            print('PID Servicerunner', p2.pid)
+            print('PID Webserver', p3.pid)
+            print('PID Camera', p4.pid)
 
             # main loop
             while running:
@@ -123,7 +111,6 @@ if __name__ == '__main__':
             sys.exit()
     except KeyboardInterrupt:
         log('ending with keyboard interrupt')
-        p1.terminate()
         p2.terminate()
         p3.terminate()
         p4.terminate()

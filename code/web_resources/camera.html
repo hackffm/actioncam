@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <link href="/actioncam/stylesheets/camera.css" rel="stylesheet"/>
-   </head>
-   <body>
-   <div id="title">Camera</div>
-   <div id="cameraStream"><img src="/camera/stream.jpeg"></div>
-   <div id="iconShow" onclick="sendCameraModeMotion('show_video')" class="icon"><img src="/actioncam/images/camera.svg"></div>
-   <div id="iconStop" onclick="sendCameraMode('stop')" class="icon"><img src="/actioncam/images/stop.svg" /></div>
-   <div id="iconPause" onclick="sendCameraMode('pause')" class="icon"><img src="/actioncam/images/pause.svg" /></div>
-   <div id="iconRecord" onclick="endCameraModeMotion('record_video')" class="icon"><img src="/actioncam/images/record.svg" /></div>
-   <div id="iconMotion" onclick="sendCameraModeMotion('record_motion')" class="icon"><img src="/actioncam/images/motion.svg" /></div>
-   <div id="iconInterval" onclick="sendCameraModeMotion('record_interval')" class="icon"><img src="/actioncam/images/motion_interval.svg" /></div>
+</head>
+<body>
+<div id="title">Camera</div>
+<div id="cameraStream"><img src="/camera/stream.jpeg" id="camera_image"></div>
+<div id="iconShow" onclick="sendCameraModeMotion('show_video')" class="icon"><img src="/actioncam/images/camera.svg"></div>
+<div id="iconStop" onclick="sendCameraMode('stop')" class="icon"><img src="/actioncam/images/stop.svg"/></div>
+<div id="iconPause" onclick="sendCameraMode('pause')" class="icon"><img src="/actioncam/images/pause.svg"/></div>
+<div id="iconRecord" onclick="endCameraModeMotion('record_video')" class="icon"><img src="/actioncam/images/record.svg"/></div>
+<div id="iconMotion" onclick="sendCameraModeMotion('record_motion')" class="icon"><img src="/actioncam/images/motion.svg"/></div>
+<div id="iconInterval" onclick="sendCameraModeMotion('record_interval')" class="icon"><img src="/actioncam/images/motion_interval.svg"/></div>
 
-   <script>
-       var camera_reload = 100;
-       function ajax_err(request, error) {
-           console.log('ajax_error')
-           console.log(request);
-           console.log(error);
-        }
-        function ajax_ok(data) {
-            console.log('camera handler confirmed:' + data.status);
-        }
-       	function loadNewImage()
-        {
-            var unique = new Date();
-            document.images.camera.src = "/camera/stream.jpeg?time=" + unique.getTime();
-            setTimeout(loadNewImage, camera_reload);
-        }
-        function sendJson(data) {
-            let r = {
-                url : '/camera',
-                type : 'POST',
-                data : JSON.stringify(data),
-                dataType: 'json',
-                success : ajax_ok,
-                error: ajax_err
-            }
-            $.ajax(r);
-        }
-        function sendCameraModeMotion(name){
-            sendCameraMode(name);
-        	loadNewImage();
-        }
-        function sendCameraMode(name){
-          sendJson('camera_mode:'+name);
-        }
-   </script>
-   </body>
+<script>
+    let camera_reload = 100;
+    let xhr = new XMLHttpRequest();
+    xhr.timeout = 10000; // timeout in ms, 10 seconds
+    xhr.onreadystatechange = function() {
+      if(this.readyState === 4) {
+        console.log(this.responseText);
+      }
+    };
+    xhr.onerror = function() {
+        alert("Request failed");
+    };
+
+    function loadNewImage() {
+        let unique = new Date();
+        document.getElementById("camera_image").src = "/camera/stream.jpeg?time=" + unique.getTime();
+        setTimeout(loadNewImage, camera_reload);
+    }
+
+    function sendJson(data) {
+        xhr.open("POST", "/camera");
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(data));
+    }
+
+    function sendCameraModeMotion(name) {
+        sendCameraMode(name);
+        loadNewImage();
+    }
+
+    function sendCameraMode(name) {
+        sendJson('camera_mode:' + name);
+    }
+</script>
+</body>
 </html>
