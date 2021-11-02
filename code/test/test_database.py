@@ -1,3 +1,8 @@
+import tracemalloc
+
+debug = False
+tracemalloc.start()
+
 import helper_test
 
 from config import Configuration
@@ -36,32 +41,21 @@ def in_list_member_0(list_check, item):
 # preparation
 helper_test.file_delete(_db_path)
 database = Database(configuration, helper)
-# expect a double entry for tis in logfile
 assert database.db_check() == 'db ok', 'failed initial db creation'
 
 # recordings
-assert database.add_recording(identifier1, mode1, path1, preview1, recording1) == 1, 'Failed adding recording1'
+assert database.add_recording(identifier1, mode1, path1, preview1, recording1) == 1, 'recording1 addeed with id 1'
 assert database.add_recording(identifier1, mode1, path1, preview1, recording1) == 'exists', 'Failed adding recording1'
-assert database.add_recording(identifier2, mode2, path1, preview2, recording2) == 2, 'Failed adding recording2'
-assert database.query_recording_id(recording1) == 1, 'Failed query recording1'
-assert database.query_recording_id(recording3) == 'failed', 'Failed handling missing recordings'
+assert database.add_recording(identifier2, mode2, path1, preview2, recording2) == 2, 'recording2 addeed with id 2'
+assert database.query_recording_id(recording1) == 1, 'recording1 found'
+assert database.query_recording_id(recording3) == 'failed', 'Failed finding missing recordings'
 print('added recordings')
 
 # compress
-assert database.add_compressed(compressed) == 1, 'Failed adding compress'
+assert database.add_compressed(compressed) == 1, 'adding compress'
 assert database.add_compressed2recording(compressed, recording1) == 'executed', 'Failed adding compressed2recording'
 assert database.add_compressed2recording(compressed, recording1) == 'failed', 'adding again recording to compressed2recording should not be q_reportowed'
 assert database.add_compressed2recording(compressed, recording2) == 'executed', 'Failed adding compressed2recording'
-#assert in_list_member_0(database.query_compressedrecordings(compressed), recording1) == True, 'Failed finding compressed with recording1'
-#assert database.query_compressed2recording(recording1) == compressed, 'Failed to find recording in compressed'
-#print('finding compressed ' + str(database.query_compressed()))
-
-# state
-q_state = database.query_state()
-assert q_state['mode'] == config['mode']['stop'], 'failed verifying state'
-q_state['mode'] = config['mode']['record_motion']
-assert database.update_state(q_state) == 'executed', 'failed updating state'
-print('state ' + str(q_state))
 
 # send
 assert database.add_send(compressed, '5000', 'test@test.com', str(helper.now())) == 'executed', 'Failed adding send'
@@ -82,3 +76,8 @@ for qr in q_report:
    _cd = q[7]
    _sd = q[8]
    print("recording {} name {} was compressed in {} on {} and send at date {}".format(_ri, _rn, _cn, _cd, _sd))
+
+if debug == True:
+    snapshot = tracemalloc.take_snapshot()
+    for stat in snapshot.statistics("lineno"):
+        print(stat)

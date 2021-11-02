@@ -7,7 +7,7 @@ class Database:
         self.configuration = configuration
         self.config = configuration.config
         self.helper = helper
-        self.debug = True
+        self.debug = configuration.config['debug']
 
         self.default = self.config['default']
         self.db_path = self.config['default']['folder_data'] + '/' + self.config['database']['name']
@@ -164,7 +164,8 @@ class Database:
         else:
             return _result
         _sql_text = ("select id from recording where recording like " + "'" + recording + "'")
-        print(_sql_text)
+        if self.debug:
+            print(_sql_text)
         _id = self.db_query(_sql_text)
         return self.int_from_id(_id)
 
@@ -182,16 +183,6 @@ class Database:
             self.log('failed to find compressed id of ' + compress_name)
             return self.failed
 
-    def add_state(self, _state):
-        _date = self.helper.now_str()
-        _sql_text1 = ("INSERT INTO state (state,value) VALUES ")
-        for s in _state:
-            _sql_text = _sql_text1 + ("('" + str(s) + "','" + str(_state[s]) + "')")
-            _result = self.db_execute(_sql_text)
-            if _result != self.executed:
-                return self.failed
-        return self.executed
-
     # -- query -----------------------------------------------------------------------------------------------
     def query_compressed_id(self, compressed):
         _sql_text = ("select id from compress where name like '" + compressed + "'")
@@ -201,7 +192,8 @@ class Database:
     def query_recording_id(self, recording):
         self.log('query recording id :' + str(recording))
         _sql_text = ("select id from recording where recording like '" + recording + "'")
-        print(_sql_text)
+        if self.debug:
+            print(_sql_text)
         _id = self.db_query(_sql_text)
         return self.int_from_id(_id)
 
@@ -232,32 +224,3 @@ class Database:
         for s in _send:
             result.append(str(s[0]))
         return result
-
-    def query_state(self):
-        self.log('query state')
-        _state = {}
-        _sql_text = ("select state,value from state")
-        _result = self.db_query(_sql_text)
-        # len is only 0 when first time using the db
-        if len(_result) == 0:
-            _state = self.helper.state_default()
-            self.add_state(_state)
-            _result = self.db_query(_sql_text)
-        for r in _result:
-            _state[r[0]] = r[1]
-        _send = self.query_send()
-        _state['send'] = len(_send)
-        return _state
-
-    # -- update ----------------------------------------------------------------------------------------------
-    def update_state(self, state):
-        self.log("update_state with " + str(state))
-        # this itteration allows danymic states
-        if type(state) == dict:
-            for s in state:
-                _sql_text = ("update state set value = '" + str(state[s]) + "' where state = '" + str(s) + "'")
-                self.log(_sql_text)
-                _result = self.db_execute(_sql_text)
-        else:
-            self.log("update_state received not a dict")
-        return self.executed
