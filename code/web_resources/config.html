@@ -33,19 +33,6 @@
       <input type='text' id='valRecordingLocation' />
     </div>
     <hr>
-    <h2>Mail</h2>
-    <div id="selectFrom">
-      <label>From:</label>
-      <input type='text' id='valFrom' />
-    </div>
-    <div id="selectTo">
-      <label>To:</label>
-      <input type='text' id='valTo' />
-    </div>
-    <div id="selectPassword">
-      <label>Password:</label>
-      <input type='text' id='valPassword' />
-    </div>
     <div id="selectServer">
       <label>Server:</label>
       <input type='text' id='valServer' />
@@ -75,11 +62,6 @@
 	    let smode = document.getElementById("selectedMode");
 	    let cInput = document.getElementById("valCameraID");
         let fLength = document.getElementById("valFileLength");
-        let mfrom = document.getElementById("valFrom");
-        let mto = document.getElementById("valTo");
-        let mPassword = document.getElementById("valPassword");
-        let mServer = document.getElementById("valServer");
-        let mPort = document.getElementById("valPort");
         let wPort = document.getElementById("valWebPort");
         let rLocation = document.getElementById("valRecordingLocation");
         let config = ''
@@ -93,11 +75,6 @@
               output = config.default['output'];
               fLength.value = config[output].file_length;
               cInput.value = config["camera"]["input"];
-              mfrom.value = config['mail'].address_from;
-              mto.value = config['mail'].address_to;
-              mPassword.value = config['mail'].server_password;
-              mServer.value = config['mail'].server;
-              mPort.value = config['mail'].server_port;
               wPort.value = config['webserver'].server_port;
               rLocation.value = config['default'].recording_location;
           }
@@ -137,11 +114,6 @@
           config["camera"]["input"] = cInput.value;
           config['default'].recording_location = rLocation.value;
           config[output].file_length = fLength.value;
-          config['mail'].address_from = mfrom.value;
-          config['mail'].address_to = mto.value;
-          config['mail'].server_password = mPassword.value;
-          config['mail'].server = mServer.value;
-          config['mail'].server_port = mPort.value;
           config['webserver'].server_port = wPort.value;
           sendJson(config);
         }

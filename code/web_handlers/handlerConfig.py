@@ -28,9 +28,4 @@ class HandlerConfig(tornado.web.RequestHandler):
         self.config["camera"]["input"] = _config["camera"]["input"]
         _output = self.config['default']['output']
         self.config[_output]['file_length'] = int(_config[_output]['file_length'])
-        self.config['mail']['address_from'] = _config['mail']['address_from']
-        self.config['mail']['address_to'] = _config['mail']['address_to']
-        self.config['mail']['server'] = _config['mail']['server']
-        self.config['mail']['server_password'] = _config['mail']['server_password']
-        self.config['mail']['server_port'] = int(_config['mail']['server_port'])
         self.config['webserver']['server_port'] = int(_config['webserver']['server_port'])
