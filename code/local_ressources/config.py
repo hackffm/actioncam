@@ -8,17 +8,17 @@ class Configuration:
 
     def __init__(self, config_path='../config.json'):
         self.config_name = 'actioncam'
-        self.config = []
-        self.load(config_path)
+        self.config = self.load(config_path)
 
     def load(self, config_path):
         print('load config from', config_path)
         if os.path.exists(config_path):
             with open(config_path) as json_data:
                 j_config = json.load(json_data)
-            self.config = j_config[self.config_name]
+            return j_config[self.config_name]
         else:
             print('config file %s not found' % config_path)
+            return {}
 
     def save(self):
         data = {'actioncam': self.config}
@@ -29,6 +29,13 @@ class Configuration:
         return
 
     # -- config ------------------------------------------------------------------
+    def default(self, section):
+        default = self.config["default"]
+        if section in self.config:
+             for key in self.config[section]:
+                 default.update(self.config[section])
+        return default
+
     def default_mode(self):
         _mode = {"actioncam": self.config['default']['mode'],
                  "camera": self.config['camera']['mode']['pause'],
