@@ -16,12 +16,6 @@ def log(text):
     helper.log_add_text('test', text)
 
 
-def test_compress(configuration, helper):
-    compress = Compress(configuration, helper)
-    compressed = compress.compress()
-    print('test_compress: ' + str(compressed))
-
-
 def test_send(configuration, helper):
     send = Send(configuration, helper)
     sended = send.send_mail()
@@ -58,14 +52,12 @@ def test_state():
     print(helper.report_number_recorded())
 
 
-if __name__ == '__main__' and __package__ is None:
-    from local_services import Compress
+if __name__ == '__main__':
     from local_services import Send
 
     print(configuration.default_mode())
     print(configuration.output_folder())
     print(configuration.previewpattern())
-    test_compress(configuration, helper)
     test_send(configuration, helper)
     test_state()
     test_servicerunner(configuration, helper)
