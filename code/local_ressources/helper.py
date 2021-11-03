@@ -4,7 +4,6 @@ import json
 import netifaces
 import os
 import socket
-import requests
 
 
 class Helper:
@@ -15,6 +14,7 @@ class Helper:
 
         self.default = self.config['default']
         self.config_mode = self.config['mode']
+        self.state_file = self.default["folder_data"] + "/" + self.default["state_file"]
 
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
@@ -139,10 +139,8 @@ class Helper:
 
     def report_all(self):
         try:
-            # requieres export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES on macOS
             data = '{"query": {"report": "None"}}'
-            response = requests.get(self.config['database']['url'], headers=self.headers, data=data)
-            return response.text
+            return
         except Exception as e:
             self.log_add_text('helper', str(e))
             return []
@@ -183,24 +181,24 @@ class Helper:
 
     def state_load(self):
         try:
-            data = '{"query": {"state": "None"}}'
-            response = requests.get(self.config['database']['url'], headers=self.headers, data=data)
-            _t = response.text
-            _j = json.loads(_t)
-            return _j
+            if os.path.exists(self.state_file):
+                with open(self.state_file) as json_data:
+                    j_state = json.load(json_data)
+                self.state = j_state
+            else:
+                self.log_add_text('helper','stata_load:error:can not find ' + self.state_file)
         except Exception as e:
             self.log_add_text('helper', str(e))
+        return self.state
 
     def state_save(self):
         try:
-            data = '{"put": {"state":' + str(json.dumps(self.state)) + '}}'
-            response = requests.put(self.config['database']['url'], headers=self.headers, data=data)
-            self.log_add_text('helper', str(response.text))
-            self.log_add_text('helper', 'saved state ' + str(self.state))
-            return
+            data = json.dumps(self.state, indent=4)
+            with open(self.state_file, 'w') as outfile:
+                outfile.write(data)
+            return self.state
         except Exception as e:
-            self.log_add_text('helper', str(self.state))
-            self.log_add_text('helper', 'state_save:' + str(e))
+            self.log_add_text('helper', 'state_save:error:' + str(e))
 
     def state_set_start(self):
         self.state['date_start'] = str(self.now())

@@ -4,6 +4,7 @@ if [ ! -d ~/actioncam ]; then
   echo "create actioncam folders"
 	mkdir ~/actioncam
 	mkdir ~/actioncam/data
+	mkdir ~/actioncam/compressed
 	mkdir ~/actioncam/log
 	mkdir ~/actioncam/recording
 fi

@@ -2,36 +2,23 @@
     "actioncam": {
         "debug": false,
         "actioncam": {
-            "folder_data": "/home/pi/actioncam/data",
             "log_file": "actioncam.log",
-            "log_header": "actioncam",
-            "log_location": "/home/pi/actioncam/log"
+            "log_header": "actioncam"
         },
         "servicerunner": {
             "idle_time": 600000,
             "log_file": "servicerunner.log",
-            "log_header": "servicerunner",
-            "log_location": "/home/pi/actioncam/log"
+            "log_header": "servicerunner"
         },
         "webserver": {
             "server_port": 8080,
             "log_file": "webserver.log",
-            "log_header": "webserver",
-            "log_location": "/home/pi/actioncam/log"
-        },
-        "ServLocalhost": {
-            "server_port": 8081,
-            "log_file": "ServLocalhost.log"
+            "log_header": "webserver"
         },
         "input": {
             "usb_0": 0,
             "usb_1": 1,
             "picamera": 99
-        },
-        "database": {
-            "name": "actioncam.db",
-            "url": "http://localhost:8081/database",
-            "log_file": "database.log"
         },
         "default": {
 	        "folder_data": "/home/pi/actioncam/data",
@@ -41,7 +28,8 @@
             "log_location": "/home/pi/actioncam/log",
             "mode": "stop",
             "output": "avi",
-            "recording_location": "/home/pi/actioncam/recording"
+            "recording_location": "/home/pi/actioncam/recording",
+            "state_file": "state.json"
         },
         "camera": {
             "contour_area": 500,
@@ -56,7 +44,6 @@
             },
             "log_file": "camera.log",
             "log_header": "camera",
-            "log_location": "/home/pi/actioncam/log",
             "mode": {
                 "pause": "pause",
                 "record_interval": "record_interval",
@@ -75,9 +62,9 @@
         },
         "compress": {
             "active": false,
+            "compress_location": "/home/pi/actioncam/compressed",
             "log_file": "compress.log",
             "log_header": "compress",
-            "log_location": "/home/pi/actioncam/log",
             "remove_compressed": false
         },
         "ui": {
@@ -120,7 +107,6 @@
             "active": true,
             "log_file": "send.log",
             "log_header": "send",
-            "log_location": "/home/pi/actioncam/log",
             "target": "mail"
         },
         "test": {

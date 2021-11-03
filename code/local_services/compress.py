@@ -1,82 +1,33 @@
 import fnmatch
 import os
-import requests
 import zipfile
 
 
 class Compress:
 
     def __init__(self, configuration, helper,debug=True):
-        self.config = configuration.config
+        self.config = configuration.default('compress')
         self.helper = helper
         self.debug = debug
 
-        self.default = self.config['default']
-        self.config_output = self.config[self.default['output']]
-        self.failed = 'failed'
         self.name = 'compress'
 
     def compress(self):
-        files = os.listdir(self.config_output['file_location'])
-        file_list = self.getfile_list(files)
-        file_list = self.not_compressed(file_list)
-        if file_list == self.failed:
-            return self.failed
-        if len(file_list) >= 1:
-            zip_name = self.zip_file_name()
-            _zip_created = self.zip_create_files(zip_name, self.config_output['file_location'], file_list)
-            if _zip_created and (self.config[self.name]['remove_compressed'] == "True"):
-                self.remove_old_files(file_list)
-            return zip_name + ' zipped'
+        if os.path.isdir(self.config["compress_location"]):
+            files = os.listdir(self.config["compress_location"])
+            file_list = self.getfile_list(files)
+            if len(file_list) >= 1:
+                zip_name = self.zip_file_name()
+                _zip_created = self.zip_create_files(zip_name, self.config["compress_location"], file_list)
+                if _zip_created and (self.config[self.name]['remove_compressed'] == "True"):
+                    self.remove_old_files(file_list)
+                return zip_name + ' zipped'
+            else:
+                return self.name + ':no new files found to zip'
         else:
-            return self.name + ':no new files found to zip'
-
-    def db_add_compressed(self, compress):
-        self.log('db add compressed ' + compress)
-        response = []
-        try:
-            data = '{"add": {"compressed": "' + compress + '"}}'
-            response = requests.post(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
-        except Exception as e:
-            self.log(str(e))
-            return self.failed
-        return response.text
-
-    def db_add_compressed2recording(self, compress, recording):
-        self.log('db add compressed2recording ' + compress + ',' + recording)
-        response = []
-        try:
-            data = '{"add": {"compressed2recording": ["' + compress + '","' + recording + '"]}}'
-            response = requests.post(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
-        except Exception as e:
-            self.log(str(e))
-            return self.failed
-        return response.text
-
-    def db_query_compressed(self):
-        self.log('db query compressed')
-        result = []
-        try:
-            data = '{"query": {"compressed": "None"}}'
-            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
-            _t = response.text
-            _t = _t.replace(' ', '')
-            _t = _t.replace('[','')
-            _t = _t.replace(']', '')
-            _t = _t.replace('"', '')
-            _t = _t.replace("'", "")
-            result = _t.split(',')
-        except Exception as e:
-            self.log(str(e))
-        return result
-
-    def not_compressed(self, all_files):
-        _compressed = self.db_query_compressed()
-        for c in _compressed:
-            for af in all_files:
-                if c in af:
-                    all_files.remove(af)
-        return all_files
+            problem = 'configured compress_location {0} not found'.format(self.config["compress_location"])
+            self.log(problem)
+            return problem
 
     def getfile_list(self, folder):
         files = []
@@ -91,30 +42,23 @@ class Compress:
     def remove_old_files(self, file_list):
         for file in file_list:
             self.log('remove ' + str(file))
-            os.remove(self.config_output['file_location'] + '/' + file)
+            os.remove(self.config["compress_location"] + '/' + file)
 
     def search_pattern(self):
-        pattern = str(self.default['identify']) + '*' + self.config_output['file_extension']
+        pattern = str(self.config['identify']) + '*' + self.config_output['file_extension']
         return pattern
 
     def zip_create_files(self, zip_name, folder_name, file_list):
         _zip = zipfile.ZipFile(zip_name, "w")
         _rz = zip_name.rfind('/')
-        db_result = self.db_add_compressed(zip_name[_rz+1:])
-        if self.failed == db_result:
-            self.log('db_add_compressed failed with ' + str(db_result))
         for file_name in file_list:
             file_path = folder_name + '/' + file_name
             _zip.write(file_path, arcname=file_name, compress_type=zipfile.ZIP_DEFLATED)
             self.log('added ' + file_path + ' to ' + zip_name)
-            db_result = self.db_add_compressed2recording(zip_name[_rz+1:], file_name)
-            if self.failed == db_result:
-                _zip.close()
-                return False
         _zip.close()
         return True
 
     def zip_file_name(self):
         now_str = self.helper.now_str()
-        file_name = self.config_output['file_location'] + '/' + now_str + ".zip"
+        file_name = self.config["compress_location"] + '/' + now_str + ".zip"
         return file_name
