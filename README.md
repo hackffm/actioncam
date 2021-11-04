@@ -3,7 +3,7 @@
 some python code arround opencv to use a webcam for action detection
 
 
-## Currently implement features
+## currently implemented features
     - recording
     - recording if action of objects tracked by opencv
     - recording of short actions scenes
@@ -11,8 +11,8 @@ some python code arround opencv to use a webcam for action detection
     - mail compressed files
     - simple webfrontend
     
-## Docuementation
-    
+## documentation
+
 to get an overview you can look at the docs section
 actioncam.xml is a draw.io diagramm
 
