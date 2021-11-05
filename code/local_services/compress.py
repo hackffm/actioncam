@@ -6,34 +6,72 @@ import zipfile
 class Compress:
 
     def __init__(self, configuration, helper,debug=True):
-        self.config = configuration.default('compress')
+        self.name = 'compress'
         self.helper = helper
         self.debug = debug
 
-        self.name = 'compress'
+        self.config = configuration.default(self.name)
+        self.data_csv = self.config["folder_data"] + '/' + self.name + ".csv"
 
     def compress(self):
-        if os.path.isdir(self.config["compress_location"]):
-            files = os.listdir(self.config["compress_location"])
-            file_list = self.getfile_list(files)
+        check = self.folders_checked()
+        if check == 'checked':
+            files = os.listdir(self.config["recording_location"])
+            file_list = self.get_valid_files(files)
             if len(file_list) >= 1:
                 zip_name = self.zip_file_name()
-                _zip_created = self.zip_create_files(zip_name, self.config["compress_location"], file_list)
-                if _zip_created and (self.config[self.name]['remove_compressed'] == "True"):
+                _zip_created = self.zip_create_files(zip_name, self.config["recording_location"], file_list)
+                if _zip_created and (self.config['remove_compressed'] == "True"):
                     self.remove_old_files(file_list)
                 return zip_name + ' zipped'
             else:
                 return self.name + ':no new files found to zip'
         else:
-            problem = 'configured compress_location {0} not found'.format(self.config["compress_location"])
+            return check
+
+    def data_load(self):
+        if os.path.exists(self.data_csv):
+            with open(self.data_csv, 'r') as infile:
+                data_loaded = infile.read()
+            return data_loaded
+        else:
+            return ''
+
+    def data_save(self, text):
+        if not '\n' in text:
+            text = text + '\n'
+        with open(self.data_csv, 'a+') as outfile:
+            outfile.write(text)
+
+    def folders_checked(self):
+        if os.path.isdir(self.config["recording_location"]):
+            if self.debug:
+                self.log(self.config["recording_location"] + ' found')
+        else:
+            problem = 'configured recording_location {0} not found'.format(self.config["recording_location"])
             self.log(problem)
             return problem
+        if os.path.isdir(self.config["compress_location"]):
+            if self.debug:
+                self.log(self.config["compress_location"] + ' found')
+        else:
+            problem = 'configured recording_location {0} not found'.format(self.config["compress_location"])
+            self.log(problem)
+            return problem
+        return 'checked'
 
-    def getfile_list(self, folder):
+    def get_compressed(self):
+        data_saved = self.data_load()
+        compressed = data_saved.split('\n')
+        return compressed
+
+    def get_valid_files(self, all_files):
         files = []
-        for filename in folder:
-            if fnmatch.fnmatch(filename, self.search_pattern()):
-                files.append(str(filename))
+        data_saved = self.data_load()
+        for filename in all_files:
+            if filename not in data_saved:
+                if fnmatch.fnmatch(filename, self.search_pattern()):
+                    files.append(str(filename))
         return files
 
     def log(self, text):
@@ -45,7 +83,7 @@ class Compress:
             os.remove(self.config["compress_location"] + '/' + file)
 
     def search_pattern(self):
-        pattern = str(self.config['identify']) + '*' + self.config_output['file_extension']
+        pattern = str(self.config['identify']) + '*' + self.config['output']
         return pattern
 
     def zip_create_files(self, zip_name, folder_name, file_list):
@@ -55,6 +93,7 @@ class Compress:
             file_path = folder_name + '/' + file_name
             _zip.write(file_path, arcname=file_name, compress_type=zipfile.ZIP_DEFLATED)
             self.log('added ' + file_path + ' to ' + zip_name)
+            self.data_save(self.helper.now_str() + ";" + os.path.basename(file_path) + ";" + os.path.basename(zip_name))
         _zip.close()
         return True
 

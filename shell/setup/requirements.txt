@@ -1,3 +1,4 @@
+fnmatch2
 glog
 netifaces
 numpy

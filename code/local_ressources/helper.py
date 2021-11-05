@@ -8,9 +8,8 @@ import socket
 
 class Helper:
 
-    def __init__(self, configuration):
-        self.configuration = configuration
-        self.config = configuration.config
+    def __init__(self, config):
+        self.config = config
 
         self.default = self.config['default']
         self.config_mode = self.config['mode']
@@ -19,7 +18,7 @@ class Helper:
         _config_output = self.default['output']
         self.config_output = self.config[_config_output]
 
-        self.headers = {'content-type': 'application/json','Accept-Charset': 'UTF-8'}
+        self.headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
         self.state = self.state_default()
 
     def datetime_diff_from_string(self, dt_string):

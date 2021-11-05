@@ -6,7 +6,7 @@ if [ ! -d ~/actioncam ]; then
 	mkdir ~/actioncam/data
 	mkdir ~/actioncam/compressed
 	mkdir ~/actioncam/log
-	mkdir ~/actioncam/recording
+	mkdir ~/actioncam/recordings
 fi
 #
 if [ ! -f ~/actioncam/config.json ]; then

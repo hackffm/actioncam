@@ -1,11 +1,11 @@
 import helper_test
 
-from config import Configuration
+from configuration import Configuration
 from local_services import Compress
 from helper import Helper
 
-configuration = Configuration(config_path=helper_test.config_path())
-helper = Helper(configuration)
+configuration = Configuration('actioncam', path=helper_test.config_path())
+helper = Helper(configuration.config)
 helper.state_set_start()
 
 
@@ -27,7 +27,12 @@ def test_compress(configuration, helper):
     compress = Compress(configuration, helper)
     compressed = compress.compress()
     print('compressed:' + compressed)
-    assert 'zip' in compressed, "test_compress failed"
+    assert 'zip' in compressed, "test_compress failed as no zip found in reply"
+    compressed = compress.get_compressed()
+    print('Report')
+    for cmp in compressed:
+        print(cmp)
+    assert len(compressed) >= 1, "test_compress failed as not compressed found"
 
 
 if __name__ == '__main__':

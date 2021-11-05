@@ -1,3 +1,2 @@
-from .config import Configuration
-from .database import Database
+from .configuration import Configuration
 from .helper import Helper

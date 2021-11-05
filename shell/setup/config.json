@@ -21,14 +21,14 @@
             "picamera": 99
         },
         "default": {
-	        "folder_data": "/home/pi/actioncam/data",
+	        "folder_data": "PATHHOME/actioncam/data",
             "identify": "1",
             "log_file": "actioncam.log",
             "log_header": "actioncam",
-            "log_location": "/home/pi/actioncam/log",
+            "log_location": "PATHHOME/actioncam/log",
             "mode": "stop",
             "output": "avi",
-            "recording_location": "/home/pi/actioncam/recording",
+            "recording_location": "PATHHOME/actioncam/recordings",
             "state_file": "state.json"
         },
         "camera": {
@@ -62,7 +62,7 @@
         },
         "compress": {
             "active": false,
-            "compress_location": "/home/pi/actioncam/compressed",
+            "compress_location": "PATHHOME/actioncam/compressed",
             "log_file": "compress.log",
             "log_header": "compress",
             "remove_compressed": false
