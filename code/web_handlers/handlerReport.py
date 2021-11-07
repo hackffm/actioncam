@@ -1,5 +1,6 @@
 import tornado.web
 
+from local_services import Compress
 
 class HandlerReport(tornado.web.RequestHandler):
     def initialize(self, configuration, helper):
@@ -7,11 +8,12 @@ class HandlerReport(tornado.web.RequestHandler):
         self.helper = helper
         self.name = 'HandlerReport'
         self.config = configuration.config
+        self.compress = Compress(configuration, helper)
 
     def get(self):
         try:
-            items = self.helper.report_all()
-            self.render("report.html", title="Report", items=items)
+            items_compressed = self.compress.get_compressed()
+            self.render("report.html", title="Report", items_comp=items_compressed)
         except Exception as e:
             self.log(str(e))
 

@@ -33,7 +33,7 @@ class Compress:
         if os.path.exists(self.data_csv):
             with open(self.data_csv, 'r') as infile:
                 data_loaded = infile.read()
-            return data_loaded
+                return data_loaded
         else:
             return ''
 
@@ -62,7 +62,12 @@ class Compress:
 
     def get_compressed(self):
         data_saved = self.data_load()
-        compressed = data_saved.split('\n')
+        data_saved = data_saved.split('\n')
+        compressed = []
+        for ds in data_saved:
+            _ds = ds.split(";")
+            if len(_ds) == 3:
+                compressed.append(_ds)
         return compressed
 
     def get_valid_files(self, all_files):

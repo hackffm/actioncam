@@ -34,6 +34,7 @@ def handle_message(msg):
             helper.state_save()
             log(msg)
             time.sleep(1.0)
+            print('shutdown actioncam')
             return False
         if msg == 'start':
             log(msg)

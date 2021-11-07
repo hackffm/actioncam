@@ -149,10 +149,6 @@ class Helper:
             infos.append('started:' + date_start)
             infos.append('Now: ' + str(self.now()))
             infos.append('seconds running: ' + dt_diff)
-            prev_old = state['previews_start']
-            prev_new = self.report_all()
-            infos.append('Previews this time:' + str(len(prev_new) - int(prev_old)))
-            infos.append('Previews:' + str(len(prev_new)))
             self.log_add_text('helper', 'state_updated:' + str(infos))
             return infos
         except Exception as e:

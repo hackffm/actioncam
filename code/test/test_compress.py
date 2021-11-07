@@ -18,7 +18,6 @@ def test_compress_folder_does_not_exist(configuration, helper):
     compress = Compress(configuration, helper)
     compress.config["compress_location"] = "DoesNotExist"
     compressed = compress.compress()
-    print('compressed:'+ compressed)
     assert 'not found' in compressed, "test_compress_folder_does_not_exist failed"
 
 
@@ -26,7 +25,6 @@ def test_compress(configuration, helper):
     print('test_compress')
     compress = Compress(configuration, helper)
     compressed = compress.compress()
-    print('compressed:' + compressed)
     assert 'zip' in compressed, "test_compress failed as no zip found in reply"
     compressed = compress.get_compressed()
     print('Report')
@@ -36,5 +34,5 @@ def test_compress(configuration, helper):
 
 
 if __name__ == '__main__':
-    test_compress_folder_does_not_exist(configuration, helper)
     test_compress(configuration, helper)
+    test_compress_folder_does_not_exist(configuration, helper)
