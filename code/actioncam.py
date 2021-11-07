@@ -5,11 +5,11 @@ import time
 from multiprocessing import Process, Queue, Lock
 from multiprocessing import Manager
 
-from local_services import Camera
+from local_ressources import Camera
 from local_ressources import Configuration
 from local_ressources import Helper
-from webserver import WebServer
 from servicerunner import Servicerunner
+from webserver import WebServer
 
 l_lock = Lock()
 q_message = Queue()
@@ -54,30 +54,32 @@ def log(text):
 
 
 if __name__ == '__main__':
-    configuration = Configuration(config_path=config_path())
-    helper = Helper(configuration)
-    logHome = helper.log_home(name)
+    configuration = Configuration(name=name, path=config_path())
+    config = configuration.config
+    helper = Helper(config)
+    log_location = config[name]['log_location']
 
-    debug = configuration.config['debug']
+    debug = config['debug']
     print('debug is ' + str(debug))
+    default_mode = {"actioncam": config['DEFAULT']['mode'],
+                     "camera": config['camera']['mode']['pause'],
+                     "idle": 0}
+
     running = True
+
 
     # start
     handle_message('do:start')
-    if logHome == configuration.config['error']:
-        print('Error:can not create default log files')
-        print('check you config.json')
-        sys.exit()
 
     try:
         with Manager() as manager:
             m_modus = manager.dict()
             m_video = manager.dict()
 
-            helper.dict_copy(configuration.default_mode(), m_modus)
-            p2 = Process(target=Servicerunner, args=(l_lock, configuration, helper, m_modus))
+            helper.dict_copy(default_mode, m_modus)
+            p2 = Process(target=Servicerunner, args=(l_lock, configuration, default_mode, helper, m_modus))
             p3 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
-            p4 = Process(target=Camera, args=(configuration, helper, m_modus, m_video))
+            p4 = Process(target=Camera, args=(configuration, default_mode, helper, m_modus, m_video))
             p2.daemon = True
             p3.daemon = True
             p4.daemon = True
@@ -117,3 +119,4 @@ if __name__ == '__main__':
         sys.exit()
     except Exception as e:
         log('error in actioncam __main__ ' + str(e))
+        print('error in actioncam __main__ ' + str(e))

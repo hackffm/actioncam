@@ -33,7 +33,7 @@ def current_modus_updated(current_modus, helper, m_modus):
 
 @gen.coroutine
 def generate_message_to_sockets(configuration, helper, m_modus):
-    current_modus = configuration.default_mode()
+    current_modus = {}
     while True:
         msg = current_modus_updated(current_modus, helper, m_modus)
         yield [con.write_message(msg) for con in HandlerWebSockets.connections]
@@ -44,7 +44,7 @@ class WebApplication(tornado.web.Application):
     def __init__(self, l_lock, configuration, helper, q_message, m_video):
         current_path = os.path.dirname(os.path.abspath(__file__))
         web_resources = current_path + '/web_resources'
-        output_folder = configuration.recording_folder()
+        recordings = configuration.config['camera']['recording_location']
 
         handlers = [
             (r'/', HandlerIndexPage, dict(configuration=configuration, helper=helper)),
@@ -53,7 +53,7 @@ class WebApplication(tornado.web.Application):
             (r'/camera/stream.jpeg', HandlerCameraStream, dict(m_video=m_video)),
             (r'/config', HandlerConfig, dict(configuration=configuration)),
             (r'/report', HandlerReport, dict(configuration=configuration, helper=helper)),
-            (r'/recordings/(.*)', tornado.web.StaticFileHandler, {'path': output_folder}),
+            (r'/recordings/(.*)', tornado.web.StaticFileHandler, {'path': recordings}),
             (r'/shutdown', HandlerShutdown, dict(helper=helper, l_lock=l_lock, q_message=q_message)),
             (r'/websockets', HandlerWebSockets, dict(helper=helper, ))
         ]

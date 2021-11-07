@@ -2,31 +2,28 @@
     "actioncam": {
         "debug": false,
         "actioncam": {
-            "log_file": "actioncam.log",
-            "log_header": "actioncam"
+            "log_file": "actioncam.log"
         },
         "servicerunner": {
             "idle_time": 600000,
-            "log_file": "servicerunner.log",
-            "log_header": "servicerunner"
+            "log_file": "servicerunner.log"
         },
         "webserver": {
             "server_port": 8080,
-            "log_file": "webserver.log",
-            "log_header": "webserver"
+            "log_file": "webserver.log"
         },
         "input": {
             "usb_0": 0,
             "usb_1": 1,
             "picamera": 99
         },
-        "default": {
+        "DEFAULT": {
 	        "folder_data": "PATHHOME/actioncam/data",
             "identify": "1",
             "log_file": "actioncam.log",
-            "log_header": "actioncam",
             "log_location": "PATHHOME/actioncam/log",
             "mode": "stop",
+            "name": "actioncam",
             "output": "avi",
             "recording_location": "PATHHOME/actioncam/recordings",
             "state_file": "state.json"
@@ -43,7 +40,6 @@
                 "wait": 5
             },
             "log_file": "camera.log",
-            "log_header": "camera",
             "mode": {
                 "pause": "pause",
                 "record_interval": "record_interval",
@@ -64,7 +60,6 @@
             "active": false,
             "compress_location": "PATHHOME/actioncam/compressed",
             "log_file": "compress.log",
-            "log_header": "compress",
             "remove_compressed": false
         },
         "ui": {
@@ -83,8 +78,6 @@
         "preview": {
             "file_extension": ".jpeg"
         },
-        "error": "error",
-        "failed": "failed",
         "mail": {
             "server_password": "MYSECRET",
             "address_from": "USER@domain.com",
@@ -106,7 +99,6 @@
         "send": {
             "active": true,
             "log_file": "send.log",
-            "log_header": "send",
             "target": "mail"
         },
         "test": {

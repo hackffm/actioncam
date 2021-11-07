@@ -13,11 +13,11 @@ class Send:
 
     def __init__(self, configuration, helper):
         self.config = configuration.config
-        self.default = self.config['default']
+        self.default = self.config['DEFAULT']
 
         self.config_mail = self.config['mail']
         self.config_mode = self.config['mode']
-        self.failed = self.config['failed']
+        self.failed = 'failed'
         self.helper = helper
         self.mode = self.default['mode']
         self.name = 'send'

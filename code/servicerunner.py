@@ -6,14 +6,14 @@ from local_services import Send
 
 class Servicerunner:
 
-    def __init__(self, l_lock, configuration, helper, m_modus):
+    def __init__(self, l_lock, configuration, default_mode, helper, m_modus):
         self.configuration = configuration
         self.config = self.configuration.config
         self.helper = helper
         self.m_modus = m_modus
 
         self.compress = Compress(configuration, helper)
-        self.current_modus = self.configuration.default_mode()
+        self.current_modus = default_mode
         self.lock = l_lock
         self.name = 'servicerunner'
         self.send = Send(configuration, helper)

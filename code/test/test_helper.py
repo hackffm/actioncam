@@ -1,19 +1,20 @@
 import helper_test
 
-from config import Configuration
+from configuration import Configuration
 from helper import Helper
 
-configuration = Configuration(config_path=helper_test.config_path())
+configuration = Configuration(name='actioncam', path=helper_test.config_path())
 config = configuration.config
-helper = Helper(configuration)
-_db_name = 'test.db'
-config['database']['name'] = _db_name
+helper = Helper(config)
 
 
-def test_report_all():
-    items = helper.report_all()
-    print(type(items))
-    print(items)
+def test_infos():
+    print('test_infos')
+    infos = helper.infos_self()
+    for info in infos:
+        print(info)
+    assert len(infos) > 1, 'test_infos failed finding infos'
 
 
-test_report_all()
+if __name__ == '__main__':
+    test_infos()

@@ -7,7 +7,7 @@ from PIL import Image
 
 
 class Camera:
-    def __init__(self, configuration, helper, m_modus, m_video):
+    def __init__(self, configuration, default_mode, helper, m_modus, m_video):
         self.configuration = configuration
         self.helper = helper
         self.name = 'camera'
@@ -17,12 +17,15 @@ class Camera:
         self.byte_io = BytesIO()
         self.config = configuration.config
         self.config_camera = self.config['camera']
-        self.current_modus = self.configuration.default_mode()
-        self.config_output = self.configuration.output()
-        self.default = self.config['default']
+        self.current_modus = default_mode
+        self.default = self.config['DEFAULT']
         self.min_area = 500
         self.now = self.helper.now_str()
         self.switched = True
+
+        _output = self.default['output']
+        self.config_output = self.config[_output]
+
         self.run()
 
     def capture_config(self, type):
@@ -76,12 +79,11 @@ class Camera:
             return frame, detected
 
         for c in contours:
-            if cv2.contourArea(c) < self.min_area:
-                continue
-            (x, y, w, h) = cv2.boundingRect(c)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            text = self.text_detected()
-            detected = True
+            if cv2.contourArea(c) > self.min_area:
+                (x, y, w, h) = cv2.boundingRect(c)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                text = self.text_detected()
+                detected = True
 
         cv2.putText(frame, "Status: {}".format(text), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
@@ -115,7 +117,7 @@ class Camera:
     def text_now(self):
         _text_now = str(datetime.datetime.now().strftime(self.config['camera']['text']['format_time']))
         return _text_now
-    
+
     def record_motion(self, duration=100):
         type_motion = 'motion'
         cap, out = self.capture_config(type_motion)

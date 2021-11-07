@@ -12,7 +12,7 @@ fi
 if [ ! -f ~/actioncam/config.json ]; then
   	echo "prepare config"
     cp config.json ~/actioncam
-    sed -i -e 's/pi/'"${USER}"'/g' ~/actioncam/config.json
+    # not requiered anymore sed -i -e 's/pi/'"${USER}"'/g' ~/actioncam/config.json
 fi
 #
 if [ ! -d ~/actioncam/venv ]; then

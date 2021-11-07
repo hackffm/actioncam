@@ -10,7 +10,7 @@ class Compress:
         self.helper = helper
         self.debug = debug
 
-        self.config = configuration.default(self.name)
+        self.config = configuration.config[self.name]
         self.data_csv = self.config["folder_data"] + '/' + self.name + ".csv"
 
     def compress(self):

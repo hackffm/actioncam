@@ -11,7 +11,7 @@ class Helper:
     def __init__(self, config):
         self.config = config
 
-        self.default = self.config['default']
+        self.default = self.config['DEFAULT']
         self.config_mode = self.config['mode']
         self.state_file = self.default["folder_data"] + "/" + self.default["state_file"]
 
@@ -100,26 +100,19 @@ class Helper:
         return ifaces
 
     def log_add_text(self, name, text):
-        l_home, pre_text = self.log_home(name)
-        text = self.now_str() + ': ' + pre_text + ' ' + str(text)
+        if name not in self.config:
+            name = self.config['DEFAULT']['name']
+        l_home = self.log_home(name)
+        text = self.now_str() + ': ' + name + ':' + str(text)
         with open(l_home, 'a') as outfile:
             outfile.write(text + '\n')
 
     def log_home(self, name):
-        _config = self.default
-        _log_location = _config['log_location']
-        _log_file = _config['log_file']
-        _pre_text = name + ':'
-        if name in self.config:
-            _config = self.config[name]
-            if 'log_location' in _config:
-                _log_location = _config['log_location']
-            if 'log_file' in _config:
-                _log_file = _config['log_file']
-                _pre_text = ''
-        log_home_path = _log_location + '/' + _log_file
-        self.folder_create_once(_log_location)
-        return [log_home_path, _pre_text]
+        if name not in self.config:
+            name = self.config['DEFAULT']['name']
+        log_home_path = self.config[name]['log_location'] + '/' + self.config[name]['log_file']
+        self.folder_create_once(self.config[name]['log_location'] )
+        return log_home_path
 
     def not_local(self, ip):
         if ip != '127.0.0.1':
@@ -132,23 +125,11 @@ class Helper:
     def now_str(self):
         return datetime.datetime.now().strftime(self.config_output['file_format_time'])
 
-    def report_number_recorded(self):
-        reports = self.report_all()
-        return len(reports)
-
-    def report_all(self):
-        try:
-            data = '{"query": {"report": "None"}}'
-            return
-        except Exception as e:
-            self.log_add_text('helper', str(e))
-            return []
-
     # -- state --------------------------------------------------
     def state_default(self):
         state = {}
         state['date_start'] = self.now()
-        state['mode'] = self.config['default']['mode']
+        state['mode'] = self.config['DEFAULT']['mode']
         state['previews_start'] = 0
         return state
 
