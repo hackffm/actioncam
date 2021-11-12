@@ -1,6 +1,5 @@
 import fnmatch
 import os
-import requests
 import smtplib
 
 from email.mime.multipart import MIMEMultipart
@@ -11,62 +10,40 @@ from email import encoders
 
 class Send:
 
-    def __init__(self, configuration, helper):
-        self.config = configuration.config
-        self.default = self.config['DEFAULT']
-
-        self.config_mail = self.config['mail']
-        self.config_mode = self.config['mode']
-        self.failed = 'failed'
-        self.helper = helper
-        self.mode = self.default['mode']
+    def __init__(self, configuration, helper, debug):
         self.name = 'send'
+        self.helper = helper
+        self.debug = debug
 
-        _config_output = self.default['output']
-        self.config_output = self.config[_config_output]
+        self.config = configuration.config[self.name]
+        self.data_csv = self.config["folder_data"] + '/' + self.name + ".csv"
 
-    def db_add_send(self,  compress, size, date):
-        self.log('db add send ' + compress + ',' + date)
-        response = []
-        try:
-            data = '{"add": { "send": {"compressed": "' + compress + '", "size": "' + size
-            data = data + '", "mail": "' + self.config_mail['address_to'] + '", "date": "' + str(date) + '" }}}'
-            response = requests.post(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
-        except Exception as e:
-            self.log('db_add_send:' + str(e))
-            return self.failed
-        return response.text
+    def data_load(self):
+        if os.path.exists(self.data_csv):
+            with open(self.data_csv, 'r') as infile:
+                data_loaded = infile.read()
+                return data_loaded
+        else:
+            return []
 
-    def db_query_send(self):
-        self.log('db query send')
-        result = []
-        try:
-            data = '{"query": {"send": "None"}}'
-            response = requests.get(self.config['database']['url'], headers=self.config['database']['headers'], data=data)
-            _t = response.text
-            _t = _t.replace(' ', '')
-            _t = _t.replace('[', '')
-            _t = _t.replace(']', '')
-            _t = _t.replace('"', '')
-            _t = _t.replace("'", "")
-            result = _t.split(',')
-        except Exception as e:
-            self.log('db_query_send:' + str(e))
-            return self.failed
-        return result
+    def data_save(self, text):
+        if '\n' not in text:
+            text = text + '\n'
+        with open(self.data_csv, 'a+') as outfile:
+            outfile.write(text)
 
     def log(self, text):
         self.helper.log_add_text(self.name, text)
 
     def zips_not_send(self, ziplist):
-        q_sended = self.db_query_send()
-        if q_sended != self.failed:
+        q_sended = self.data_load()
+        if len(q_sended) > 0:
             for zipname in q_sended:
-                if zipname in ziplist:
+                if zipname.split(";")[1] in ziplist:
                     ziplist.remove(zipname)
             return ziplist
         else:
-            return self.failed
+            return []
 
     def zips_in_folder(self, folder_name):
         zip_files = []
@@ -77,12 +54,13 @@ class Send:
 
     def send_zip_by_mail(self, zippath):
         msg = MIMEMultipart()
+        config_mail = self.config['mail']
         try:
-            address_from = self.config_mail['address_from']
-            address_to = self.config_mail['address_to']
+            address_from = config_mail['address_from']
+            address_to = config_mail['address_to']
             msg['From'] = address_from
             msg['To'] = address_to
-            msg['Subject'] = self.config_mail['subject']
+            msg['Subject'] = config_mail['subject']
             body = 'see attachment'
             msg.attach(MIMEText(body, 'plain'))
 
@@ -94,17 +72,17 @@ class Send:
             msg.attach(part)
 
             self.log('sending ' + zippath + ' as mail attachment to ' + address_from)
-            if self.helper.is_online(self.config_mail['server'], self.config_mail['server_port']):
-                server = smtplib.SMTP(self.config_mail['server'], self.config_mail['server_port'])
+            if self.helper.is_online(config_mail['server'], config_mail['server_port']):
+                server = smtplib.SMTP(config_mail['server'], config_mail['server_port'])
                 server.starttls()
-                server.login(address_from, str(self.config_mail['server_password']))
+                server.login(address_from, str(config_mail['server_password']))
                 text = msg.as_string()
                 server.sendmail(address_from, address_to, text)
                 server.quit()
                 return True
             else:
-                self.log('mail server ' + str(self.config_mail['server']) + ':' + str(self.config_mail['server_port'])
-                         + ' is offline')
+                self.log('mail server ' + str(config_mail['server']) + ':' +
+                         str(config_mail['server_port']) + ' is offline')
                 return False
         except Exception as e:
             self.log('send_zip_by_mail failed with ' + str(e))
@@ -113,24 +91,19 @@ class Send:
     def send_zips(self, zips):
         self.log('send_zips')
         for zip_name in zips:
-            zippath = self.config_output['file_location'] + '/' + zip_name
+            zippath = self.config['folder_data'] + '/' + zip_name
             if self.send_zip_by_mail(zippath):
                 zipsize = os.path.getsize(zippath) / 1024
-                now_str = self.helper.now_str()
-                try:
-                    self.db_add_send(compress=str(zip_name), size=str(zipsize), date=str(now_str))
-                except Exception as e:
-                    self.log('db_add_send ' + str(e))
+                self.data_save(self.helper.now_str() + ";" + os.path.basename(zippath) + ";" + zipsize)
             else:
                 self.log('failed to sending ' + zippath)
-                return self.failed
         return 'done'
 
     def send_mail(self):
-        files = os.listdir(self.config_output['file_location'])
+        files = os.listdir(self.config['recording_location'])
         zips = self.zips_in_folder(files)
         zips = self.zips_not_send(zips)
-        if len(zips) >= 1 and zips != self.failed:
+        if len(zips) >= 1:
             result = self.send_zips(zips)
             return 'send_mail:' + result
         else:

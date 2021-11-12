@@ -99,7 +99,8 @@
         "send": {
             "active": true,
             "log_file": "send.log",
-            "target": "mail"
+            "send_location": "PATHHOME/actioncam/send",
+            "targets": ["mail"]
         },
         "test": {
             "log_file": "test.log"

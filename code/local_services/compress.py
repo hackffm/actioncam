@@ -5,7 +5,7 @@ import zipfile
 
 class Compress:
 
-    def __init__(self, configuration, helper,debug=True):
+    def __init__(self, configuration, helper, debug=False):
         self.name = 'compress'
         self.helper = helper
         self.debug = debug

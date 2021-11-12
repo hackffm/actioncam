@@ -7,15 +7,11 @@ from helper import Helper
 configuration = Configuration('actioncam', path=helper_test.config_path())
 helper = Helper(configuration.config)
 helper.state_set_start()
-
-
-def log(text):
-    helper.log_add_text('test', text)
-
+debug = True
+compress = Compress(configuration, helper, debug)
 
 def test_compress_folder_does_not_exist(configuration, helper):
     print('test_compress_folder_does_not_exist')
-    compress = Compress(configuration, helper)
     compress.config["compress_location"] = "DoesNotExist"
     compressed = compress.compress()
     assert 'not found' in compressed, "test_compress_folder_does_not_exist failed"
@@ -23,7 +19,6 @@ def test_compress_folder_does_not_exist(configuration, helper):
 
 def test_compress(configuration, helper):
     print('test_compress')
-    compress = Compress(configuration, helper)
     compressed = compress.compress()
     assert 'zip' in compressed, "test_compress failed as no zip found in reply"
     compressed = compress.get_compressed()
