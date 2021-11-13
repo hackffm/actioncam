@@ -27,11 +27,19 @@ def test_send_data_load():
 
 def test_send_send():
     print("test_send_send")
+    print('load testconfig for mail and upload')
     with open(send.config["folder_data"] + "/mail.json") as json_data:
         j_config = json.load(json_data)
     send.configuration.config["mail"] = j_config
     config_mail = send.configuration.config['mail']
     print(json.dumps(config_mail, indent=4, sort_keys=True))
+    with open(send.config["folder_data"] + "/upload.json") as json_data:
+        j_config = json.load(json_data)
+    send.configuration.config["upload"] = j_config
+    config_upload = send.configuration.config['upload']
+    print(json.dumps(config_upload, indent=4, sort_keys=True))
+    file_test = configuration.config["DEFAULT"]["recording_location"] + "/" + configuration.config["DEFAULT"]["identify"] + "_20211113" + "." + configuration.config["DEFAULT"]["output"]
+    helper.file_touch(file_test)
     send.send()
 
 

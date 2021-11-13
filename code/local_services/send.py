@@ -1,5 +1,6 @@
 import fnmatch
 import os
+import requests
 import smtplib
 
 from email.mime.multipart import MIMEMultipart
@@ -34,28 +35,21 @@ class Send:
         with open(self.data_csv, 'a+') as outfile:
             outfile.write(text)
 
+    def files_not_in_data(self, fileslist):
+        data_send = self.data_load()
+        if len(data_send) > 0:
+            for ds in data_send:
+                ds = ds.split(";")[2].replace("\n", "")
+                if ds in fileslist:
+                    fileslist.remove(ds)
+            return fileslist
+        else:
+            return fileslist
+
     def log(self, text):
         self.helper.log_add_text(self.name, text)
 
-    def send(self):
-        results = []
-        for target in self.config["targets"]:
-            if target == "mail":
-                _path_compressed = self.configuration.config['compress']['compress_location']
-                files = os.listdir(_path_compressed)
-                zips = self.zips_in_folder(files)
-                zips = self.zips_not_send(zips)
-                if self.debug:
-                    self.log("Debug: {} Files found {} Files to be send".format(str(len(files)), str(len(zips))))
-                for zip_name in zips:
-                    zippath = _path_compressed + '/' + zip_name
-                    if self.debug:
-                        self.log("Debug: send by mail" + zippath)
-                    if self.send_to_mail(zippath):
-                        self.data_save(self.helper.now_str() + ";mail;" + zip_name)
-        return results
-
-    def send_to_mail(self, zippath):
+    def mail_zip(self, zippath):
         config_mail = self.configuration.config['mail']
         try:
             address_from = config_mail['address_from']
@@ -74,7 +68,7 @@ class Send:
             part.add_header('Content-Disposition', 'attachment; filename=  %s' % os.path.basename(zippath))
             msg.attach(part)
 
-            self.log('sending ' + zippath + ' as mail attachment to ' + address_to)
+            self.log('Mail:' + zippath + ' as attachment to ' + address_to)
             if self.helper.is_online(config_mail['server'], config_mail['server_port']):
                 server = smtplib.SMTP(config_mail['server'], config_mail['server_port'])
                 server.starttls()
@@ -84,26 +78,55 @@ class Send:
                 server.quit()
                 return True
             else:
-                self.log('Error:' + str(config_mail['server']) + ':' + str(config_mail['server_port']) + ' is offline')
+                self.log('Mail:Error:' + str(config_mail['server']) + ':' + str(config_mail['server_port']) + ' is offline')
                 return False
         except Exception as e:
-            self.log('send_zip_by_mail failed with ' + str(e))
+            self.log('Mail:Error:' + str(e))
             return False
 
-    def zips_not_send(self, ziplist):
-        q_sended = self.data_load()
-        if len(q_sended) > 0:
-            for zipname in q_sended:
-                zipname = zipname.split(";")[2].replace("\n","")
-                if zipname in ziplist:
-                    ziplist.remove(zipname)
-            return ziplist
-        else:
-            return ziplist
+    def send(self):
+        results = []
+        for target in self.config["targets"]:
+            if target == "mail":
+                self.send_to_mail()
+            if target == "upload":
+                self.send_to_upload()
+        return results
 
-    def zips_in_folder(self, folder_name):
-        zip_files = []
-        for file_name in folder_name:
-            if fnmatch.fnmatch(file_name, '*.zip'):
-                zip_files.append(file_name)
-        return zip_files
+    def send_to_mail(self):
+        files = os.listdir(self.configuration.config['compress']['compress_location'])
+        files = self.valid_file_in_list(files, '*.zip')
+        zips = self.files_not_in_data(files)
+        if self.debug:
+            self.log("Debug: {} Files found {} Files to be send".format(str(len(files)), str(len(zips))))
+        for zip_name in zips:
+            zippath = self.configuration.config['compress']['compress_location'] + '/' + zip_name
+            if self.debug:
+                self.log("Debug: send by mail" + zippath)
+            if self.mail_zip(zippath):
+                self.data_save(self.helper.now_str() + ";mail;" + zip_name)
+        return
+
+    def send_to_upload(self):
+        files = os.listdir(self.config["recording_location"])
+        files = self.valid_file_in_list(files, '*.avi')
+        files_upload = self.files_not_in_data(files)
+        if self.debug:
+            self.log("Debug: {} Files found {} Files to be Uploaded".format(str(len(files)), str(len(files_upload))))
+        for file in files_upload:
+            _path_file = self.config["recording_location"] + "/" + file
+            if self.upload_file(_path_file):
+                self.data_save(self.helper.now_str() + ";upload;" + file)
+        return
+
+    def upload_file(self, path_file):
+        config_upload = self.configuration.config["upload"]
+        self.log("Upload:" + os.path.basename(path_file) + " to " + config_upload["url"])
+        return True
+
+    def valid_file_in_list(self, files, file_type):
+        files_valid = []
+        for file_name in files:
+            if fnmatch.fnmatch(file_name, file_type):
+                files_valid.append(file_name)
+        return files_valid
