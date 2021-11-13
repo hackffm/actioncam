@@ -20,6 +20,7 @@ class Compress:
             file_list = self.get_valid_files(files)
             if len(file_list) >= 1:
                 zip_name = self.zip_file_name()
+                self.log("create " + zip_name)
                 _zip_created = self.zip_create_files(zip_name, self.config["recording_location"], file_list)
                 if _zip_created and (self.config['remove_compressed'] == "True"):
                     self.remove_old_files(file_list)

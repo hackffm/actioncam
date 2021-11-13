@@ -10,6 +10,7 @@ helper.state_set_start()
 debug = True
 compress = Compress(configuration, helper, debug)
 
+
 def test_compress_folder_does_not_exist(configuration, helper):
     print('test_compress_folder_does_not_exist')
     compress.config["compress_location"] = "DoesNotExist"
@@ -19,8 +20,11 @@ def test_compress_folder_does_not_exist(configuration, helper):
 
 def test_compress(configuration, helper):
     print('test_compress')
+    file_test = configuration.config["DEFAULT"]["recording_location"] + "/" + configuration.config["DEFAULT"]["identify"] + "_20211113" + "." + configuration.config["DEFAULT"]["output"]
+    helper.file_touch(file_test)
     compressed = compress.compress()
     assert 'zip' in compressed, "test_compress failed as no zip found in reply"
+    helper.file_delete(file_test)
     compressed = compress.get_compressed()
     print('Report')
     for cmp in compressed:

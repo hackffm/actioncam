@@ -38,11 +38,6 @@ class Helper:
             self.log_add_text('actioncam', 'Error[Helper]' + str(e))
         return dt
 
-    def file_exists(self, path_file):
-        if not os.path.isfile(path_file):
-            return False
-        return True
-
     def folder_create_once(self, folder_path):
         try:
             if not os.path.exists(folder_path):
@@ -200,6 +195,23 @@ class Helper:
             if item not in two:
                 return False
         return True
+
+    @staticmethod
+    def file_delete(path_file):
+        if os.path.exists(path_file):
+            os.remove(path_file)
+
+    @staticmethod
+    def file_exists(path_file):
+        if not os.path.isfile(path_file):
+            return False
+        return True
+
+    @staticmethod
+    def file_touch(path_file):
+        if not os.path.exists(path_file):
+            with open(path_file, 'w'):
+                pass
 
     @staticmethod
     def is_different_modus(old, new):

@@ -28,7 +28,7 @@ class Servicerunner:
             return False
 
     def log(self, text):
-        self.helper.log_add_text('servicerunner', text)
+        self.helper.log_add_text(self.name, text)
 
     def reset(self, info, _modus):
         if len(info) >= 1:
@@ -43,7 +43,7 @@ class Servicerunner:
 
     def run(self):
         idle = 0
-        idle_time = self.config['servicerunner']['idle_time']
+        idle_time = self.config[self.name]['idle_time']
         new_modus = {}
         _running = True
 
