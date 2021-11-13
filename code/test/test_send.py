@@ -17,7 +17,7 @@ def test_send_config():
     assert isinstance(targets, list), "Targets is not a List"
 
 
-def test_send_data():
+def test_send_data_load():
     print("test_data_load")
     q_sended = send.data_load()
     print(str(len(q_sended)) + " sended Files")
@@ -25,4 +25,4 @@ def test_send_data():
 
 if __name__ == '__main__':
     test_send_config()
-    test_send_data()
+    test_send_data_load()
