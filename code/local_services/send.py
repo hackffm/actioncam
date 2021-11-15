@@ -11,7 +11,7 @@ from email import encoders
 
 class Send:
 
-    def __init__(self, configuration, helper, debug):
+    def __init__(self, configuration, helper, debug=False):
         self.name = 'send'
         self.helper = helper
         self.debug = debug
@@ -87,6 +87,8 @@ class Send:
     def send(self):
         results = []
         for target in self.config["targets"]:
+            if self.debug:
+                self.log("target:" + target)
             if target == "mail":
                 self.send_to_mail()
             if target == "upload":
@@ -122,6 +124,26 @@ class Send:
     def upload_file(self, path_file):
         config_upload = self.configuration.config["upload"]
         self.log("Upload:" + os.path.basename(path_file) + " to " + config_upload["url"])
+        api = config_upload["api"]
+        port = config_upload["port"]
+        url = config_upload["url"]
+        files = {'image': open(path_file, 'rb')}
+        values = {
+            'id': self.config["identify"],
+            'date': self.helper.now_str(),
+            "location": config_upload["location"]
+        }
+        try:
+            if self.helper.is_online(url, port):
+                host = url + ":" + str(port) + "/" + api
+                requests.post(host, files=files, data=values)
+                self.log("uploaded:" + path_file)
+            else:
+                self.log("error:" + url + " is offline")
+                return False
+        except Exception as e:
+            print(e)
+            return False
         return True
 
     def valid_file_in_list(self, files, file_type):

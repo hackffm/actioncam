@@ -20,6 +20,7 @@
         "DEFAULT": {
 	        "folder_data": "PATHHOME/actioncam/data",
             "identify": "1",
+            "location": "default",
             "log_file": "actioncam.log",
             "log_location": "PATHHOME/actioncam/log",
             "mode": "stop",
@@ -103,8 +104,9 @@
             "targets": ["mail","upload"]
         },
         "upload": {
-            "url": "http://servername:port",
-            "location": "room",
+            "url": "http://servername",
+            "port": "80",
+            "api": "/",
             "position": "0.1,0.1,0.1"
         },
         "test": {

@@ -222,13 +222,18 @@ class Helper:
         return False
 
     @staticmethod
-    def is_online(_host, _port):
+    def is_online(_host, _port=80):
         try:
             host = socket.gethostbyname(_host)
-            s = socket.create_connection((host, _port), 2)
+            s = socket.create_connection((_host, _port), 2)
             return True
         except:
-            return False
+            try:
+                import urllib.request
+                if urllib.request.urlopen(_host + ":" + _port).getcode() == 200:
+                    return  True
+            except:
+                return False
 
     @staticmethod
     def loop(count=1000000):
