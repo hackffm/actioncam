@@ -49,16 +49,12 @@
     </div>
     <hr>
     <div id="submit">
-      <table>
-        <tr>
-        <td><label>Submit:</label></td>
-        <td><a id="iconSubmit" ><span>submit</span></a></td>
-        </tr>
-      </table>
+        <label>Submit:</label>
+        <button id="btnSubmit">Submit</button>
     </div>
 	<!-- Scripts after load----------------------------------------------------->
 	<script>
-	    let ident = document.getElementById("valIdentify");
+	    let identifiy = document.getElementById("valIdentify");
 	    let smode = document.getElementById("selectedMode");
 	    let cInput = document.getElementById("valCameraID");
         let fLength = document.getElementById("valFileLength");
@@ -66,17 +62,17 @@
         let rLocation = document.getElementById("valRecordingLocation");
         let config = ''
         let xhr = new XMLHttpRequest();
-        xhr.timeout = 10000; // timeout in ms, 10 seconds
         xhr.onreadystatechange = function() {
           if(this.readyState === 4) {
               config = JSON.parse(this.responseText);
-              ident.value=config.default.identify;
+              console.log(config);
+              identifiy.value = config.DEFAULT.identify;
               addModeSelections(config);
-              output = config.default['output'];
+              output = config.DEFAULT.output;
               fLength.value = config[output].file_length;
               cInput.value = config["camera"]["input"];
               wPort.value = config['webserver'].server_port;
-              rLocation.value = config['default'].recording_location;
+              rLocation.value = config.DEFAULT.recording_location;
           }
         };
         xhr.onerror = function() {
@@ -84,7 +80,7 @@
         };
         function addModeSelections(config) {
             let option = document.createElement("option");
-            option.text = config.default.mode;
+            option.text = config.DEFAULT.mode;
             smode.add(option);
             _modes = config.mode;
             for (var _m in _modes ) {
@@ -109,10 +105,10 @@
             return strSelected;
         }
         function sendConfig(){
-          config.default.identify = ident.value;
-          config.default.mode = getSelectedMode();
+          config.DEFAULT.identify = identifiy.value;
+          config.DEFAULT.mode = getSelectedMode();
           config["camera"]["input"] = cInput.value;
-          config['default'].recording_location = rLocation.value;
+          config.DEFAULT.recording_location = rLocation.value;
           config[output].file_length = fLength.value;
           config['webserver'].server_port = wPort.value;
           sendJson(config);
@@ -124,7 +120,7 @@
             xhr.send(JSON.stringify(data));
         }
         window.onload = function () {
-            document.getElementById("iconSubmit").addEventListener("click",function(){ sendConfig() } );
+            document.getElementById("btnSubmit").addEventListener("click",function(){ sendConfig() } );
             getConfig()
 		}
 	</script>

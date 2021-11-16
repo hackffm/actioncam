@@ -3,30 +3,19 @@ import json
 import os
 
 
-def path_home():
-    _path = os.getenv('USERPROFILE')
-    if _path == '' or _path is None:
-        _path = os.getenv('HOME')
-    _path = str(_path)
-    _path = _path.replace('\\', '/')
-    return _path
-
-
-def replacements():
-    _homepath = path_home()
-    key_value_pairs = {"PATHHOME":_homepath}
-    return key_value_pairs
-
-
 class Configuration:
 
-    def __init__(self, name, path='../config.json'):
+    def __init__(self, name, path='../config.json', debug=False):
         self.config_name = name
+        self.config_path = path
+        self.debug = debug
+
         self.config = self.load(path)
         self.copy_default_to_all_sections()
 
     def load(self, config_path):
-        print('load config from', config_path)
+        if self.debug:
+            print('load config from', config_path)
         if os.path.exists(config_path):
             with open(config_path) as json_data:
                 j_config = json.load(json_data)
@@ -35,21 +24,29 @@ class Configuration:
             else:
                 print(self.config_name + ' not found in ' + config_path)
                 return {}
-            j_config = self.dict_replace_values(j_config, replacements())
+            j_config = self.dict_replace_values(j_config, self.replacements())
+            self.config_path = config_path
             return j_config
         else:
             print('config file %s not found' % config_path)
             return {}
 
     def save(self):
-        data = {self.config_name : self.config}
-        data = json.dumps(data, indent=4)
-        with open(self.config_path, 'w') as outfile:
-            outfile.write(data)
-        print('new config saved in', self.config_path)
-        return
-
+        data = self.config
+        deletions = []
+        if "DEFAULT" in self.config:
+            _default = self.config['DEFAULT']
+            for k_c , v_c in self.config.items():
+                if k_c != "DEFAULT" and k_c != "debug":
+                    for kk_c, vv_c in self.config[k_c].items():
+                        for k_d, v_d in _default.items():
+                            if kk_c == k_d and self.config[k_c][kk_c] == v_d:
+                                deletions.append([k_c,kk_c])
+        for deletion in deletions:
+            del data[deletion[0]][deletion[1]]
+        return self.save_json(data)
     # -- Helper ------------------------------------------------------------------
+
     def copy_default_to_all_sections(self):
         if 'DEFAULT' in self.config:
             _DEFAULT = self.config['DEFAULT']
@@ -68,7 +65,6 @@ class Configuration:
                     if r in v:
                         v = v.replace(r, replace[r])
                         obj[k] = v
-                    # print(indent + k + " : " + v)
                 if isinstance(v, list):
                     _v = []
                     for value in v:
@@ -76,6 +72,28 @@ class Configuration:
                         _v.append(value)
                     obj[k] = _v
                 if isinstance(v, dict):
-                    # print(indent + k)
                     self.dict_replace_values(v, replace, indent + indent)
         return obj
+
+    def path_home(self):
+        _path = os.getenv('USERPROFILE')
+        if _path == '' or _path is None:
+            _path = os.getenv('HOME')
+        _path = str(_path)
+        _path = _path.replace('\\', '/')
+        if self.debug:
+            print("Home Path is " + _path)
+        return _path
+
+    def replacements(self):
+        _homepath = self.path_home()
+        key_value_pairs = {"PATHHOME": _homepath}
+        return key_value_pairs
+
+    def save_json(self, data):
+        data = json.dumps(data, indent=4)
+        with open(self.config_path, 'w') as outfile:
+            outfile.write(data)
+        if self.debug:
+            print('new config saved in', self.config_path)
+        return

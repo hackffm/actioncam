@@ -1,9 +1,7 @@
 {
     "actioncam": {
         "debug": false,
-        "actioncam": {
-            "log_file": "actioncam.log"
-        },
+        "actioncam": {},
         "servicerunner": {
             "idle_time": 600000,
             "log_file": "servicerunner.log"
