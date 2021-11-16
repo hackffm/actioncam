@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import collections
 import json
 import os
 
@@ -6,7 +7,7 @@ import os
 class Configuration:
 
     def __init__(self, name, path='../config.json', debug=False):
-        self.config_name = name
+        self.name = name
         self.config_path = path
         self.debug = debug
 
@@ -19,10 +20,10 @@ class Configuration:
         if os.path.exists(config_path):
             with open(config_path) as json_data:
                 j_config = json.load(json_data)
-            if self.config_name in j_config:
-                j_config = j_config[self.config_name]
+            if self.name in j_config:
+                j_config = j_config[self.name]
             else:
-                print(self.config_name + ' not found in ' + config_path)
+                print(self.name + ' not found in ' + config_path)
                 return {}
             j_config = self.dict_replace_values(j_config, self.replacements())
             self.config_path = config_path
@@ -91,6 +92,8 @@ class Configuration:
         return key_value_pairs
 
     def save_json(self, data):
+        data = collections.OrderedDict(sorted(data.items()))
+        data = { self.name : data }
         data = json.dumps(data, indent=4)
         with open(self.config_path, 'w') as outfile:
             outfile.write(data)

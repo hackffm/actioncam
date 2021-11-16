@@ -1,4 +1,5 @@
 import json
+import collections
 
 import helper_test
 
@@ -15,7 +16,9 @@ helper.state_set_start()
 def test_config_default():
     print("test_config_default")
     assert configuration.config['DEFAULT'] != "", "Failed checkingd Default"
-    print(json.dumps(configuration.config['DEFAULT'], indent=4, sort_keys=True))
+    j = configuration.config['DEFAULT']
+    j = collections.OrderedDict(sorted(j.items()))
+    print(json.dumps(j, indent=4, sort_keys=True))
 
 
 def test_config_save():

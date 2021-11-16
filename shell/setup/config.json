@@ -61,11 +61,6 @@
             "log_file": "compress.log",
             "remove_compressed": false
         },
-        "ui": {
-            "show_Threshold": false,
-            "show_FrameDelta": false,
-            "show_cameraFrame": "True"
-        },
         "avi": {
             "file_format_time": "%Y%m%d%H%M%S",
             "file_extension": ".avi",
