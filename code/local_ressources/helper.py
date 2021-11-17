@@ -56,11 +56,9 @@ class Helper:
         return file_list
 
     def infos_self(self):
-        infos = []
-        infos.append('hostname ' + str(socket.gethostname()))
-        infos.append('PID ' + str(os.getpid()))
-        ifaces = self.interfaces_self()
-        for iface in ifaces:
+        infos = ['hostname ' + str(socket.gethostname()), 'PID ' + str(os.getpid())]
+        _interface = self.interfaces_self()
+        for iface in _interface:
             infos.append(iface)
         infos.append('port ' + str(self.config['webserver']['server_port']))
         return infos
@@ -74,29 +72,30 @@ class Helper:
         return '127.0.0.1'
 
     def interfaces_self(self):
-        ifaces = []
+        _interfaces = []
         for interface in netifaces.interfaces():
             if interface != 'lo':
                 if 2 in netifaces.ifaddresses(interface):
                     _i = netifaces.ifaddresses(interface)
                     _i = _i[2][0]['addr']
                     if self.not_local(_i):
-                        ifaces.append(_i)
+                        _interfaces.append(_i)
                 if 17 in netifaces.ifaddresses(interface):
                     _i = netifaces.ifaddresses(interface)
                     _i = _i[17][0]['addr']
                     if self.not_local(_i):
-                        ifaces.append(_i)
+                        _interfaces.append(_i)
                 if 18 in netifaces.ifaddresses(interface):
                     _i = netifaces.ifaddresses(interface)
                     _i = _i[18][0]['addr']
                     if self.not_local(_i):
-                        ifaces.append(_i)
-        return ifaces
+                        _interfaces.append(_i)
+        return _interfaces
 
     def log_add_text(self, name, text):
         if name not in self.config:
             name = self.config['DEFAULT']['name']
+            text = name + ":" + str(text)
         l_home = self.log_home(name)
         text = self.now_str() + ': ' + name + ':' + str(text)
         with open(l_home, 'a') as outfile:
@@ -106,7 +105,7 @@ class Helper:
         if name not in self.config:
             name = self.config['DEFAULT']['name']
         log_home_path = self.config[name]['log_location'] + '/' + self.config[name]['log_file']
-        self.folder_create_once(self.config[name]['log_location'] )
+        self.folder_create_once(self.config[name]['log_location'])
         return log_home_path
 
     def not_local(self, ip):
@@ -122,10 +121,7 @@ class Helper:
 
     # -- state --------------------------------------------------
     def state_default(self):
-        state = {}
-        state['date_start'] = self.now()
-        state['mode'] = self.config['DEFAULT']['mode']
-        state['previews_start'] = 0
+        state = {'date_start': self.now(), 'mode': self.config['DEFAULT']['mode'], 'previews_start': 0}
         return state
 
     def state_updated(self):
@@ -140,14 +136,11 @@ class Helper:
                 dt_diff = dt_diff + " min"
             else:
                 dt_diff = str(dt_diff)
-            infos = []
-            infos.append('started:' + date_start)
-            infos.append('Now: ' + str(self.now()))
-            infos.append('seconds running: ' + dt_diff)
+            infos = ['started:' + date_start, 'Now: ' + str(self.now()), 'seconds running: ' + dt_diff]
             self.log_add_text('helper', 'state_updated:' + str(infos))
             return infos
         except Exception as e:
-            self.log_add_text('helper', 'state_updated:' +str(e))
+            self.log_add_text('helper', 'state_updated:' + str(e))
             return []
 
     def state_load(self):
@@ -157,7 +150,7 @@ class Helper:
                     j_state = json.load(json_data)
                 self.state = j_state
             else:
-                self.log_add_text('helper','stata_load:error:can not find ' + self.state_file)
+                self.log_add_text('helper', 'stata_load:error:can not find ' + self.state_file)
         except Exception as e:
             self.log_add_text('helper', str(e))
         return self.state
@@ -167,17 +160,18 @@ class Helper:
             data = json.dumps(self.state, indent=4)
             with open(self.state_file, 'w') as outfile:
                 outfile.write(data)
-            return self.state
         except Exception as e:
             self.log_add_text('helper', 'state_save:error:' + str(e))
+        return True
 
     def state_set_start(self):
         self.state['date_start'] = str(self.now())
         self.state_save()
+        return True
 
     # -- statics ------------------------------------------------
     def dict_copy(self, source_modus, dest_modus):
-        if not isinstance(source_modus,dict):
+        if not isinstance(source_modus, dict):
             try:
                 source_modus = dict(source_modus)
             except Exception as e:
@@ -186,15 +180,6 @@ class Helper:
         for k, v in source_modus.items():
             dest_modus[k] = v
         return dest_modus
-
-    @staticmethod
-    def dict_same_structure(one, two):
-        if len(one) != len(two):
-            return False
-        for item in one:
-            if item not in two:
-                return False
-        return True
 
     @staticmethod
     def file_delete(path_file):
@@ -215,6 +200,11 @@ class Helper:
 
     @staticmethod
     def is_different_modus(old, new):
+        if len(old) != len(new):
+            return True
+        for item in old:
+            if item not in new:
+                return True
         if old['actioncam'] != new['actioncam']:
             return True
         if old['camera'] != new['camera']:
@@ -227,12 +217,12 @@ class Helper:
             host = socket.gethostbyname(_host)
             s = socket.create_connection((_host, _port), 2)
             return True
-        except:
+        except Exception as e:
             try:
                 import urllib.request
                 if urllib.request.urlopen(_host + ":" + _port).getcode() == 200:
-                    return  True
-            except:
+                    return True
+            except Exception as e:
                 return False
 
     @staticmethod

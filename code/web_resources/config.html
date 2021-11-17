@@ -33,15 +33,6 @@
       <input type='text' id='valRecordingLocation' />
     </div>
     <hr>
-    <div id="selectServer">
-      <label>Server:</label>
-      <input type='text' id='valServer' />
-    </div>
-    <div id="selectPort">
-      <label>Port:</label>
-      <input type='text' id='valPort' />
-    </div>
-    <hr>
     <h2>Web</h2>
     <div id="selectWebPort">
       <label>Port:</label>
@@ -54,7 +45,7 @@
     </div>
 	<!-- Scripts after load----------------------------------------------------->
 	<script>
-	    let identifiy = document.getElementById("valIdentify");
+	    let identify = document.getElementById("valIdentify");
 	    let smode = document.getElementById("selectedMode");
 	    let cInput = document.getElementById("valCameraID");
         let fLength = document.getElementById("valFileLength");
@@ -63,24 +54,29 @@
         let config = ''
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
-          if(this.readyState === 4) {
-              config = JSON.parse(this.responseText);
-              console.log(config);
-              identifiy.value = config.DEFAULT.identify;
-              addModeSelections(config);
-              output = config.DEFAULT.output;
-              fLength.value = config[output].file_length;
-              cInput.value = config["camera"]["input"];
-              wPort.value = config['webserver'].server_port;
-              rLocation.value = config.DEFAULT.recording_location;
-          }
+            if(this.readyState === 4) {
+                response = JSON.parse(this.responseText);
+                if (response.hasOwnProperty("status")) {
+                    window.alert("Submit was " + config["status"]);
+                } else {
+                    config = response;
+                    console.log(config);
+                    identify.value = config["actioncam"].identify;
+                    addModeSelections(config);
+                    output = config["DEFAULT"].output;
+                    fLength.value = config[output].file_length;
+                    cInput.value = config["camera"]["input"];
+                    wPort.value = config['webserver'].server_port;
+                    rLocation.value = config["DEFAULT"].recording_location;
+                }
+             }
         };
         xhr.onerror = function() {
             alert("Request failed");
         };
         function addModeSelections(config) {
             let option = document.createElement("option");
-            option.text = config.DEFAULT.mode;
+            option.text = config["DEFAULT"].mode;
             smode.add(option);
             _modes = config.mode;
             for (var _m in _modes ) {
@@ -105,10 +101,10 @@
             return strSelected;
         }
         function sendConfig(){
-          config.DEFAULT.identify = identifiy.value;
-          config.DEFAULT.mode = getSelectedMode();
+          config["actioncam"].identify = identify.value;
+          config["DEFAULT"].mode = getSelectedMode();
           config["camera"]["input"] = cInput.value;
-          config.DEFAULT.recording_location = rLocation.value;
+          config["DEFAULT"].recording_location = rLocation.value;
           config[output].file_length = fLength.value;
           config['webserver'].server_port = wPort.value;
           sendJson(config);
