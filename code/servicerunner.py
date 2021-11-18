@@ -21,8 +21,8 @@ class Servicerunner:
         self.run()
 
     def is_idle(self):
-        if (self.current_modus['camera'] == self.config['camera']['mode']['pause'] or
-           self.current_modus['camera'] == self.config['camera']['mode']['stop']):
+        if (self.current_modus['camera'] == self.config['camera']['modes']['pause'] or
+           self.current_modus['camera'] == self.config['camera']['modes']['stop']):
             return True
         else:
             return False
@@ -51,7 +51,7 @@ class Servicerunner:
         self.log('Start main loop')
         while _running:
             try:
-                time.sleep(0.01)
+                time.sleep(0.1)
                 new_modus = self.helper.dict_copy(self.m_modus, new_modus)
                 if self.helper.is_different_modus(self.current_modus, new_modus):
                     self.current_modus = new_modus
@@ -63,9 +63,6 @@ class Servicerunner:
                 self.log('Error:' + str(e))
 
             # here we have a decision what can be done during idle time
-            if self.is_idle():
-                idle += 1
-                self.current_modus['idle'] = idle
             if idle >= idle_time and self.is_idle():
                 self.log('do work when the rest is idle')
                 #
@@ -80,6 +77,9 @@ class Servicerunner:
                     self.log('sended mails ' + str(sended))
                 #
                 idle = self.reset('give others a chance', self.current_modus)
+            else:
+                 idle += 1
+                 self.current_modus['idle'] = idle
         # end of main loop
 
         self.log('End')

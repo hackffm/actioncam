@@ -16,7 +16,7 @@
             "picamera": 99
         },
         "DEFAULT": {
-	        "folder_data": "PATHHOME/actioncam/data",
+            "folder_data": "PATHHOME/actioncam/data",
             "identify": "1",
             "location": "default",
             "log_file": "actioncam.log",
@@ -39,7 +39,7 @@
                 "wait": 5
             },
             "log_file": "camera.log",
-            "mode": {
+            "modes": {
                 "pause": "pause",
                 "record_interval": "record_interval",
                 "record_motion": "record_motion",

@@ -22,20 +22,24 @@ class HandlerCameraStream(tornado.web.RequestHandler):
 
     @tornado.gen.coroutine
     def get(self):
-        o = io.BytesIO()
-        s = ''              # cleanup in asynch loop
-        _video = False
-        if 'video' in self.m_video:
-            img = self.image_from_videostream()
-            _video = True
-        else:
-            img = self.image_init()
+        try:
+            o = io.BytesIO()
+            s = ''              # cleanup in asynch loop
+            _video = False
+            if 'video' in self.m_video:
+                img = self.image_from_videostream()
+                _video = True
+            else:
+                img = self.image_init()
 
-        # get valid s before creating headers as we need the length
-        img.save(o, format="JPEG")
-        s = o.getvalue()
-        self.set_header('Content-type', 'image/jpeg')
-        self.set_header('Content-length', len(s))
-        self.write(s)
+            # get valid s before creating headers as we need the length
+            img.save(o, format="JPEG")
+            s = o.getvalue()
+            self.set_header('Content-type', 'image/jpeg')
+            self.set_header('Content-length', len(s))
+            self.write(s)
+        except Exception as e:
+            print("handlerCameraStream:Error:" + str(e))
+            pass
         # get end
         return

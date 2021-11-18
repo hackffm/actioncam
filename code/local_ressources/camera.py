@@ -235,6 +235,8 @@ class Camera:
             try:
                 new_modus = self.helper.dict_copy(self.m_modus, new_modus)
                 if type(new_modus) == dict:
+                    if new_modus == {}:
+                        self.log('bad modus' + str(new_modus))
                     if self.helper.is_different_modus(self.current_modus, new_modus):
                         self.log('new modus' + str(new_modus))
                         self.current_modus = new_modus
@@ -246,8 +248,11 @@ class Camera:
                 pass
 
             # execute camera modes
-            cm = self.current_modus['camera']
-            if cm == self.config['camera']['mode']['record_interval']:
+            try:
+                cm = self.current_modus['camera']
+            except Exception as e:
+                self.log("Error:cm:" + e)
+            if cm == self.config['camera']['modes']['record_interval']:
                 now_old = self.helper.now()
                 for i in range(self.config['camera']['interval']['repeat']):
                     now = self.helper.now()
@@ -260,30 +265,32 @@ class Camera:
                     self.now = self.helper.now_str()
                     self.record_video(duration=self.config_output['file_length'])
                 self.log('STOP INTERVAL')
-                self.m_modus['camera'] = self.config['camera']['mode']['stop']
-            if cm == self.config['camera']['mode']['record_video']:
+                self.m_modus['camera'] = self.config['camera']['modes']['stop']
+            if cm == self.config['camera']['modes']['record_video']:
                 self.now = self.helper.now_str()
                 self.record_video(duration=self.config_output['file_length'])
-            if cm == self.config['camera']['mode']['record_motion']:
+            if cm == self.config['camera']['modes']['record_motion']:
                 self.now = self.helper.now_str()
                 self.record_motion(duration=self.config_output['file_length'])
-            if cm == self.config['camera']['mode']['show_video']:
+            if cm == self.config['camera']['modes']['show_video']:
                 self.now = self.helper.now_str()
                 self.show_video(duration=self.config_output['file_length'])
 
-            self.m_modus['actioncam'] = cm
+            try:
+                self.m_modus['camera'] = cm
+            except Exception as e:
+                self.log("error:m_modus" + str(e))
             # idle modes
-            if cm == self.config['camera']['mode']['pause']:
+            if cm == self.config['camera']['modes']['pause']:
                 if self.switched:
                     self.log('camera paused')
                     self.switched = False
-            if cm == self.config['camera']['mode']['stop']:
+            if cm == self.config['camera']['modes']['stop']:
                 if self.switched:
                     self.log('camera stopped')
                     self.switched = False
 
             # camera loop
-            if not cm.startswith('record') or cm.startswith('record'):
-                time.sleep(0.01)
+            time.sleep(0.01)
 
         self.log('stopped running')

@@ -41,7 +41,7 @@ def handle_message(msg):
             return True
     elif msg.startswith('camera_mode:'):
         new_modus = msg[12:]
-        if configuration.valid_camera_mode(new_modus):
+        if new_modus in configuration.config["camera"]["modes"]:
             m_modus['camera'] = new_modus
             log('camera_mode ' + str(new_modus))
         return True
@@ -63,11 +63,9 @@ if __name__ == '__main__':
     debug = config['debug']
     print('debug is ' + str(debug))
     default_mode = {"actioncam": config['DEFAULT']['mode'],
-                     "camera": config['camera']['mode']['pause'],
+                     "camera": config['camera']['modes']['pause'],
                      "idle": 0}
-
     running = True
-
 
     # start
     handle_message('do:start')
@@ -104,12 +102,12 @@ if __name__ == '__main__':
                 message = ''
                 try:
                     message = q_message.get()
+                    if message != '':
+                        running = handle_message(message)
+                    if m_modus['actioncam'] == 'do:shutdown':
+                        log('shutdown')
                 except Exception as e:
                     log('error in Main loop ' + str(e))
-                if message != '':
-                    running = handle_message(message)
-                if m_modus['actioncam'] == 'do:shutdown':
-                    log('shutdown')
             # exit
             sys.exit()
     except KeyboardInterrupt:
