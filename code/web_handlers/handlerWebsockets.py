@@ -25,7 +25,7 @@ class HandlerWebSockets(tornado.websocket.WebSocketHandler):
 
     # currently we don't expect messages from the webfrontend
     def on_message(self, message):
-        self.log('from WebSocket: ', message)
+        self.log(message)
 
     def on_close(self):
         self.connections.remove(self)

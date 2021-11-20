@@ -94,10 +94,10 @@ class Helper:
 
     def log_add_text(self, name, text):
         if name not in self.config:
-            name = self.config['DEFAULT']['name']
             text = name + ":" + str(text)
+            name = self.config['DEFAULT']['name']
         l_home = self.log_home(name)
-        text = self.now_str() + ': ' + name + ':' + str(text)
+        text = self.now_str() + ': ' + str(text)
         with open(l_home, 'a') as outfile:
             outfile.write(text + '\n')
 
