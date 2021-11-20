@@ -7,17 +7,19 @@ from PIL import Image
 
 
 class Camera:
-    def __init__(self, configuration, default_mode, helper, m_modus, m_video):
+    def __init__(self, l_lock, configuration, default_mode, helper, m_modus, m_video):
         self.configuration = configuration
         self.helper = helper
+        self.l_lock = l_lock
         self.name = 'camera'
         self.m_modus = m_modus
         self.m_video = m_video
 
         self.byte_io = BytesIO()
         self.config = configuration.config
-        self.config_camera = self.config['camera']
+        self.config_camera = self.configuration.config[self.name]
         self.current_modus = default_mode
+        self.debug = self.configuration.config['debug']
         self.default = self.config['DEFAULT']
         self.min_area = 500
         self.now = self.helper.now_str()
@@ -73,7 +75,7 @@ class Camera:
 
         contours = []
         try:
-            (_, contours, _) = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         except Exception as e:
             self.log('frame_draw_detections exception ' + str(e))
             return frame, detected
@@ -103,6 +105,7 @@ class Camera:
         self.byte_io.seek(0)
         jpg.save(self.byte_io, 'JPEG')
         self.m_video['video'] = self.byte_io
+        self.m_modus['idle'] = 0
 
     def text_detected(self):
         _text = self.config_camera['text']['motion_detected_true']
@@ -115,7 +118,7 @@ class Camera:
         return _text
 
     def text_now(self):
-        _text_now = str(datetime.datetime.now().strftime(self.config['camera']['text']['format_time']))
+        _text_now = str(datetime.datetime.now().strftime(self.config_camera['text']['format_time']))
         return _text_now
 
     def record_motion(self, duration=100):
@@ -251,46 +254,43 @@ class Camera:
             try:
                 cm = self.current_modus['camera']
             except Exception as e:
-                self.log("Error:cm:" + e)
-            if cm == self.config['camera']['modes']['record_interval']:
+                self.log("Error:cm:" + str(e))
+            if cm == self.config_camera['modes']['record_interval']:
                 now_old = self.helper.now()
-                for i in range(self.config['camera']['interval']['repeat']):
+                for i in range(self.config_camera['interval']['repeat']):
                     now = self.helper.now()
                     delta = now - now_old
                     self.log('interval record ' + str(i))
-                    while delta.total_seconds() < self.config['camera']['interval']['wait']:
+                    while delta.total_seconds() < self.config_camera['interval']['wait']:
                         now = self.helper.now()
                         delta = now - now_old
                     now_old = self.helper.now()
                     self.now = self.helper.now_str()
                     self.record_video(duration=self.config_output['file_length'])
                 self.log('STOP INTERVAL')
-                self.m_modus['camera'] = self.config['camera']['modes']['stop']
-            if cm == self.config['camera']['modes']['record_video']:
+                self.m_modus['camera'] = self.config_camera['modes']['stop']
+            if cm == self.config_camera['modes']['record_video']:
                 self.now = self.helper.now_str()
                 self.record_video(duration=self.config_output['file_length'])
-            if cm == self.config['camera']['modes']['record_motion']:
+            if cm == self.config_camera['modes']['record_motion']:
                 self.now = self.helper.now_str()
                 self.record_motion(duration=self.config_output['file_length'])
-            if cm == self.config['camera']['modes']['show_video']:
+            if cm == self.config_camera['modes']['show_video']:
                 self.now = self.helper.now_str()
                 self.show_video(duration=self.config_output['file_length'])
 
-            try:
-                self.m_modus['camera'] = cm
-            except Exception as e:
-                self.log("error:m_modus" + str(e))
             # idle modes
-            if cm == self.config['camera']['modes']['pause']:
+            if cm == self.config_camera['modes']['pause']:
                 if self.switched:
                     self.log('camera paused')
                     self.switched = False
-            if cm == self.config['camera']['modes']['stop']:
+                    self.current_modus
+            if cm == self.config_camera['modes']['stop']:
                 if self.switched:
                     self.log('camera stopped')
                     self.switched = False
 
             # camera loop
-            time.sleep(0.01)
+            time.sleep(0.1)
 
         self.log('stopped running')

@@ -97,10 +97,10 @@
             "targets": ["mail","upload"]
         },
         "upload": {
-            "url": "http://servername",
-            "port": "80",
-            "api": "/",
-            "position": "0.1,0.1,0.1"
+            "url": "http://127.0.0.1",
+            "port": "1880",
+            "api": "/upload",
+            "location": "0.1,0.1,0.1"
         },
         "test": {
             "log_file": "test.log"

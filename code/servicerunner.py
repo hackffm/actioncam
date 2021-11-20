@@ -14,6 +14,7 @@ class Servicerunner:
 
         self.compress = Compress(configuration, helper)
         self.current_modus = default_mode
+        self.idle = 0
         self.lock = l_lock
         self.name = 'servicerunner'
         self.send = Send(configuration, helper)
@@ -37,12 +38,10 @@ class Servicerunner:
             self.current_modus = _modus
         else:
             self.current_modus = self.configuration.default_mode()
-        self.current_modus['idle'] = 0
-        self.log('current modus ' + str(self.current_modus))
-        return 0
+        self.idle = 0
+        self.log('reset:current modus ' + str(self.current_modus))
 
     def run(self):
-        idle = 0
         idle_time = self.config[self.name]['idle_time']
         new_modus = {}
         _running = True
@@ -55,7 +54,6 @@ class Servicerunner:
                 new_modus = self.helper.dict_copy(self.m_modus, new_modus)
                 if self.helper.is_different_modus(self.current_modus, new_modus):
                     self.current_modus = new_modus
-                    self.current_modus['idle'] = idle
                     self.log('current modus ' + str(self.current_modus))
                 else:
                     pass
@@ -63,8 +61,8 @@ class Servicerunner:
                 self.log('Error:' + str(e))
 
             # here we have a decision what can be done during idle time
-            if idle >= idle_time and self.is_idle():
-                self.log('do work when the rest is idle')
+            if self.idle >= idle_time and self.is_idle():
+                self.log('do work idle time is over')
                 #
                 if self.config['compress']['active'] == "True":
                     self.current_modus['actioncam'] = self.config['mode']['compress']
@@ -76,10 +74,9 @@ class Servicerunner:
                     sended = self.send.send_mail()
                     self.log('sended mails ' + str(sended))
                 #
-                idle = self.reset('give others a chance', self.current_modus)
+                self.reset('give others a chance', self.current_modus)
             else:
-                 idle += 1
-                 self.current_modus['idle'] = idle
+                 self.idle += 1
         # end of main loop
 
         self.log('End')

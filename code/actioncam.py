@@ -42,7 +42,8 @@ def handle_message(msg):
     elif msg.startswith('camera_mode:'):
         new_modus = msg[12:]
         if new_modus in configuration.config["camera"]["modes"]:
-            m_modus['camera'] = new_modus
+            with l_lock:
+                m_modus['camera'] = new_modus
             log('camera_mode ' + str(new_modus))
         return True
     else:
@@ -78,7 +79,7 @@ if __name__ == '__main__':
             helper.dict_copy(default_mode, m_modus)
             p2 = Process(target=Servicerunner, args=(l_lock, configuration, default_mode, helper, m_modus))
             p3 = Process(target=WebServer, args=(l_lock, configuration, helper, q_message, m_modus, m_video))
-            p4 = Process(target=Camera, args=(configuration, default_mode, helper, m_modus, m_video))
+            p4 = Process(target=Camera, args=(l_lock, configuration, default_mode, helper, m_modus, m_video))
             p2.daemon = True
             p3.daemon = True
             p4.daemon = True
@@ -102,6 +103,8 @@ if __name__ == '__main__':
                 message = ''
                 try:
                     message = q_message.get()
+                    if debug:
+                        print("actioncam:message:" + message)
                     if message != '':
                         running = handle_message(message)
                     if m_modus['actioncam'] == 'do:shutdown':
