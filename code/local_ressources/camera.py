@@ -25,7 +25,7 @@ class Camera:
         self.now = self.helper.now_str()
         self.switched = True
 
-        _output = self.default['output']
+        _output = self.config_camera['output']
         self.config_output = self.config[_output]
 
         self.run()
@@ -52,24 +52,23 @@ class Camera:
         if type == 'show_video':
             return [cap, 'none']
 
-        video_name = self.file_name_video(type)
+        video_name = self.file_name_by_type(type)
         out = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), frame_rate, (frame_width, frame_height))
         return [cap, out]
 
-    def file_name_image(self, type):
-        fName = self.configuration.output_folder() + '/' + self.default['identify'] + '_' + self.config_output['file_name_' + type] + '_' \
-                + self.now + self.config['preview']['file_extension']
-        return fName
-
-    def file_name_video(self, type):
-        f_name = self.configuration.output_folder() + '/' + self.default['identify'] + '_' + self.config_output['file_name_' + type] + '_' \
-                + self.now + self.config_output['file_extension']
-        return f_name
+    def file_name_by_type(self, type):
+        if type == "preview":
+            type = type + "." + self.configuration.config["preview"]["file_extension"]
+        else:
+            type = type + "." + self.config_camera["output"]
+        fname = self.config_camera["recording_location"] + "/" + self.config_camera['identify'] \
+            + "_" + self.helper.now_str() + "_" + type
+        return fname
 
     def frame_draw_detections(self, frame, first_frame, gray):
         detected = False
         frame_delta = cv2.absdiff(first_frame, gray)
-        text = self.text_detected_false()
+        text = self.config_camera['text']['motion_detected_false'] + ' ' + self.text_now()
         thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
         thresh = cv2.dilate(thresh, None, iterations=2)
 
@@ -84,7 +83,7 @@ class Camera:
             if cv2.contourArea(c) > self.min_area:
                 (x, y, w, h) = cv2.boundingRect(c)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                text = self.text_detected()
+                text = self.config_camera['text']['motion_detected_true'] + ' ' + self.text_now()
                 detected = True
 
         cv2.putText(frame, "Status: {}".format(text), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
@@ -106,16 +105,6 @@ class Camera:
         jpg.save(self.byte_io, 'JPEG')
         self.m_video['video'] = self.byte_io
         self.m_modus['idle'] = 0
-
-    def text_detected(self):
-        _text = self.config_camera['text']['motion_detected_true']
-        _text = _text + ' ' + self.text_now()
-        return _text
-
-    def text_detected_false(self):
-        _text = self.config_camera['text']['motion_detected_false']
-        _text = _text + ' ' + self.text_now()
-        return _text
 
     def text_now(self):
         _text_now = str(datetime.datetime.now().strftime(self.config_camera['text']['format_time']))
@@ -147,9 +136,9 @@ class Camera:
 
             if detected:
                 if preview:
-                    _image_name = self.file_name_image(type_motion)
-                    cv2.imwrite(_image_name, frame)
+                    _image_name = self.file_name_by_type(type_motion)
                     self.log('preview ' + _image_name)
+                    cv2.imwrite(_image_name, frame)
                     preview = False
                 out.write(frame)
             duration -= 1
@@ -172,9 +161,9 @@ class Camera:
         recording = True
         ret, frame = cap.read()
 
-        _image_name = self.file_name_image(type_record)
-        cv2.imwrite(_image_name, frame)
+        _image_name = self.file_name_by_type(type_record)
         self.log('preview ' + _image_name)
+        cv2.imwrite(_image_name, frame)
 
         while recording:
             ret, frame = cap.read()
@@ -229,7 +218,7 @@ class Camera:
 
     # -- main ----------------------------------------------------------------
     def run(self):
-        self.log('camera started')
+        self.log('camera ressource started')
 
         new_modus = {}
         running = True

@@ -21,6 +21,14 @@ def test_config_default():
     print(json.dumps(j, indent=4, sort_keys=True))
 
 
+def test_config_output_folder():
+    print("test_config_output_folder")
+    c_camera = configuration.config["camera"]
+    type = "motion.avi"
+    out = c_camera["recording_location"] + "/" + c_camera['identify'] + "_" + helper.now_str() + "_" + type
+    print(out)
+
+
 def test_config_save():
     print("test_config_save")
     _temp_path = configuration.path_home() + "/temp"
@@ -36,6 +44,7 @@ def test_config_update():
 
 
 if __name__ == '__main__':
-    test_config_default()
-    test_config_update()
-    test_config_save()
+    #test_config_default()
+    test_config_output_folder()
+    #test_config_update()
+    #test_config_save()

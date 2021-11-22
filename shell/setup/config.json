@@ -51,8 +51,7 @@
             "text": {
                 "motion_detected_false": "Motion: not detected",
                 "motion_detected_true": "Motion: detected !!",
-                "format_time": "%A %Y%m%d%H%M%S",
-                "record": "Record:"
+                "format_time": "%A %Y%m%d%H%M%S"
             }
         },
         "compress": {
