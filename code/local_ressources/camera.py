@@ -57,6 +57,7 @@ class Camera:
         return [cap, out]
 
     def file_name_by_type(self, type):
+        self.log("file name type is " + type)
         if type == "preview":
             type = type + "." + self.configuration.config["preview"]["file_extension"]
         else:
@@ -161,7 +162,7 @@ class Camera:
         recording = True
         ret, frame = cap.read()
 
-        _image_name = self.file_name_by_type(type_record)
+        _image_name = self.file_name_by_type('preview')
         self.log('preview ' + _image_name)
         cv2.imwrite(_image_name, frame)
 
