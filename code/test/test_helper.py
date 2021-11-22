@@ -54,8 +54,8 @@ def test_helper_dict_is_different():
 
 
 if __name__ == '__main__':
-    #test_helper_infos()
-    #test_helper_loghome()
-    #test_helper_log_ad_text()
-    #test_helper_dict_copy()
+    test_helper_infos()
+    test_helper_loghome()
+    test_helper_log_ad_text()
+    test_helper_dict_copy()
     test_helper_dict_is_different()
