@@ -7,13 +7,13 @@ if [ ! -d ~/actioncam ]; then
 	mkdir ~/actioncam/compressed
 	mkdir ~/actioncam/log
 	mkdir ~/actioncam/recordings
-	mkdir ~~actioncam/send
+	mkdir ~/actioncam/send
 fi
 #
 if [ ! -f ~/actioncam/config.json ]; then
   	echo "prepare config"
     cp config.json ~/actioncam
-    # not requiered anymore sed -i -e 's/pi/'"${USER}"'/g' ~/actioncam/config.json
+    # not requiered anymore is sed -i -e 's/pi/'"${USER}"'/g' ~/actioncam/config.json
 fi
 #
 if [ ! -d ~/actioncam/venv ]; then
