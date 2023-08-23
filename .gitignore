@@ -2,7 +2,7 @@
 
 #IDEs
 *.sublime-workspace
-.idea/**
+.idea/
 #eclipse Config Files #
 .classpath
 .project

@@ -1,6 +1,6 @@
 #1/bin/bash
 echo install debian packages
-DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND=noninteractive
 sudo apt update && sudo apt --yes dist-upgrade
 sudo apt install --yes libatlas3-base libwebp6 libtiff5 libjasper1 libilmbase23 libopenexr23 
 sudo apt install --yes libgstreamer1.0-0 libavcodec58 libavformat58 libavutil56
