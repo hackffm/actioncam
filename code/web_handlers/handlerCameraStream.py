@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 
 class HandlerCameraStream(tornado.web.RequestHandler):
     def initialize(self, m_video):
-        self.m_video=m_video
+        self.m_video = m_video
 
     def image_init(self):
         img = Image.new('RGB', (640, 480), color=(73, 109, 137))
@@ -25,10 +25,10 @@ class HandlerCameraStream(tornado.web.RequestHandler):
         try:
             o = io.BytesIO()
             s = ''              # cleanup in asynch loop
-            _video = False
+            # _video = False
             if 'video' in self.m_video:
                 img = self.image_from_videostream()
-                _video = True
+                # _video = True
             else:
                 img = self.image_init()
 

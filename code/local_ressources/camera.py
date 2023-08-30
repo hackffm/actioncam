@@ -227,7 +227,7 @@ class Camera:
         while running:
             try:
                 new_modus = self.helper.dict_copy(self.m_modus, new_modus)
-                if type(new_modus) == dict:
+                if isinstance(new_modus, dict):
                     if new_modus == {}:
                         self.log('bad modus' + str(new_modus))
                     if self.helper.is_different_modus(self.current_modus, new_modus):
@@ -237,7 +237,7 @@ class Camera:
                 else:
                     self.log('bad modus' + str(new_modus))
             except Exception as e:
-                # sometimes empty errors here
+                self.log(str(e))
                 pass
 
             # execute camera modes

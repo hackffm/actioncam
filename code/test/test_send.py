@@ -12,6 +12,7 @@ helper.state_set_start()
 debug = True
 send = Send(configuration, helper, debug)
 
+
 def test_send_config():
     print("test_send_config")
     print(json.dumps(send.config, indent=4, sort_keys=True))

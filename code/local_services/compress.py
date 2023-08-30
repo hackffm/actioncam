@@ -39,7 +39,7 @@ class Compress:
             return ''
 
     def data_save(self, text):
-        if not '\n' in text:
+        if '\n' not in text:
             text = text + '\n'
         with open(self.data_csv, 'a+') as outfile:
             outfile.write(text)
@@ -94,7 +94,7 @@ class Compress:
 
     def zip_create_files(self, zip_name, folder_name, file_list):
         _zip = zipfile.ZipFile(zip_name, "w")
-        _rz = zip_name.rfind('/')
+        # _rz = zip_name.rfind('/')
         for file_name in file_list:
             file_path = folder_name + '/' + file_name
             _zip.write(file_path, arcname=file_name, compress_type=zipfile.ZIP_DEFLATED)

@@ -4,6 +4,7 @@ import json
 import netifaces
 import os
 import socket
+import urllib.request
 
 
 class Helper:
@@ -91,6 +92,16 @@ class Helper:
                     if self.not_local(_i):
                         _interfaces.append(_i)
         return _interfaces
+
+    def is_online(self, _host, _port=80):
+        try:
+            # first check if host is available
+            socket.create_connection((_host, _port), 2)
+            if urllib.request.urlopen(_host + ":" + _port).getcode() == 200:
+                return True
+        except Exception as e:
+            self.log_add_text('actioncam', 'Error[Helper]' + str(e))
+            return False
 
     def log_add_text(self, name, text):
         if name not in self.config:
@@ -210,20 +221,6 @@ class Helper:
         if old['camera'] != new['camera']:
             return True
         return False
-
-    @staticmethod
-    def is_online(_host, _port=80):
-        try:
-            host = socket.gethostbyname(_host)
-            s = socket.create_connection((_host, _port), 2)
-            return True
-        except Exception as e:
-            try:
-                import urllib.request
-                if urllib.request.urlopen(_host + ":" + _port).getcode() == 200:
-                    return True
-            except Exception as e:
-                return False
 
     @staticmethod
     def loop(count=1000000):

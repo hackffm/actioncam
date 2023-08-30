@@ -48,9 +48,9 @@ def test_helper_dict_is_different():
     current_modus = {}
     new_modus = {'actioncam': 'pause', 'camera': 'pause', 'idle': 0}
     changed_modus = {'actioncam': 'stop', 'camera': 'pause', 'idle': 0}
-    assert helper.is_different_modus(current_modus, new_modus) == True, "test_helper_dict_is_different failed comparing"
-    assert helper.is_different_modus(current_modus, changed_modus) == True, "test_helper_dict_is_different failed comparing"
-    assert helper.is_different_modus(new_modus, new_modus) == False, "test_helper_dict_is_different failed comparing"
+    assert helper.is_different_modus(current_modus, new_modus) is True, "test_helper_dict_is_different failed comparing"
+    assert helper.is_different_modus(current_modus, changed_modus) is True, "test_helper_dict_is_different failed comparing"
+    assert helper.is_different_modus(new_modus, new_modus) is False, "test_helper_dict_is_different failed comparing"
 
 
 if __name__ == '__main__':

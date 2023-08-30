@@ -10,7 +10,6 @@ sys.path.append(code_dir)
 
 
 def config_path():
-    home = os.getenv('HOME')
     c_path = project_dir + '/shell/setup/config.json'
     if not os.path.exists(c_path):
         print('failed to find config file in ' + c_path)

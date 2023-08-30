@@ -76,7 +76,7 @@ class Servicerunner:
                 #
                 self.reset('give others a chance', self.current_modus)
             else:
-                 self.idle += 1
+                self.idle += 1
         # end of main loop
 
         self.log('End')

@@ -13,7 +13,7 @@ class HandlerConfig(tornado.web.RequestHandler):
 
     def post(self, *args):
         _config = tornado.escape.json_decode(self.request.body)
-        if type(_config) == dict:
+        if isinstance(_config, dict):
             self.assign_config(_config)
             self.configuration.save()
             self.write(json.dumps({'status': 'ok'}))
