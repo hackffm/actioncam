@@ -37,22 +37,22 @@ class Configuration:
         deletions = []
         if "DEFAULT" in self.config:
             _default = self.config['DEFAULT']
-            for k_c , v_c in self.config.items():
+            for k_c, v_c in self.config.items():
                 if k_c != "DEFAULT" and k_c != "debug":
                     for kk_c, vv_c in self.config[k_c].items():
                         for k_d, v_d in _default.items():
                             if kk_c == k_d and self.config[k_c][kk_c] == v_d:
-                                deletions.append([k_c,kk_c])
+                                deletions.append([k_c, kk_c])
         for deletion in deletions:
             del data[deletion[0]][deletion[1]]
         return self.save_json(data)
-    # -- Helper ------------------------------------------------------------------
+# -- Helper --------------------------------------------------------------
 
     def copy_default_to_all_sections(self):
         if 'DEFAULT' in self.config:
             _DEFAULT = self.config['DEFAULT']
             for k_c, v_c in self.config.items():
-                if k_c not in ('DEFAULT','debug'):
+                if k_c not in ('DEFAULT', 'debug'):
                     for k_d, v_d in _DEFAULT.items():
                         if k_d not in self.config[k_c]:
                             self.config[k_c][k_d] = v_d
@@ -93,7 +93,7 @@ class Configuration:
 
     def save_json(self, data):
         data = collections.OrderedDict(sorted(data.items()))
-        data = { self.name : data }
+        data = {self.name: data}
         data = json.dumps(data, indent=4)
         with open(self.config_path, 'w') as outfile:
             outfile.write(data)

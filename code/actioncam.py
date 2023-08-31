@@ -64,8 +64,8 @@ if __name__ == '__main__':
     debug = config['debug']
     print('debug is ' + str(debug))
     default_mode = {"actioncam": config['DEFAULT']['mode'],
-                     "camera": config['camera']['modes']['pause'],
-                     "idle": 0}
+                    "camera": config['camera']['modes']['pause'],
+                    "idle": 0}
     running = True
 
     # start

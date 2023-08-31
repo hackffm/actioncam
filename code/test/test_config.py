@@ -44,7 +44,7 @@ def test_config_update():
 
 
 if __name__ == '__main__':
-    #test_config_default()
+    test_config_default()
     test_config_output_folder()
-    #test_config_update()
-    #test_config_save()
+    test_config_update()
+    test_config_save()

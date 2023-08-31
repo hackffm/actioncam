@@ -2,6 +2,7 @@ import tornado.web
 
 from local_services import Compress
 
+
 class HandlerReport(tornado.web.RequestHandler):
     def initialize(self, configuration, helper):
         self.configuration = configuration
@@ -19,4 +20,3 @@ class HandlerReport(tornado.web.RequestHandler):
 
     def log(self, text):
         self.helper.log_add_text(self.name, text)
-
