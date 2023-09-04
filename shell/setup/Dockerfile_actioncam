@@ -4,12 +4,19 @@
 FROM python:3
 
 
-WORKDIR /usr/src/actioncam
+# WORKDIR /usr/src/actioncam
 COPY ./shell/setup/0_setup_os.sh .
-COPY ./shell/setup/2_setup_folders.sh .
-COPY ./shell/setup/config.json .
-COPY ./shell/setup/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN bash -c ./0_setup_os.sh
 
-COPY ./code .
-CMD [ "python", "./actiomcam.py" ]
+RUN useradd -ms /bin/bash camuser
+USER camuser
+COPY ./code /home/camuser
+COPY ./shell/setup/2_setup_folders.sh /home/camuser
+COPY ./shell/setup/config.json /home/camuser
+COPY ./shell/setup/requirements.txt /home/camuser
+
+WORKDIR /home/camuser
+RUN ./2_setup_folders.sh 
+
+# source /home/camuser/actioncam/venv/bin/activate
+# CMD [ "python", "/home/camuser/actiomcam.py" ]
