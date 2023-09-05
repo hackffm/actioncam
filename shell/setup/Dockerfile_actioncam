@@ -3,20 +3,26 @@
 # docker run -it --rm --name actioncam-app-running actioncam-app
 FROM python:3
 
+ARG ACTIONCAM_DIR=/home/camuser/actioncam
+ARG USERNAME=camuser
 
-# WORKDIR /usr/src/actioncam
 COPY ./shell/setup/0_setup_os.sh .
 RUN bash -c ./0_setup_os.sh
 
-RUN useradd -ms /bin/bash camuser
-USER camuser
-COPY ./code /home/camuser
-COPY ./shell/setup/2_setup_folders.sh /home/camuser
-COPY ./shell/setup/config.json /home/camuser
-COPY ./shell/setup/requirements.txt /home/camuser
+# Create the user
+RUN useradd -ms /bin/bash $USERNAME
+COPY ./code $ACTIONCAM_DIR/code
+COPY ./shell/setup/2_setup_folders.sh $ACTIONCAM_DIR
+COPY ./shell/startup/start_actioncam.sh $ACTIONCAM_DIR
+COPY ./shell/setup/config.json $ACTIONCAM_DIR
+COPY ./shell/setup/requirements.txt $ACTIONCAM_DIR
 
-WORKDIR /home/camuser
-RUN ./2_setup_folders.sh 
+RUN chmod -R 765 $ACTIONCAM_DIR
+RUN chown -R $USERNAME $ACTIONCAM_DIR
+RUN chgrp -R $USERNAME $ACTIONCAM_DIR
+USER $USERNAME
+RUN bash -c $ACTIONCAM_DIR/2_setup_folders.sh 
 
-# source /home/camuser/actioncam/venv/bin/activate
-# CMD [ "python", "/home/camuser/actiomcam.py" ]
+EXPOSE 8080
+WORKDIR $ACTIONCAM_DIR
+# CMD [ "python", "${ACTIONCAM_DIR}/start_actioncam.sh" ]
