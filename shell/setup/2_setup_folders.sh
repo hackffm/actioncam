@@ -17,7 +17,7 @@ if [ ! -f ~/actioncam/config.json ]; then
 fi
 if [ -f ~/actioncam/config.json ]; then
   	echo "found config.json and preparing for current user"
-    sed -i -e 's/pi/'"${USER}"'/g' ~/actioncam/config.json
+    sed -i -e 's/USERNAME/'"${USER}"'/g' ~/actioncam/config.json
 fi
 #
 if [ ! -d ~/actioncam/venv ]; then
