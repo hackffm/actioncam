@@ -10,14 +10,14 @@ if [ ! -d ~/actioncam ]; then
 	mkdir ~/actioncam/send
 fi
 #
-cd ~actioncam
+cd ~/actioncam
 if [ ! -f ~/actioncam/config.json ]; then
   	echo "copy config"
     cp config.json ~/actioncam
 fi
 if [ -f ~/actioncam/config.json ]; then
   	echo "found config.json and preparing for current user"
-    sed -i -e 's/USERNAME/'"${USER}"'/g' ~/actioncam/config.json
+    sed -i -e 's/HOME/'"${HOME}"'/g' ~/actioncam/config.json
 fi
 #
 if [ ! -d ~/actioncam/venv ]; then

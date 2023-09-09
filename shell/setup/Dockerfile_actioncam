@@ -1,6 +1,6 @@
 # cd ../../../actioncam
 # docker build -t actioncam-app --file ./shell/setup/Dockerfile_actioncam .
-# docker run -it --rm --name actioncam-app-running actioncam-app
+# docker run -p 8080:8080 --rm --name actioncam-app-running actioncam-app
 FROM python:3
 
 ARG ACTIONCAM_DIR=/home/camuser/actioncam
@@ -8,9 +8,10 @@ ARG USERNAME=camuser
 
 COPY ./shell/setup/0_setup_os.sh .
 RUN bash -c ./0_setup_os.sh
+RUN apt update && apt install -y vim
 
-# Create the user
 RUN useradd -ms /bin/bash $USERNAME
+
 COPY ./code $ACTIONCAM_DIR/code
 COPY ./shell/setup/2_setup_folders.sh $ACTIONCAM_DIR
 COPY ./shell/startup/start_actioncam.sh $ACTIONCAM_DIR
@@ -25,4 +26,5 @@ RUN bash -c $ACTIONCAM_DIR/2_setup_folders.sh
 
 EXPOSE 8080
 WORKDIR $ACTIONCAM_DIR
-# CMD [ "python", "${ACTIONCAM_DIR}/start_actioncam.sh" ]
+ENV ACTIONCAM_DIR=${ACTIONCAM_DIR}
+CMD ${ACTIONCAM_DIR}/start_actioncam.sh
