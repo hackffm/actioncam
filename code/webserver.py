@@ -58,7 +58,6 @@ class WebApplication(tornado.web.Application):
             (r'/websockets', HandlerWebSockets, dict(helper=helper, ))
         ]
 
-
         debug = configuration.config['debug']
         settings = {
             'autoreload': debug,
