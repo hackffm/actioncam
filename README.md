@@ -13,6 +13,5 @@ some python code arround opencv to use a webcam for action detection
     
 ## documentation
 
-to get an overview you can look at the docs section
-actioncam.xml is a draw.io diagramm
+![Overview](docs/actioncam.drawio.svg)
 
