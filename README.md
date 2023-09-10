@@ -1,7 +1,10 @@
 # actioncam
 
-some python code arround opencv to use a webcam for action detection
+some python code arround opencv to use a webcam for action and object detection
 
+## Objects
+
+Aruco Code is supported
 
 ## currently implemented features
     - recording
