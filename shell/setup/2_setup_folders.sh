@@ -1,4 +1,5 @@
 #!/bin/bash
+# all files should be in plac by dockerfile
 echo "check setup"
 if [ ! -d ~/actioncam ]; then
   echo "create actioncam folders"
@@ -16,9 +17,17 @@ if [ ! -f ~/actioncam/config.json ]; then
 fi
 if [ -f ~/actioncam/config.json ]; then
   echo "found config.json and preparing for current user"
-  sed -i -e 's/piuser/'"${USER}"'/g' ~/actioncam/config.json
+  sed -i -e 's/piuser/'"${USERNAME}"'/g' ~/actioncam/config.json
 fi
 #
+if [ ! -f ~/actioncam/config.json ]; then
+  echo "copy config"
+  cp ./config.json ~/actioncam/
+fi
+if [ ! -f ~/actioncam/requirements.txt ]; then
+  echo "copy requierements.txt"
+  cp ./requirements.txt ~/actioncam/
+fi
 if [ ! -d ~/actioncam/venv ]; then
   mkdir ~/actioncam/venv
   echo "create python venv"
@@ -27,7 +36,7 @@ if [ ! -d ~/actioncam/venv ]; then
   echo #install python packages"
   source ~/actioncam/venv/bin/activate
   pip install --upgrade pip
-  pip install -r requirements.txt
+  pip install -r ~/actioncam/requirements.txt
 fi
 if [ ! -f ~/actioncam/code ]; then
   echo "copy code"
