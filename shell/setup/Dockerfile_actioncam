@@ -6,11 +6,21 @@ FROM python:3
 ARG ACTIONCAM_DIR=/home/camuser/actioncam
 ARG USERNAME=camuser
 
+ENV ACTIONCAM_DIR=${ACTIONCAM_DIR}
+ENV USERNAME=${USERNAME}
+
 COPY ./shell/setup/0_setup_os.sh .
 RUN bash -c ./0_setup_os.sh
 RUN apt update && apt install -y vim
 
 RUN useradd -ms /bin/bash $USERNAME
+
+RUN mkdir $ACTIONCAM_DIR
+RUN mkdir $ACTIONCAM_DIR/data
+RUN mkdir $ACTIONCAM_DIR/compressed
+RUN mkdir $ACTIONCAM_DIR/log
+RUN mkdir $ACTIONCAM_DIR/recordings
+RUN mkdir $ACTIONCAM_DIR/send
 
 COPY ./code $ACTIONCAM_DIR/code
 COPY ./shell/setup/2_setup_folders.sh $ACTIONCAM_DIR
@@ -26,5 +36,4 @@ RUN bash -c $ACTIONCAM_DIR/2_setup_folders.sh
 
 EXPOSE 8080
 WORKDIR $ACTIONCAM_DIR
-ENV ACTIONCAM_DIR=${ACTIONCAM_DIR}
 CMD ${ACTIONCAM_DIR}/start_actioncam.sh
